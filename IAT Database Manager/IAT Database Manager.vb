@@ -1,4 +1,5 @@
-﻿Imports System.IO
+﻿Imports System.Data
+Imports System.IO
 Imports System.Net.Http
 Imports System.Text.RegularExpressions
 Imports Imgur.API.Authentication

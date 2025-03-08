@@ -1,22 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{99F9C147-050B-4C4C-BE56-2C3FDC23EAB6}</ProjectGuid>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <StartupObject>IAT_Database_Manager.My.MyApplication</StartupObject>
     <RootNamespace>IAT_Database_Manager</RootNamespace>
-    <AssemblyName>IAT Database Manager</AssemblyName>
-    <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>C:\Users\ryanc\Desktop\</PublishUrl>
     <Install>true</Install>
@@ -33,38 +21,20 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <DefineDebug>true</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>IAT Database Manager.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
     <DefineDebug>false</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
     <DocumentationFile>IAT Database Manager.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionExplicit>On</OptionExplicit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionCompare>Binary</OptionCompare>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionStrict>Off</OptionStrict>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
@@ -72,18 +42,10 @@
   <PropertyGroup>
     <ApplicationIcon>IATLogo.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
@@ -100,160 +62,59 @@
   </PropertyGroup>
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
+    <AssemblyTitle>IAT Database Manager</AssemblyTitle>
+    <Product>IAT Database Manager</Product>
+    <Copyright>Copyright ©  2020</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Design" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Web.Services" />
-    <Reference Include="System.Windows.Forms">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Windows.Forms.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
-    <Import Include="Microsoft.VisualBasic" />
-    <Import Include="System" />
-    <Import Include="System.Collections" />
-    <Import Include="System.Collections.Generic" />
-    <Import Include="System.Data" />
     <Import Include="System.Drawing" />
-    <Import Include="System.Diagnostics" />
     <Import Include="System.Windows.Forms" />
-    <Import Include="System.Linq" />
-    <Import Include="System.Xml.Linq" />
-    <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationEvents.vb" />
-    <Compile Include="Boss.vb" />
-    <Compile Include="CoordinateBulder.Designer.vb">
+    <Compile Update="CoordinateBulder.Designer.vb">
       <DependentUpon>CoordinateBulder.vb</DependentUpon>
     </Compile>
-    <Compile Include="CoordinateBulder.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Expansion.vb" />
-    <Compile Include="ItemCache.vb" />
-    <Compile Include="LocalisationImporter.Designer.vb">
+    <Compile Update="LocalisationImporter.Designer.vb">
       <DependentUpon>LocalisationImporter.vb</DependentUpon>
     </Compile>
-    <Compile Include="LocalisationImporter.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="IAT Database Manager.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="IAT Database Manager.Designer.vb">
-      <DependentUpon>IAT Database Manager.vb</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="InsertBoss.Designer.vb">
+    <Compile Update="InsertBoss.Designer.vb">
       <DependentUpon>InsertBoss.vb</DependentUpon>
     </Compile>
-    <Compile Include="InsertBoss.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="InsertExpansion.Designer.vb">
+    <Compile Update="InsertExpansion.Designer.vb">
       <DependentUpon>InsertExpansion.vb</DependentUpon>
     </Compile>
-    <Compile Include="InsertExpansion.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="InsertInstance.Designer.vb">
+    <Compile Update="InsertInstance.Designer.vb">
       <DependentUpon>InsertInstance.vb</DependentUpon>
     </Compile>
-    <Compile Include="InsertInstance.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Instance.vb" />
-    <Compile Include="InstanceType.vb" />
-    <Compile Include="Localisation.vb" />
-    <Compile Include="My Project\AssemblyInfo.vb" />
-    <Compile Include="My Project\Application.Designer.vb">
+    <Compile Update="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="My Project\Resources.Designer.vb">
+    <Compile Update="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="My Project\Settings.Designer.vb">
+    <Compile Update="My Project\Settings.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="NPC.vb" />
-    <Compile Include="NPCCache.vb" />
-    <Compile Include="Spell.vb" />
-    <Compile Include="SpellData.Designer.vb">
+    <Compile Update="SpellData.Designer.vb">
       <DependentUpon>SpellData.vb</DependentUpon>
     </Compile>
-    <Compile Include="SpellData.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SplashScreen1.Designer.vb">
+    <Compile Update="SplashScreen1.Designer.vb">
       <DependentUpon>SplashScreen1.vb</DependentUpon>
-    </Compile>
-    <Compile Include="SplashScreen1.vb">
-      <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CoordinateBulder.resx">
-      <DependentUpon>CoordinateBulder.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LocalisationImporter.resx">
-      <DependentUpon>LocalisationImporter.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="IAT Database Manager.resx">
-      <DependentUpon>IAT Database Manager.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="InsertBoss.resx">
-      <DependentUpon>InsertBoss.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="InsertExpansion.resx">
-      <DependentUpon>InsertExpansion.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="InsertInstance.resx">
-      <DependentUpon>InsertInstance.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="My Project\Resources.resx">
-      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
-      <CustomToolNamespace>My.Resources</CustomToolNamespace>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SpellData.resx">
-      <DependentUpon>SpellData.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SplashScreen1.resx">
-      <DependentUpon>SplashScreen1.vb</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="IAT Database Manager_TemporaryKey.pfx" />
-    <None Include="My Project\app.manifest" />
-    <None Include="My Project\Application.myapp">
+    <None Update="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
-    <None Include="My Project\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <CustomToolNamespace>My</CustomToolNamespace>
-      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
-    </None>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Imgur.API">
@@ -268,6 +129,7 @@
     <PackageReference Include="Microsoft.Web.WebView2">
       <Version>1.0.824-prerelease</Version>
     </PackageReference>
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="IATLogo.ico" />
@@ -284,5 +146,4 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
