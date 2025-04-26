@@ -27,8 +27,6 @@ Public Class frmIATDatabaseManager
             Threading.Thread.Sleep(500) : Application.DoEvents()
         Next i
     End Sub
-    Private Sub InitalizeChromium(address As String)
-    End Sub
 
     Public Sub LoadWebsite(website)
         Console.WriteLine("Adding site:" & website)
@@ -42,7 +40,6 @@ Public Class frmIATDatabaseManager
         Dim splash As SplashScreen1 = CType(My.Application.SplashScreen, SplashScreen1)
 
         splash.UpdateProgress("Setting up Web Browser (1/13)", 1)
-        InitalizeChromium("https://www.curseforge.com/wow/addons/instance-achievement-tracker/localization/languages/92/phrases#0")
 
         splash.UpdateProgress("Loading Expansions (2/13)", 2)
         'Insert Expansions
@@ -376,47 +373,6 @@ Public Class frmIATDatabaseManager
         cboNPC.DisplayMember = "Name"
         cboNPC.ValueMember = "ID"
 
-        splash.UpdateProgress("Loading Spell Data (11/13)", 11)
-        'Insert Spells
-        'lines = IO.File.ReadAllLines("SpellDB.csv")
-        'SpellTable.Columns.Add(New DataColumn("ID", GetType(String)))
-        'SpellTable.Columns("ID").Unique = True
-        'SpellTable.Columns.Add(New DataColumn("Name", GetType(String)))
-        'Count = 0
-        'For Each line In lines
-        '    If line.Contains(";") Then
-        '        Dim strArr() As String = line.Split(";")
-
-        '        'DEBUG
-        '        If strArr(0).Contains("Pistol Barrage") Then
-        '            Console.WriteLine("HERE Barrage")
-        '        End If
-
-        '        Dim NewSpell = New Spell
-        '        NewSpell.name = strArr(0)
-        '        Dim ParseResult As Integer
-        '        If Integer.TryParse(strArr(1), ParseResult) Then
-        '            NewSpell.id = strArr(1) - 1
-        '        Else
-        '            NewSpell.id = strArr(1)
-        '        End If
-
-        '        SpellDB.Add(NewSpell)
-        '        Dim R As DataRow = SpellTable.NewRow
-        '        R("ID") = NewSpell.id
-        '        R("Name") = NewSpell.name
-        '        SpellTable.Rows.Add(R)
-        '        Count += 1
-        '    End If
-        'Next
-        'Console.WriteLine("Loaded " & Count & " Spells")
-
-        splash.UpdateProgress("Populating Spell Data (12/13)", 12)
-        'cboSpell.DataSource = SpellTable
-        'cboSpell.DisplayMember = "Name"
-        'cboSpell.ValueMember = "ID"
-        'SpellData.DataGridView1.DataSource = SpellTable
-
         splash.UpdateProgress("Loading NPC Cache (13/13)", 13)
         'Insert NPCCache
         If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua") Then
@@ -562,13 +518,6 @@ Public Class frmIATDatabaseManager
                                             Items.Add(GetSpellName(spellID))
                                             ItemsID.Add(spellID)
                                             ItemType.Add("Spell")
-                                            'For Each spell In SpellDB
-                                            '    If spell.id = spellID Then
-                                            '        Items.Add(spell.name)
-                                            '        ItemsID.Add(spell.id)
-                                            '        ItemType.Add("Spell")
-                                            '    End If
-                                            'Next
                                         End If
                                     Next
 
@@ -619,13 +568,6 @@ Public Class frmIATDatabaseManager
                                             Items.Add(GetSpellName(spellID))
                                             ItemsID.Add(spellID)
                                             ItemType.Add("Spell")
-                                            'For Each spell In SpellDB
-                                            '    If spell.id = spellID Then
-                                            '        Items.Add(spell.name)
-                                            '        ItemsID.Add(spell.id)
-                                            '        ItemType.Add("Spell")
-                                            '    End If
-                                            'Next
                                         End If
                                     Next
 
@@ -1065,40 +1007,6 @@ Public Class frmIATDatabaseManager
                                     Next
                                 End If
                             Next
-
-                            'Dim PercentFound = False
-                            'Dim NewLineFound = False
-                            'Dim ListIndex = 0
-                            'Dim HTMLString = "<html><body><p>"
-                            'For Each c As Char In boss.LocaleText
-                            '    If PercentFound Then
-                            '        If c = "s" Then
-                            '            'Insert from list
-                            '            If ItemType(ListIndex) = "NPC" Then
-                            '                HTMLString += Items(ListIndex)
-                            '            ElseIf ItemType(ListIndex) = "Spell" Then
-                            '                HTMLString += "<a href=""GetSpellLink(" & ItemsID(ListIndex) & ")"">GetSpellLink(" & ItemsID(ListIndex) & ")</a>"
-                            '            End If
-                            '            ListIndex += 1
-                            '        Else
-                            '            HTMLString += "%"
-                            '        End If
-                            '        PercentFound = False
-                            '    ElseIf NewLineFound Then
-                            '        If c = "n" Then
-                            '            'Insert new line
-                            '            HTMLString += "<br />"
-                            '        End If
-                            '        NewLineFound = False
-                            '    ElseIf c = "%" And PercentFound = False Then
-                            '        PercentFound = True
-                            '    ElseIf c = "/" And NewLineFound = False Then
-                            '        NewLineFound = True
-                            '    Else
-                            '        HTMLString += c
-                            '    End If
-                            'Next
-                            'boss.HTMLTactics = HTMLString
                         End If
                     Next
                 Next
@@ -1378,52 +1286,6 @@ Public Class frmIATDatabaseManager
         WebView2.Dispose()
     End Sub
 
-    'Private Sub cboSpell_SelectedIndexChanged(sender As Object, e As EventArgs)
-    '    Try
-    '        Console.WriteLine(cboSpell.Text.ToString())
-    '        Console.WriteLine(cboSpell.SelectedValue)
-
-    '        txtNewTactics.Text += " {" & cboSpell.SelectedValue & "|" & cboSpell.Text.ToString() & "} "
-    '        chromeBrowser.Load("https://wowhead.com/spell=" & cboSpell.SelectedValue)
-    '    Catch ex As Exception
-
-    '    End Try
-    'End Sub
-
-    Private Sub NPCsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NPCsToolStripMenuItem.Click
-        'Insert NPC's
-
-        'Using reader As StreamReader = New StreamReader("C:\Program Files (x86)\World of Warcraft\_retail_\WTF\Account\DRAGNOG657\SavedVariables\NPCDump.lua")
-        '    Dim line = reader.ReadLine
-
-        '    While Not line Is Nothing
-        '        If line.Contains("=") Then
-        '            Dim strArr() As String = line.Split("=")
-        '            Dim NewNPC = New NPC
-        '            NewNPC.Name = strArr(1).Trim().Trim(",".ToCharArray()).Trim("""".ToCharArray())
-        '            NewNPC.ID = strArr(0).Trim().Replace("[", "").Replace("]", "").Replace("""", "")
-
-        '            Dim dt As DataTable = New DataTable()
-        '            Dim dc As DataColumn = New DataColumn("ID", GetType(String))
-        '            dt.Columns.Add(dc)
-        '            dc = New DataColumn("Name", GetType(String))
-        '            dt.Columns.Add(dc)
-        '            Dim dr As DataRow = dt.NewRow()
-        '            dr(0) = NewNPC.ID
-        '            dr(1) = NewNPC.Name
-
-        '            dt.Rows.Add(dr)
-
-        '            '            Using writer As StreamWriter = New StreamWriter("NPCDB.csv", True)
-        '            '                writer.WriteLine(NewNPC.Name & ";" & NewNPC.ID)
-        '            '            End Using
-        '        End If
-        '        line = reader.ReadLine
-        '    End While
-        'End Using
-        MsgBox("Complete")
-    End Sub
-
     Private Sub SpellsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SpellsToolStripMenuItem.Click
         'Insert Spells
         Using reader As StreamReader = New StreamReader("C:\Program Files (x86)\World of Warcraft\_retail_\WTF\Account\DRAGNOG657\SavedVariables\SpellDump.lua")
@@ -1677,13 +1539,6 @@ Public Class frmIATDatabaseManager
     End Sub
 
     Private Sub btnBack_Click(sender As Object, e As EventArgs) Handles btnBack.Click
-        'If PreviousSites.Count > 0 Then
-        '    Console.WriteLine("Going back to: " & PreviousSites(PreviousSites.Count))
-        '    LoadWebsite(PreviousSites(PreviousSites.Count))
-        '    PreviousSites.RemoveAt(PreviousSites.Count)
-        'Else
-        '    Console.WriteLine("Cannot go back")
-        'End If
         LoadWebsite("https://google.com")
     End Sub
 
