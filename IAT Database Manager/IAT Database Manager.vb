@@ -39,8 +39,6 @@ Public Class frmIATDatabaseManager
     End Sub
 
     Private Sub frmIATDatabaseManager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        'AppCenter.Start("b94e3d4b-95fa-4ecd-a878-3c8c72b9c413", GetType(Analytics), GetType(Crashes))
-
         Dim splash As SplashScreen1 = CType(My.Application.SplashScreen, SplashScreen1)
 
         splash.UpdateProgress("Setting up Web Browser (1/13)", 1)
