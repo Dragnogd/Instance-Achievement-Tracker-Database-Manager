@@ -11,14 +11,10 @@ Public Class Instance
     Public Property ClassicOnly As Boolean
     Public Property LegacySize As Integer
 
-    ' Foreign Keys
-    Public Property ExpansionId As Integer
+    ' Foreign key
     Public Property InstanceTypeId As Integer
-
-    ' Navigation Properties
-    Public Overridable Property Expansion As Expansion
     Public Overridable Property InstanceType As InstanceType
 
-    ' List of bosses inside this instance
-    Public Overridable Property Bosses As ObservableCollectionListSource(Of Boss)
+    ' Navigation properties
+    Public Overridable Property Bosses As New ObservableCollectionListSource(Of Boss)()
 End Class

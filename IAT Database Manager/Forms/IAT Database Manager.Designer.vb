@@ -53,76 +53,89 @@ Partial Class frmIATDatabaseManager
         btnUploadLocaleClassic = New Button()
         btnGenerateLocalisationClassic = New Button()
         dgvExpansions = New DataGridView()
+        IdDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        ExpansionGameIdDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        NameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        ExpansionBindingSource = New BindingSource(components)
         tlpContainer = New TableLayoutPanel()
         tlpContentRight = New TableLayoutPanel()
-        dgvBosses = New DataGridView()
         TableLayoutPanel1 = New TableLayoutPanel()
         dgvInstanceTypes = New DataGridView()
-        dgvInstances = New DataGridView()
-        tlpContentLeft = New TableLayoutPanel()
-        Panel2 = New Panel()
-        ExpansionBindingSource = New BindingSource(components)
-        ExpansionIdDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        NameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        InstanceTypesBindingSource = New BindingSource(components)
-        InstanceTypeIdDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        NameDataGridViewTextBoxColumn1 = New DataGridViewTextBoxColumn()
-        InstancesBindingSource = New BindingSource(components)
-        IdDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        InstanceIdDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        IdDataGridViewTextBoxColumn1 = New DataGridViewTextBoxColumn()
         NameDataGridViewTextBoxColumn2 = New DataGridViewTextBoxColumn()
+        InstanceTypesBindingSource = New BindingSource(components)
+        TableLayoutPanel2 = New TableLayoutPanel()
+        dgvBosses = New DataGridView()
+        IdDataGridViewTextBoxColumn4 = New DataGridViewTextBoxColumn()
+        OrderDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        BossNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        BossNameIDDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        BossNameID2DataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        BossNameLocaleDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        BossIDsDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        AchievementIDDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        EnabledDataGridViewCheckBoxColumn = New DataGridViewCheckBoxColumn()
+        TrackDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        PartialTrackDataGridViewCheckBoxColumn = New DataGridViewCheckBoxColumn()
+        EncounterIDDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        EncounterID2DataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        DisplayInfoFrameDataGridViewCheckBoxColumn = New DataGridViewCheckBoxColumn()
+        InstanceIdDataGridViewTextBoxColumn1 = New DataGridViewTextBoxColumn()
+        InstanceDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        BossesBindingSource = New BindingSource(components)
+        InstancesBindingSource = New BindingSource(components)
+        dgvInstances = New DataGridView()
+        IdDataGridViewTextBoxColumn2 = New DataGridViewTextBoxColumn()
+        InstanceIdDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        NameDataGridViewTextBoxColumn3 = New DataGridViewTextBoxColumn()
         NameWrathDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         InstanceNameIDDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         ClassicPhaseDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         RetailOnlyDataGridViewCheckBoxColumn = New DataGridViewCheckBoxColumn()
         ClassicOnlyDataGridViewCheckBoxColumn = New DataGridViewCheckBoxColumn()
         LegacySizeDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        ExpansionIdDataGridViewTextBoxColumn1 = New DataGridViewTextBoxColumn()
-        InstanceTypeIdDataGridViewTextBoxColumn1 = New DataGridViewTextBoxColumn()
-        ExpansionDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        DataGridViewTextBoxColumn1 = New DataGridViewTextBoxColumn()
         InstanceTypeDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        BossesBindingSource = New BindingSource(components)
-        BossIdDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        OrderDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        BossNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        BossNameIDDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        BossIDsDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        AchievementIDDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        PlayersDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        TacticsDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        EnabledDataGridViewCheckBoxColumn = New DataGridViewCheckBoxColumn()
-        TrackDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        PartialTrackDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        EncounterIDDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        DisplayInfoFrameDataGridViewCheckBoxColumn = New DataGridViewCheckBoxColumn()
-        LocaleTextDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        LocaleNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        TableLayoutPanel3 = New TableLayoutPanel()
+        dgvTactics = New DataGridView()
+        IdDataGridViewTextBoxColumn3 = New DataGridViewTextBoxColumn()
+        PatchDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         ImgurLinkDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        HTMLTacticsDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        ImageDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        BossNameWrathDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        ClassicTacticsDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        LocaleTextClassicDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        LocaleNameClassicDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        ImgurLinkClassicDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        ImageClassicDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        EncounterIDWrathDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        InstanceIdDataGridViewTextBoxColumn1 = New DataGridViewTextBoxColumn()
-        InstanceDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        ImageNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        ImageWidthDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        ImageHeightDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        LocalisationIdDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        TacticParameterIdDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        LocalisationDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        TacticsBindingSource = New BindingSource(components)
+        dgvTacticsParameters = New DataGridView()
+        IdDataGridViewTextBoxColumn5 = New DataGridViewTextBoxColumn()
+        OrderDataGridViewTextBoxColumn1 = New DataGridViewTextBoxColumn()
+        ParameterIDDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        ParameterTypeDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        TacticParameterBindingSource = New BindingSource(components)
+        tlpContentLeft = New TableLayoutPanel()
+        Panel2 = New Panel()
         MenuStrip1.SuspendLayout()
         CType(dgvExpansions, ComponentModel.ISupportInitialize).BeginInit()
+        CType(ExpansionBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         tlpContainer.SuspendLayout()
         tlpContentRight.SuspendLayout()
-        CType(dgvBosses, ComponentModel.ISupportInitialize).BeginInit()
         TableLayoutPanel1.SuspendLayout()
         CType(dgvInstanceTypes, ComponentModel.ISupportInitialize).BeginInit()
+        CType(InstanceTypesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        TableLayoutPanel2.SuspendLayout()
+        CType(dgvBosses, ComponentModel.ISupportInitialize).BeginInit()
+        CType(BossesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        CType(InstancesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(dgvInstances, ComponentModel.ISupportInitialize).BeginInit()
+        TableLayoutPanel3.SuspendLayout()
+        CType(dgvTactics, ComponentModel.ISupportInitialize).BeginInit()
+        CType(TacticsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        CType(dgvTacticsParameters, ComponentModel.ISupportInitialize).BeginInit()
+        CType(TacticParameterBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         tlpContentLeft.SuspendLayout()
         Panel2.SuspendLayout()
-        CType(ExpansionBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        CType(InstanceTypesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        CType(InstancesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        CType(BossesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' cboBosses
@@ -147,18 +160,18 @@ Partial Class frmIATDatabaseManager
         ' txtTacticsLocale
         ' 
         txtTacticsLocale.Dock = DockStyle.Fill
-        txtTacticsLocale.Location = New Point(4, 253)
+        txtTacticsLocale.Location = New Point(4, 251)
         txtTacticsLocale.Margin = New Padding(4, 3, 4, 3)
         txtTacticsLocale.Multiline = True
         txtTacticsLocale.Name = "txtTacticsLocale"
         txtTacticsLocale.ScrollBars = ScrollBars.Vertical
-        txtTacticsLocale.Size = New Size(734, 119)
+        txtTacticsLocale.Size = New Size(579, 118)
         txtTacticsLocale.TabIndex = 2
         ' 
         ' btnInsertTactic
         ' 
         btnInsertTactic.Font = New Font("Microsoft Sans Serif", 8.25F)
-        btnInsertTactic.Location = New Point(554, 77)
+        btnInsertTactic.Location = New Point(286, 87)
         btnInsertTactic.Margin = New Padding(4, 3, 4, 3)
         btnInsertTactic.Name = "btnInsertTactic"
         btnInsertTactic.Size = New Size(130, 26)
@@ -201,7 +214,7 @@ Partial Class frmIATDatabaseManager
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.Name = "MenuStrip1"
         MenuStrip1.Padding = New Padding(7, 2, 0, 2)
-        MenuStrip1.Size = New Size(1497, 24)
+        MenuStrip1.Size = New Size(1489, 24)
         MenuStrip1.TabIndex = 10
         MenuStrip1.Text = "MenuStrip1"
         ' 
@@ -270,17 +283,17 @@ Partial Class frmIATDatabaseManager
         ' txtNewTactics
         ' 
         txtNewTactics.Dock = DockStyle.Fill
-        txtNewTactics.Location = New Point(4, 128)
+        txtNewTactics.Location = New Point(4, 127)
         txtNewTactics.Margin = New Padding(4, 3, 4, 3)
         txtNewTactics.Multiline = True
         txtNewTactics.Name = "txtNewTactics"
         txtNewTactics.ScrollBars = ScrollBars.Vertical
-        txtNewTactics.Size = New Size(734, 119)
+        txtNewTactics.Size = New Size(579, 118)
         txtNewTactics.TabIndex = 53
         ' 
         ' btnGenerateLocalisation
         ' 
-        btnGenerateLocalisation.Location = New Point(411, 7)
+        btnGenerateLocalisation.Location = New Point(391, 4)
         btnGenerateLocalisation.Margin = New Padding(4, 3, 4, 3)
         btnGenerateLocalisation.Name = "btnGenerateLocalisation"
         btnGenerateLocalisation.Size = New Size(126, 22)
@@ -292,17 +305,17 @@ Partial Class frmIATDatabaseManager
         ' 
         txtInGame.Dock = DockStyle.Fill
         txtInGame.Font = New Font("Microsoft Sans Serif", 11.25F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        txtInGame.Location = New Point(4, 378)
+        txtInGame.Location = New Point(4, 375)
         txtInGame.Margin = New Padding(4, 3, 4, 3)
         txtInGame.Multiline = True
         txtInGame.Name = "txtInGame"
-        txtInGame.Size = New Size(734, 120)
+        txtInGame.Size = New Size(579, 119)
         txtInGame.TabIndex = 55
         ' 
         ' btnUploadLocale
         ' 
         btnUploadLocale.Font = New Font("Microsoft Sans Serif", 8.25F)
-        btnUploadLocale.Location = New Point(411, 83)
+        btnUploadLocale.Location = New Point(148, 93)
         btnUploadLocale.Margin = New Padding(4, 3, 4, 3)
         btnUploadLocale.Name = "btnUploadLocale"
         btnUploadLocale.Size = New Size(130, 20)
@@ -330,7 +343,7 @@ Partial Class frmIATDatabaseManager
         ' 
         ' btnGenerateLocaleNoUpload
         ' 
-        btnGenerateLocaleNoUpload.Location = New Point(411, 31)
+        btnGenerateLocaleNoUpload.Location = New Point(391, 28)
         btnGenerateLocaleNoUpload.Margin = New Padding(4, 3, 4, 3)
         btnGenerateLocaleNoUpload.Name = "btnGenerateLocaleNoUpload"
         btnGenerateLocaleNoUpload.Size = New Size(135, 22)
@@ -340,7 +353,7 @@ Partial Class frmIATDatabaseManager
         ' 
         ' btnTestTranslationClassic
         ' 
-        btnTestTranslationClassic.Location = New Point(554, 31)
+        btnTestTranslationClassic.Location = New Point(419, 82)
         btnTestTranslationClassic.Margin = New Padding(4, 3, 4, 3)
         btnTestTranslationClassic.Name = "btnTestTranslationClassic"
         btnTestTranslationClassic.Size = New Size(160, 22)
@@ -351,7 +364,7 @@ Partial Class frmIATDatabaseManager
         ' btnUploadLocaleClassic
         ' 
         btnUploadLocaleClassic.Font = New Font("Microsoft Sans Serif", 8.25F)
-        btnUploadLocaleClassic.Location = New Point(253, 81)
+        btnUploadLocaleClassic.Location = New Point(10, 94)
         btnUploadLocaleClassic.Margin = New Padding(4, 3, 4, 3)
         btnUploadLocaleClassic.Name = "btnUploadLocaleClassic"
         btnUploadLocaleClassic.Size = New Size(130, 19)
@@ -361,7 +374,7 @@ Partial Class frmIATDatabaseManager
         ' 
         ' btnGenerateLocalisationClassic
         ' 
-        btnGenerateLocalisationClassic.Location = New Point(545, 7)
+        btnGenerateLocalisationClassic.Location = New Point(393, 54)
         btnGenerateLocalisationClassic.Margin = New Padding(4, 3, 4, 3)
         btnGenerateLocalisationClassic.Name = "btnGenerateLocalisationClassic"
         btnGenerateLocalisationClassic.Size = New Size(186, 22)
@@ -373,176 +386,13 @@ Partial Class frmIATDatabaseManager
         ' 
         dgvExpansions.AutoGenerateColumns = False
         dgvExpansions.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        dgvExpansions.Columns.AddRange(New DataGridViewColumn() {ExpansionIdDataGridViewTextBoxColumn, NameDataGridViewTextBoxColumn})
+        dgvExpansions.Columns.AddRange(New DataGridViewColumn() {IdDataGridViewTextBoxColumn, ExpansionGameIdDataGridViewTextBoxColumn, NameDataGridViewTextBoxColumn})
         dgvExpansions.DataSource = ExpansionBindingSource
         dgvExpansions.Dock = DockStyle.Fill
         dgvExpansions.Location = New Point(3, 3)
         dgvExpansions.Name = "dgvExpansions"
-        dgvExpansions.Size = New Size(362, 155)
+        dgvExpansions.Size = New Size(436, 153)
         dgvExpansions.TabIndex = 75
-        ' 
-        ' tlpContainer
-        ' 
-        tlpContainer.ColumnCount = 2
-        tlpContainer.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
-        tlpContainer.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
-        tlpContainer.Controls.Add(tlpContentRight, 1, 0)
-        tlpContainer.Controls.Add(tlpContentLeft, 0, 0)
-        tlpContainer.Dock = DockStyle.Fill
-        tlpContainer.Location = New Point(0, 24)
-        tlpContainer.Name = "tlpContainer"
-        tlpContainer.RowCount = 1
-        tlpContainer.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
-        tlpContainer.Size = New Size(1497, 507)
-        tlpContainer.TabIndex = 76
-        ' 
-        ' tlpContentRight
-        ' 
-        tlpContentRight.ColumnCount = 1
-        tlpContentRight.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
-        tlpContentRight.Controls.Add(dgvBosses, 0, 2)
-        tlpContentRight.Controls.Add(TableLayoutPanel1, 0, 0)
-        tlpContentRight.Controls.Add(dgvInstances, 0, 1)
-        tlpContentRight.Dock = DockStyle.Fill
-        tlpContentRight.Location = New Point(751, 3)
-        tlpContentRight.Name = "tlpContentRight"
-        tlpContentRight.RowCount = 3
-        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 25F))
-        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 25F))
-        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 25F))
-        tlpContentRight.Size = New Size(743, 501)
-        tlpContentRight.TabIndex = 0
-        ' 
-        ' dgvBosses
-        ' 
-        dgvBosses.AllowUserToAddRows = False
-        dgvBosses.AutoGenerateColumns = False
-        dgvBosses.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        dgvBosses.Columns.AddRange(New DataGridViewColumn() {BossIdDataGridViewTextBoxColumn, OrderDataGridViewTextBoxColumn, BossNameDataGridViewTextBoxColumn, BossNameIDDataGridViewTextBoxColumn, BossIDsDataGridViewTextBoxColumn, AchievementIDDataGridViewTextBoxColumn, PlayersDataGridViewTextBoxColumn, TacticsDataGridViewTextBoxColumn, EnabledDataGridViewCheckBoxColumn, TrackDataGridViewTextBoxColumn, PartialTrackDataGridViewTextBoxColumn, EncounterIDDataGridViewTextBoxColumn, DisplayInfoFrameDataGridViewCheckBoxColumn, LocaleTextDataGridViewTextBoxColumn, LocaleNameDataGridViewTextBoxColumn, ImgurLinkDataGridViewTextBoxColumn, HTMLTacticsDataGridViewTextBoxColumn, ImageDataGridViewTextBoxColumn, BossNameWrathDataGridViewTextBoxColumn, ClassicTacticsDataGridViewTextBoxColumn, LocaleTextClassicDataGridViewTextBoxColumn, LocaleNameClassicDataGridViewTextBoxColumn, ImgurLinkClassicDataGridViewTextBoxColumn, ImageClassicDataGridViewTextBoxColumn, EncounterIDWrathDataGridViewTextBoxColumn, InstanceIdDataGridViewTextBoxColumn1, InstanceDataGridViewTextBoxColumn})
-        dgvBosses.DataSource = BossesBindingSource
-        dgvBosses.Dock = DockStyle.Fill
-        dgvBosses.Location = New Point(3, 337)
-        dgvBosses.Name = "dgvBosses"
-        dgvBosses.Size = New Size(737, 161)
-        dgvBosses.TabIndex = 0
-        ' 
-        ' TableLayoutPanel1
-        ' 
-        TableLayoutPanel1.ColumnCount = 2
-        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
-        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
-        TableLayoutPanel1.Controls.Add(dgvExpansions, 0, 0)
-        TableLayoutPanel1.Controls.Add(dgvInstanceTypes, 1, 0)
-        TableLayoutPanel1.Dock = DockStyle.Fill
-        TableLayoutPanel1.Location = New Point(3, 3)
-        TableLayoutPanel1.Name = "TableLayoutPanel1"
-        TableLayoutPanel1.RowCount = 1
-        TableLayoutPanel1.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
-        TableLayoutPanel1.Size = New Size(737, 161)
-        TableLayoutPanel1.TabIndex = 79
-        ' 
-        ' dgvInstanceTypes
-        ' 
-        dgvInstanceTypes.AutoGenerateColumns = False
-        dgvInstanceTypes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        dgvInstanceTypes.Columns.AddRange(New DataGridViewColumn() {InstanceTypeIdDataGridViewTextBoxColumn, NameDataGridViewTextBoxColumn1})
-        dgvInstanceTypes.DataSource = InstanceTypesBindingSource
-        dgvInstanceTypes.Dock = DockStyle.Fill
-        dgvInstanceTypes.Location = New Point(371, 3)
-        dgvInstanceTypes.Name = "dgvInstanceTypes"
-        dgvInstanceTypes.Size = New Size(363, 155)
-        dgvInstanceTypes.TabIndex = 76
-        ' 
-        ' dgvInstances
-        ' 
-        dgvInstances.AutoGenerateColumns = False
-        dgvInstances.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        dgvInstances.Columns.AddRange(New DataGridViewColumn() {IdDataGridViewTextBoxColumn, InstanceIdDataGridViewTextBoxColumn, NameDataGridViewTextBoxColumn2, NameWrathDataGridViewTextBoxColumn, InstanceNameIDDataGridViewTextBoxColumn, ClassicPhaseDataGridViewTextBoxColumn, RetailOnlyDataGridViewCheckBoxColumn, ClassicOnlyDataGridViewCheckBoxColumn, LegacySizeDataGridViewTextBoxColumn, ExpansionIdDataGridViewTextBoxColumn1, InstanceTypeIdDataGridViewTextBoxColumn1, ExpansionDataGridViewTextBoxColumn, InstanceTypeDataGridViewTextBoxColumn})
-        dgvInstances.DataSource = InstancesBindingSource
-        dgvInstances.Dock = DockStyle.Fill
-        dgvInstances.Location = New Point(3, 170)
-        dgvInstances.Name = "dgvInstances"
-        dgvInstances.Size = New Size(737, 161)
-        dgvInstances.TabIndex = 77
-        ' 
-        ' tlpContentLeft
-        ' 
-        tlpContentLeft.ColumnCount = 1
-        tlpContentLeft.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
-        tlpContentLeft.Controls.Add(Panel2, 0, 0)
-        tlpContentLeft.Controls.Add(txtInGame, 0, 3)
-        tlpContentLeft.Controls.Add(txtTacticsLocale, 0, 2)
-        tlpContentLeft.Controls.Add(txtNewTactics, 0, 1)
-        tlpContentLeft.Dock = DockStyle.Fill
-        tlpContentLeft.Location = New Point(3, 3)
-        tlpContentLeft.Name = "tlpContentLeft"
-        tlpContentLeft.RowCount = 4
-        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25F))
-        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25F))
-        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25F))
-        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25F))
-        tlpContentLeft.Size = New Size(742, 501)
-        tlpContentLeft.TabIndex = 1
-        ' 
-        ' Panel2
-        ' 
-        Panel2.Controls.Add(btnTestTranslationClassic)
-        Panel2.Controls.Add(Label1)
-        Panel2.Controls.Add(btnUploadLocaleClassic)
-        Panel2.Controls.Add(btnGenerateLocalisationClassic)
-        Panel2.Controls.Add(cboBosses)
-        Panel2.Controls.Add(btnGenerateLocaleNoUpload)
-        Panel2.Controls.Add(Label3)
-        Panel2.Controls.Add(btnUploadLocale)
-        Panel2.Controls.Add(btnAddSpell)
-        Panel2.Controls.Add(btnGenerateLocalisation)
-        Panel2.Controls.Add(cboNPC)
-        Panel2.Controls.Add(btnInsertTactic)
-        Panel2.Controls.Add(txtSpellName)
-        Panel2.Controls.Add(Label4)
-        Panel2.Dock = DockStyle.Fill
-        Panel2.Location = New Point(3, 3)
-        Panel2.Name = "Panel2"
-        Panel2.Size = New Size(736, 119)
-        Panel2.TabIndex = 0
-        ' 
-        ' ExpansionBindingSource
-        ' 
-        ExpansionBindingSource.DataSource = GetType(Expansion)
-        ' 
-        ' ExpansionIdDataGridViewTextBoxColumn
-        ' 
-        ExpansionIdDataGridViewTextBoxColumn.DataPropertyName = "ExpansionId"
-        ExpansionIdDataGridViewTextBoxColumn.HeaderText = "ExpansionId"
-        ExpansionIdDataGridViewTextBoxColumn.Name = "ExpansionIdDataGridViewTextBoxColumn"
-        ' 
-        ' NameDataGridViewTextBoxColumn
-        ' 
-        NameDataGridViewTextBoxColumn.DataPropertyName = "Name"
-        NameDataGridViewTextBoxColumn.HeaderText = "Name"
-        NameDataGridViewTextBoxColumn.Name = "NameDataGridViewTextBoxColumn"
-        ' 
-        ' InstanceTypesBindingSource
-        ' 
-        InstanceTypesBindingSource.DataMember = "InstanceTypes"
-        InstanceTypesBindingSource.DataSource = ExpansionBindingSource
-        ' 
-        ' InstanceTypeIdDataGridViewTextBoxColumn
-        ' 
-        InstanceTypeIdDataGridViewTextBoxColumn.DataPropertyName = "InstanceTypeId"
-        InstanceTypeIdDataGridViewTextBoxColumn.HeaderText = "InstanceTypeId"
-        InstanceTypeIdDataGridViewTextBoxColumn.Name = "InstanceTypeIdDataGridViewTextBoxColumn"
-        ' 
-        ' NameDataGridViewTextBoxColumn1
-        ' 
-        NameDataGridViewTextBoxColumn1.DataPropertyName = "Name"
-        NameDataGridViewTextBoxColumn1.HeaderText = "Name"
-        NameDataGridViewTextBoxColumn1.Name = "NameDataGridViewTextBoxColumn1"
-        ' 
-        ' InstancesBindingSource
-        ' 
-        InstancesBindingSource.DataMember = "Instances"
-        InstancesBindingSource.DataSource = InstanceTypesBindingSource
         ' 
         ' IdDataGridViewTextBoxColumn
         ' 
@@ -550,17 +400,261 @@ Partial Class frmIATDatabaseManager
         IdDataGridViewTextBoxColumn.HeaderText = "Id"
         IdDataGridViewTextBoxColumn.Name = "IdDataGridViewTextBoxColumn"
         ' 
-        ' InstanceIdDataGridViewTextBoxColumn
+        ' ExpansionGameIdDataGridViewTextBoxColumn
         ' 
-        InstanceIdDataGridViewTextBoxColumn.DataPropertyName = "InstanceId"
-        InstanceIdDataGridViewTextBoxColumn.HeaderText = "InstanceId"
-        InstanceIdDataGridViewTextBoxColumn.Name = "InstanceIdDataGridViewTextBoxColumn"
+        ExpansionGameIdDataGridViewTextBoxColumn.DataPropertyName = "ExpansionGameId"
+        ExpansionGameIdDataGridViewTextBoxColumn.HeaderText = "ExpansionGameId"
+        ExpansionGameIdDataGridViewTextBoxColumn.Name = "ExpansionGameIdDataGridViewTextBoxColumn"
+        ' 
+        ' NameDataGridViewTextBoxColumn
+        ' 
+        NameDataGridViewTextBoxColumn.DataPropertyName = "Name"
+        NameDataGridViewTextBoxColumn.HeaderText = "Name"
+        NameDataGridViewTextBoxColumn.Name = "NameDataGridViewTextBoxColumn"
+        ' 
+        ' ExpansionBindingSource
+        ' 
+        ExpansionBindingSource.DataSource = GetType(Expansion)
+        ' 
+        ' tlpContainer
+        ' 
+        tlpContainer.ColumnCount = 2
+        tlpContainer.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 39.87976F))
+        tlpContainer.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 60.12024F))
+        tlpContainer.Controls.Add(tlpContentRight, 1, 0)
+        tlpContainer.Controls.Add(tlpContentLeft, 0, 0)
+        tlpContainer.Dock = DockStyle.Fill
+        tlpContainer.Location = New Point(0, 24)
+        tlpContainer.Name = "tlpContainer"
+        tlpContainer.RowCount = 1
+        tlpContainer.RowStyles.Add(New RowStyle(SizeType.Percent, 100.0F))
+        tlpContainer.Size = New Size(1489, 503)
+        tlpContainer.TabIndex = 76
+        ' 
+        ' tlpContentRight
+        ' 
+        tlpContentRight.ColumnCount = 1
+        tlpContentRight.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0F))
+        tlpContentRight.Controls.Add(TableLayoutPanel1, 0, 0)
+        tlpContentRight.Controls.Add(TableLayoutPanel2, 0, 1)
+        tlpContentRight.Controls.Add(TableLayoutPanel3, 0, 2)
+        tlpContentRight.Dock = DockStyle.Fill
+        tlpContentRight.Location = New Point(596, 3)
+        tlpContentRight.Name = "tlpContentRight"
+        tlpContentRight.RowCount = 3
+        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
+        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
+        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
+        tlpContentRight.Size = New Size(890, 497)
+        tlpContentRight.TabIndex = 0
+        ' 
+        ' TableLayoutPanel1
+        ' 
+        TableLayoutPanel1.ColumnCount = 2
+        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0F))
+        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0F))
+        TableLayoutPanel1.Controls.Add(dgvExpansions, 0, 0)
+        TableLayoutPanel1.Controls.Add(dgvInstanceTypes, 1, 0)
+        TableLayoutPanel1.Dock = DockStyle.Fill
+        TableLayoutPanel1.Location = New Point(3, 3)
+        TableLayoutPanel1.Name = "TableLayoutPanel1"
+        TableLayoutPanel1.RowCount = 1
+        TableLayoutPanel1.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0F))
+        TableLayoutPanel1.Size = New Size(884, 159)
+        TableLayoutPanel1.TabIndex = 79
+        ' 
+        ' dgvInstanceTypes
+        ' 
+        dgvInstanceTypes.AutoGenerateColumns = False
+        dgvInstanceTypes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        dgvInstanceTypes.Columns.AddRange(New DataGridViewColumn() {IdDataGridViewTextBoxColumn1, NameDataGridViewTextBoxColumn2})
+        dgvInstanceTypes.DataSource = InstanceTypesBindingSource
+        dgvInstanceTypes.Dock = DockStyle.Fill
+        dgvInstanceTypes.Location = New Point(445, 3)
+        dgvInstanceTypes.Name = "dgvInstanceTypes"
+        dgvInstanceTypes.Size = New Size(436, 153)
+        dgvInstanceTypes.TabIndex = 76
+        ' 
+        ' IdDataGridViewTextBoxColumn1
+        ' 
+        IdDataGridViewTextBoxColumn1.DataPropertyName = "Id"
+        IdDataGridViewTextBoxColumn1.HeaderText = "Id"
+        IdDataGridViewTextBoxColumn1.Name = "IdDataGridViewTextBoxColumn1"
         ' 
         ' NameDataGridViewTextBoxColumn2
         ' 
         NameDataGridViewTextBoxColumn2.DataPropertyName = "Name"
         NameDataGridViewTextBoxColumn2.HeaderText = "Name"
         NameDataGridViewTextBoxColumn2.Name = "NameDataGridViewTextBoxColumn2"
+        ' 
+        ' InstanceTypesBindingSource
+        ' 
+        InstanceTypesBindingSource.DataMember = "InstanceTypes"
+        InstanceTypesBindingSource.DataSource = ExpansionBindingSource
+        ' 
+        ' TableLayoutPanel2
+        ' 
+        TableLayoutPanel2.ColumnCount = 2
+        TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0F))
+        TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0F))
+        TableLayoutPanel2.Controls.Add(dgvBosses, 1, 0)
+        TableLayoutPanel2.Controls.Add(dgvInstances, 0, 0)
+        TableLayoutPanel2.Dock = DockStyle.Fill
+        TableLayoutPanel2.Location = New Point(3, 168)
+        TableLayoutPanel2.Name = "TableLayoutPanel2"
+        TableLayoutPanel2.RowCount = 1
+        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0F))
+        TableLayoutPanel2.Size = New Size(884, 159)
+        TableLayoutPanel2.TabIndex = 80
+        ' 
+        ' dgvBosses
+        ' 
+        dgvBosses.AllowUserToAddRows = False
+        dgvBosses.AutoGenerateColumns = False
+        dgvBosses.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        dgvBosses.Columns.AddRange(New DataGridViewColumn() {IdDataGridViewTextBoxColumn4, OrderDataGridViewTextBoxColumn, BossNameDataGridViewTextBoxColumn, BossNameIDDataGridViewTextBoxColumn, BossNameID2DataGridViewTextBoxColumn, BossNameLocaleDataGridViewTextBoxColumn, BossIDsDataGridViewTextBoxColumn, AchievementIDDataGridViewTextBoxColumn, EnabledDataGridViewCheckBoxColumn, TrackDataGridViewTextBoxColumn, PartialTrackDataGridViewCheckBoxColumn, EncounterIDDataGridViewTextBoxColumn, EncounterID2DataGridViewTextBoxColumn, DisplayInfoFrameDataGridViewCheckBoxColumn, InstanceIdDataGridViewTextBoxColumn1, InstanceDataGridViewTextBoxColumn})
+        dgvBosses.DataSource = BossesBindingSource
+        dgvBosses.Dock = DockStyle.Fill
+        dgvBosses.Location = New Point(445, 3)
+        dgvBosses.Name = "dgvBosses"
+        dgvBosses.Size = New Size(436, 153)
+        dgvBosses.TabIndex = 0
+        ' 
+        ' IdDataGridViewTextBoxColumn4
+        ' 
+        IdDataGridViewTextBoxColumn4.DataPropertyName = "Id"
+        IdDataGridViewTextBoxColumn4.HeaderText = "Id"
+        IdDataGridViewTextBoxColumn4.Name = "IdDataGridViewTextBoxColumn4"
+        ' 
+        ' OrderDataGridViewTextBoxColumn
+        ' 
+        OrderDataGridViewTextBoxColumn.DataPropertyName = "Order"
+        OrderDataGridViewTextBoxColumn.HeaderText = "Order"
+        OrderDataGridViewTextBoxColumn.Name = "OrderDataGridViewTextBoxColumn"
+        ' 
+        ' BossNameDataGridViewTextBoxColumn
+        ' 
+        BossNameDataGridViewTextBoxColumn.DataPropertyName = "BossName"
+        BossNameDataGridViewTextBoxColumn.HeaderText = "BossName"
+        BossNameDataGridViewTextBoxColumn.Name = "BossNameDataGridViewTextBoxColumn"
+        ' 
+        ' BossNameIDDataGridViewTextBoxColumn
+        ' 
+        BossNameIDDataGridViewTextBoxColumn.DataPropertyName = "BossNameID"
+        BossNameIDDataGridViewTextBoxColumn.HeaderText = "BossNameID"
+        BossNameIDDataGridViewTextBoxColumn.Name = "BossNameIDDataGridViewTextBoxColumn"
+        ' 
+        ' BossNameID2DataGridViewTextBoxColumn
+        ' 
+        BossNameID2DataGridViewTextBoxColumn.DataPropertyName = "BossNameID2"
+        BossNameID2DataGridViewTextBoxColumn.HeaderText = "BossNameID2"
+        BossNameID2DataGridViewTextBoxColumn.Name = "BossNameID2DataGridViewTextBoxColumn"
+        ' 
+        ' BossNameLocaleDataGridViewTextBoxColumn
+        ' 
+        BossNameLocaleDataGridViewTextBoxColumn.DataPropertyName = "BossNameLocale"
+        BossNameLocaleDataGridViewTextBoxColumn.HeaderText = "BossNameLocale"
+        BossNameLocaleDataGridViewTextBoxColumn.Name = "BossNameLocaleDataGridViewTextBoxColumn"
+        ' 
+        ' BossIDsDataGridViewTextBoxColumn
+        ' 
+        BossIDsDataGridViewTextBoxColumn.DataPropertyName = "BossIDs"
+        BossIDsDataGridViewTextBoxColumn.HeaderText = "BossIDs"
+        BossIDsDataGridViewTextBoxColumn.Name = "BossIDsDataGridViewTextBoxColumn"
+        ' 
+        ' AchievementIDDataGridViewTextBoxColumn
+        ' 
+        AchievementIDDataGridViewTextBoxColumn.DataPropertyName = "AchievementID"
+        AchievementIDDataGridViewTextBoxColumn.HeaderText = "AchievementID"
+        AchievementIDDataGridViewTextBoxColumn.Name = "AchievementIDDataGridViewTextBoxColumn"
+        ' 
+        ' EnabledDataGridViewCheckBoxColumn
+        ' 
+        EnabledDataGridViewCheckBoxColumn.DataPropertyName = "Enabled"
+        EnabledDataGridViewCheckBoxColumn.HeaderText = "Enabled"
+        EnabledDataGridViewCheckBoxColumn.Name = "EnabledDataGridViewCheckBoxColumn"
+        ' 
+        ' TrackDataGridViewTextBoxColumn
+        ' 
+        TrackDataGridViewTextBoxColumn.DataPropertyName = "Track"
+        TrackDataGridViewTextBoxColumn.HeaderText = "Track"
+        TrackDataGridViewTextBoxColumn.Name = "TrackDataGridViewTextBoxColumn"
+        ' 
+        ' PartialTrackDataGridViewCheckBoxColumn
+        ' 
+        PartialTrackDataGridViewCheckBoxColumn.DataPropertyName = "PartialTrack"
+        PartialTrackDataGridViewCheckBoxColumn.HeaderText = "PartialTrack"
+        PartialTrackDataGridViewCheckBoxColumn.Name = "PartialTrackDataGridViewCheckBoxColumn"
+        ' 
+        ' EncounterIDDataGridViewTextBoxColumn
+        ' 
+        EncounterIDDataGridViewTextBoxColumn.DataPropertyName = "EncounterID"
+        EncounterIDDataGridViewTextBoxColumn.HeaderText = "EncounterID"
+        EncounterIDDataGridViewTextBoxColumn.Name = "EncounterIDDataGridViewTextBoxColumn"
+        ' 
+        ' EncounterID2DataGridViewTextBoxColumn
+        ' 
+        EncounterID2DataGridViewTextBoxColumn.DataPropertyName = "EncounterID2"
+        EncounterID2DataGridViewTextBoxColumn.HeaderText = "EncounterID2"
+        EncounterID2DataGridViewTextBoxColumn.Name = "EncounterID2DataGridViewTextBoxColumn"
+        ' 
+        ' DisplayInfoFrameDataGridViewCheckBoxColumn
+        ' 
+        DisplayInfoFrameDataGridViewCheckBoxColumn.DataPropertyName = "DisplayInfoFrame"
+        DisplayInfoFrameDataGridViewCheckBoxColumn.HeaderText = "DisplayInfoFrame"
+        DisplayInfoFrameDataGridViewCheckBoxColumn.Name = "DisplayInfoFrameDataGridViewCheckBoxColumn"
+        ' 
+        ' InstanceIdDataGridViewTextBoxColumn1
+        ' 
+        InstanceIdDataGridViewTextBoxColumn1.DataPropertyName = "InstanceId"
+        InstanceIdDataGridViewTextBoxColumn1.HeaderText = "InstanceId"
+        InstanceIdDataGridViewTextBoxColumn1.Name = "InstanceIdDataGridViewTextBoxColumn1"
+        ' 
+        ' InstanceDataGridViewTextBoxColumn
+        ' 
+        InstanceDataGridViewTextBoxColumn.DataPropertyName = "Instance"
+        InstanceDataGridViewTextBoxColumn.HeaderText = "Instance"
+        InstanceDataGridViewTextBoxColumn.Name = "InstanceDataGridViewTextBoxColumn"
+        ' 
+        ' BossesBindingSource
+        ' 
+        BossesBindingSource.DataMember = "Bosses"
+        BossesBindingSource.DataSource = InstancesBindingSource
+        ' 
+        ' InstancesBindingSource
+        ' 
+        InstancesBindingSource.DataMember = "Instances"
+        InstancesBindingSource.DataSource = InstanceTypesBindingSource
+        ' 
+        ' dgvInstances
+        ' 
+        dgvInstances.AutoGenerateColumns = False
+        dgvInstances.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        dgvInstances.Columns.AddRange(New DataGridViewColumn() {IdDataGridViewTextBoxColumn2, InstanceIdDataGridViewTextBoxColumn, NameDataGridViewTextBoxColumn3, NameWrathDataGridViewTextBoxColumn, InstanceNameIDDataGridViewTextBoxColumn, ClassicPhaseDataGridViewTextBoxColumn, RetailOnlyDataGridViewCheckBoxColumn, ClassicOnlyDataGridViewCheckBoxColumn, LegacySizeDataGridViewTextBoxColumn, DataGridViewTextBoxColumn1, InstanceTypeDataGridViewTextBoxColumn})
+        dgvInstances.DataSource = InstancesBindingSource
+        dgvInstances.Dock = DockStyle.Fill
+        dgvInstances.Location = New Point(3, 3)
+        dgvInstances.Name = "dgvInstances"
+        dgvInstances.Size = New Size(436, 153)
+        dgvInstances.TabIndex = 77
+        ' 
+        ' IdDataGridViewTextBoxColumn2
+        ' 
+        IdDataGridViewTextBoxColumn2.DataPropertyName = "Id"
+        IdDataGridViewTextBoxColumn2.HeaderText = "Id"
+        IdDataGridViewTextBoxColumn2.Name = "IdDataGridViewTextBoxColumn2"
+        ' 
+        ' InstanceIdDataGridViewTextBoxColumn
+        ' 
+        InstanceIdDataGridViewTextBoxColumn.DataPropertyName = "InstanceId"
+        InstanceIdDataGridViewTextBoxColumn.HeaderText = "InstanceId"
+        InstanceIdDataGridViewTextBoxColumn.Name = "InstanceIdDataGridViewTextBoxColumn"
+        ' 
+        ' NameDataGridViewTextBoxColumn3
+        ' 
+        NameDataGridViewTextBoxColumn3.DataPropertyName = "Name"
+        NameDataGridViewTextBoxColumn3.HeaderText = "Name"
+        NameDataGridViewTextBoxColumn3.Name = "NameDataGridViewTextBoxColumn3"
         ' 
         ' NameWrathDataGridViewTextBoxColumn
         ' 
@@ -598,23 +692,11 @@ Partial Class frmIATDatabaseManager
         LegacySizeDataGridViewTextBoxColumn.HeaderText = "LegacySize"
         LegacySizeDataGridViewTextBoxColumn.Name = "LegacySizeDataGridViewTextBoxColumn"
         ' 
-        ' ExpansionIdDataGridViewTextBoxColumn1
+        ' DataGridViewTextBoxColumn1
         ' 
-        ExpansionIdDataGridViewTextBoxColumn1.DataPropertyName = "ExpansionId"
-        ExpansionIdDataGridViewTextBoxColumn1.HeaderText = "ExpansionId"
-        ExpansionIdDataGridViewTextBoxColumn1.Name = "ExpansionIdDataGridViewTextBoxColumn1"
-        ' 
-        ' InstanceTypeIdDataGridViewTextBoxColumn1
-        ' 
-        InstanceTypeIdDataGridViewTextBoxColumn1.DataPropertyName = "InstanceTypeId"
-        InstanceTypeIdDataGridViewTextBoxColumn1.HeaderText = "InstanceTypeId"
-        InstanceTypeIdDataGridViewTextBoxColumn1.Name = "InstanceTypeIdDataGridViewTextBoxColumn1"
-        ' 
-        ' ExpansionDataGridViewTextBoxColumn
-        ' 
-        ExpansionDataGridViewTextBoxColumn.DataPropertyName = "Expansion"
-        ExpansionDataGridViewTextBoxColumn.HeaderText = "Expansion"
-        ExpansionDataGridViewTextBoxColumn.Name = "ExpansionDataGridViewTextBoxColumn"
+        DataGridViewTextBoxColumn1.DataPropertyName = "InstanceTypeId"
+        DataGridViewTextBoxColumn1.HeaderText = "InstanceTypeId"
+        DataGridViewTextBoxColumn1.Name = "DataGridViewTextBoxColumn1"
         ' 
         ' InstanceTypeDataGridViewTextBoxColumn
         ' 
@@ -622,100 +704,44 @@ Partial Class frmIATDatabaseManager
         InstanceTypeDataGridViewTextBoxColumn.HeaderText = "InstanceType"
         InstanceTypeDataGridViewTextBoxColumn.Name = "InstanceTypeDataGridViewTextBoxColumn"
         ' 
-        ' BossesBindingSource
+        ' TableLayoutPanel3
         ' 
-        BossesBindingSource.DataMember = "Bosses"
-        BossesBindingSource.DataSource = InstancesBindingSource
+        TableLayoutPanel3.ColumnCount = 2
+        TableLayoutPanel3.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 33.3333321F))
+        TableLayoutPanel3.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 33.3333321F))
+        TableLayoutPanel3.Controls.Add(dgvTactics, 0, 0)
+        TableLayoutPanel3.Controls.Add(dgvTacticsParameters, 1, 0)
+        TableLayoutPanel3.Dock = DockStyle.Fill
+        TableLayoutPanel3.Location = New Point(3, 333)
+        TableLayoutPanel3.Name = "TableLayoutPanel3"
+        TableLayoutPanel3.RowCount = 1
+        TableLayoutPanel3.RowStyles.Add(New RowStyle(SizeType.Percent, 100.0F))
+        TableLayoutPanel3.Size = New Size(884, 161)
+        TableLayoutPanel3.TabIndex = 81
         ' 
-        ' BossIdDataGridViewTextBoxColumn
+        ' dgvTactics
         ' 
-        BossIdDataGridViewTextBoxColumn.DataPropertyName = "BossId"
-        BossIdDataGridViewTextBoxColumn.HeaderText = "BossId"
-        BossIdDataGridViewTextBoxColumn.Name = "BossIdDataGridViewTextBoxColumn"
+        dgvTactics.AutoGenerateColumns = False
+        dgvTactics.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        dgvTactics.Columns.AddRange(New DataGridViewColumn() {IdDataGridViewTextBoxColumn3, PatchDataGridViewTextBoxColumn, ImgurLinkDataGridViewTextBoxColumn, ImageNameDataGridViewTextBoxColumn, ImageWidthDataGridViewTextBoxColumn, ImageHeightDataGridViewTextBoxColumn, LocalisationIdDataGridViewTextBoxColumn, TacticParameterIdDataGridViewTextBoxColumn, LocalisationDataGridViewTextBoxColumn})
+        dgvTactics.DataSource = TacticsBindingSource
+        dgvTactics.Dock = DockStyle.Fill
+        dgvTactics.Location = New Point(3, 3)
+        dgvTactics.Name = "dgvTactics"
+        dgvTactics.Size = New Size(436, 155)
+        dgvTactics.TabIndex = 0
         ' 
-        ' OrderDataGridViewTextBoxColumn
+        ' IdDataGridViewTextBoxColumn3
         ' 
-        OrderDataGridViewTextBoxColumn.DataPropertyName = "Order"
-        OrderDataGridViewTextBoxColumn.HeaderText = "Order"
-        OrderDataGridViewTextBoxColumn.Name = "OrderDataGridViewTextBoxColumn"
+        IdDataGridViewTextBoxColumn3.DataPropertyName = "Id"
+        IdDataGridViewTextBoxColumn3.HeaderText = "Id"
+        IdDataGridViewTextBoxColumn3.Name = "IdDataGridViewTextBoxColumn3"
         ' 
-        ' BossNameDataGridViewTextBoxColumn
+        ' PatchDataGridViewTextBoxColumn
         ' 
-        BossNameDataGridViewTextBoxColumn.DataPropertyName = "BossName"
-        BossNameDataGridViewTextBoxColumn.HeaderText = "BossName"
-        BossNameDataGridViewTextBoxColumn.Name = "BossNameDataGridViewTextBoxColumn"
-        ' 
-        ' BossNameIDDataGridViewTextBoxColumn
-        ' 
-        BossNameIDDataGridViewTextBoxColumn.DataPropertyName = "BossNameID"
-        BossNameIDDataGridViewTextBoxColumn.HeaderText = "BossNameID"
-        BossNameIDDataGridViewTextBoxColumn.Name = "BossNameIDDataGridViewTextBoxColumn"
-        ' 
-        ' BossIDsDataGridViewTextBoxColumn
-        ' 
-        BossIDsDataGridViewTextBoxColumn.DataPropertyName = "BossIDs"
-        BossIDsDataGridViewTextBoxColumn.HeaderText = "BossIDs"
-        BossIDsDataGridViewTextBoxColumn.Name = "BossIDsDataGridViewTextBoxColumn"
-        ' 
-        ' AchievementIDDataGridViewTextBoxColumn
-        ' 
-        AchievementIDDataGridViewTextBoxColumn.DataPropertyName = "AchievementID"
-        AchievementIDDataGridViewTextBoxColumn.HeaderText = "AchievementID"
-        AchievementIDDataGridViewTextBoxColumn.Name = "AchievementIDDataGridViewTextBoxColumn"
-        ' 
-        ' PlayersDataGridViewTextBoxColumn
-        ' 
-        PlayersDataGridViewTextBoxColumn.DataPropertyName = "Players"
-        PlayersDataGridViewTextBoxColumn.HeaderText = "Players"
-        PlayersDataGridViewTextBoxColumn.Name = "PlayersDataGridViewTextBoxColumn"
-        ' 
-        ' TacticsDataGridViewTextBoxColumn
-        ' 
-        TacticsDataGridViewTextBoxColumn.DataPropertyName = "Tactics"
-        TacticsDataGridViewTextBoxColumn.HeaderText = "Tactics"
-        TacticsDataGridViewTextBoxColumn.Name = "TacticsDataGridViewTextBoxColumn"
-        ' 
-        ' EnabledDataGridViewCheckBoxColumn
-        ' 
-        EnabledDataGridViewCheckBoxColumn.DataPropertyName = "Enabled"
-        EnabledDataGridViewCheckBoxColumn.HeaderText = "Enabled"
-        EnabledDataGridViewCheckBoxColumn.Name = "EnabledDataGridViewCheckBoxColumn"
-        ' 
-        ' TrackDataGridViewTextBoxColumn
-        ' 
-        TrackDataGridViewTextBoxColumn.DataPropertyName = "Track"
-        TrackDataGridViewTextBoxColumn.HeaderText = "Track"
-        TrackDataGridViewTextBoxColumn.Name = "TrackDataGridViewTextBoxColumn"
-        ' 
-        ' PartialTrackDataGridViewTextBoxColumn
-        ' 
-        PartialTrackDataGridViewTextBoxColumn.DataPropertyName = "PartialTrack"
-        PartialTrackDataGridViewTextBoxColumn.HeaderText = "PartialTrack"
-        PartialTrackDataGridViewTextBoxColumn.Name = "PartialTrackDataGridViewTextBoxColumn"
-        ' 
-        ' EncounterIDDataGridViewTextBoxColumn
-        ' 
-        EncounterIDDataGridViewTextBoxColumn.DataPropertyName = "EncounterID"
-        EncounterIDDataGridViewTextBoxColumn.HeaderText = "EncounterID"
-        EncounterIDDataGridViewTextBoxColumn.Name = "EncounterIDDataGridViewTextBoxColumn"
-        ' 
-        ' DisplayInfoFrameDataGridViewCheckBoxColumn
-        ' 
-        DisplayInfoFrameDataGridViewCheckBoxColumn.DataPropertyName = "DisplayInfoFrame"
-        DisplayInfoFrameDataGridViewCheckBoxColumn.HeaderText = "DisplayInfoFrame"
-        DisplayInfoFrameDataGridViewCheckBoxColumn.Name = "DisplayInfoFrameDataGridViewCheckBoxColumn"
-        ' 
-        ' LocaleTextDataGridViewTextBoxColumn
-        ' 
-        LocaleTextDataGridViewTextBoxColumn.DataPropertyName = "LocaleText"
-        LocaleTextDataGridViewTextBoxColumn.HeaderText = "LocaleText"
-        LocaleTextDataGridViewTextBoxColumn.Name = "LocaleTextDataGridViewTextBoxColumn"
-        ' 
-        ' LocaleNameDataGridViewTextBoxColumn
-        ' 
-        LocaleNameDataGridViewTextBoxColumn.DataPropertyName = "LocaleName"
-        LocaleNameDataGridViewTextBoxColumn.HeaderText = "LocaleName"
-        LocaleNameDataGridViewTextBoxColumn.Name = "LocaleNameDataGridViewTextBoxColumn"
+        PatchDataGridViewTextBoxColumn.DataPropertyName = "Patch"
+        PatchDataGridViewTextBoxColumn.HeaderText = "Patch"
+        PatchDataGridViewTextBoxColumn.Name = "PatchDataGridViewTextBoxColumn"
         ' 
         ' ImgurLinkDataGridViewTextBoxColumn
         ' 
@@ -723,77 +749,134 @@ Partial Class frmIATDatabaseManager
         ImgurLinkDataGridViewTextBoxColumn.HeaderText = "ImgurLink"
         ImgurLinkDataGridViewTextBoxColumn.Name = "ImgurLinkDataGridViewTextBoxColumn"
         ' 
-        ' HTMLTacticsDataGridViewTextBoxColumn
+        ' ImageNameDataGridViewTextBoxColumn
         ' 
-        HTMLTacticsDataGridViewTextBoxColumn.DataPropertyName = "HTMLTactics"
-        HTMLTacticsDataGridViewTextBoxColumn.HeaderText = "HTMLTactics"
-        HTMLTacticsDataGridViewTextBoxColumn.Name = "HTMLTacticsDataGridViewTextBoxColumn"
+        ImageNameDataGridViewTextBoxColumn.DataPropertyName = "ImageName"
+        ImageNameDataGridViewTextBoxColumn.HeaderText = "ImageName"
+        ImageNameDataGridViewTextBoxColumn.Name = "ImageNameDataGridViewTextBoxColumn"
         ' 
-        ' ImageDataGridViewTextBoxColumn
+        ' ImageWidthDataGridViewTextBoxColumn
         ' 
-        ImageDataGridViewTextBoxColumn.DataPropertyName = "Image"
-        ImageDataGridViewTextBoxColumn.HeaderText = "Image"
-        ImageDataGridViewTextBoxColumn.Name = "ImageDataGridViewTextBoxColumn"
+        ImageWidthDataGridViewTextBoxColumn.DataPropertyName = "ImageWidth"
+        ImageWidthDataGridViewTextBoxColumn.HeaderText = "ImageWidth"
+        ImageWidthDataGridViewTextBoxColumn.Name = "ImageWidthDataGridViewTextBoxColumn"
         ' 
-        ' BossNameWrathDataGridViewTextBoxColumn
+        ' ImageHeightDataGridViewTextBoxColumn
         ' 
-        BossNameWrathDataGridViewTextBoxColumn.DataPropertyName = "BossNameWrath"
-        BossNameWrathDataGridViewTextBoxColumn.HeaderText = "BossNameWrath"
-        BossNameWrathDataGridViewTextBoxColumn.Name = "BossNameWrathDataGridViewTextBoxColumn"
+        ImageHeightDataGridViewTextBoxColumn.DataPropertyName = "ImageHeight"
+        ImageHeightDataGridViewTextBoxColumn.HeaderText = "ImageHeight"
+        ImageHeightDataGridViewTextBoxColumn.Name = "ImageHeightDataGridViewTextBoxColumn"
         ' 
-        ' ClassicTacticsDataGridViewTextBoxColumn
+        ' LocalisationIdDataGridViewTextBoxColumn
         ' 
-        ClassicTacticsDataGridViewTextBoxColumn.DataPropertyName = "ClassicTactics"
-        ClassicTacticsDataGridViewTextBoxColumn.HeaderText = "ClassicTactics"
-        ClassicTacticsDataGridViewTextBoxColumn.Name = "ClassicTacticsDataGridViewTextBoxColumn"
+        LocalisationIdDataGridViewTextBoxColumn.DataPropertyName = "LocalisationId"
+        LocalisationIdDataGridViewTextBoxColumn.HeaderText = "LocalisationId"
+        LocalisationIdDataGridViewTextBoxColumn.Name = "LocalisationIdDataGridViewTextBoxColumn"
         ' 
-        ' LocaleTextClassicDataGridViewTextBoxColumn
+        ' TacticParameterIdDataGridViewTextBoxColumn
         ' 
-        LocaleTextClassicDataGridViewTextBoxColumn.DataPropertyName = "LocaleTextClassic"
-        LocaleTextClassicDataGridViewTextBoxColumn.HeaderText = "LocaleTextClassic"
-        LocaleTextClassicDataGridViewTextBoxColumn.Name = "LocaleTextClassicDataGridViewTextBoxColumn"
+        TacticParameterIdDataGridViewTextBoxColumn.DataPropertyName = "TacticParameterId"
+        TacticParameterIdDataGridViewTextBoxColumn.HeaderText = "TacticParameterId"
+        TacticParameterIdDataGridViewTextBoxColumn.Name = "TacticParameterIdDataGridViewTextBoxColumn"
         ' 
-        ' LocaleNameClassicDataGridViewTextBoxColumn
+        ' LocalisationDataGridViewTextBoxColumn
         ' 
-        LocaleNameClassicDataGridViewTextBoxColumn.DataPropertyName = "LocaleNameClassic"
-        LocaleNameClassicDataGridViewTextBoxColumn.HeaderText = "LocaleNameClassic"
-        LocaleNameClassicDataGridViewTextBoxColumn.Name = "LocaleNameClassicDataGridViewTextBoxColumn"
+        LocalisationDataGridViewTextBoxColumn.DataPropertyName = "Localisation"
+        LocalisationDataGridViewTextBoxColumn.HeaderText = "Localisation"
+        LocalisationDataGridViewTextBoxColumn.Name = "LocalisationDataGridViewTextBoxColumn"
         ' 
-        ' ImgurLinkClassicDataGridViewTextBoxColumn
+        ' TacticsBindingSource
         ' 
-        ImgurLinkClassicDataGridViewTextBoxColumn.DataPropertyName = "ImgurLinkClassic"
-        ImgurLinkClassicDataGridViewTextBoxColumn.HeaderText = "ImgurLinkClassic"
-        ImgurLinkClassicDataGridViewTextBoxColumn.Name = "ImgurLinkClassicDataGridViewTextBoxColumn"
+        TacticsBindingSource.DataMember = "Tactics"
+        TacticsBindingSource.DataSource = BossesBindingSource
         ' 
-        ' ImageClassicDataGridViewTextBoxColumn
+        ' dgvTacticsParameters
         ' 
-        ImageClassicDataGridViewTextBoxColumn.DataPropertyName = "ImageClassic"
-        ImageClassicDataGridViewTextBoxColumn.HeaderText = "ImageClassic"
-        ImageClassicDataGridViewTextBoxColumn.Name = "ImageClassicDataGridViewTextBoxColumn"
+        dgvTacticsParameters.AutoGenerateColumns = False
+        dgvTacticsParameters.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        dgvTacticsParameters.Columns.AddRange(New DataGridViewColumn() {IdDataGridViewTextBoxColumn5, OrderDataGridViewTextBoxColumn1, ParameterIDDataGridViewTextBoxColumn, ParameterTypeDataGridViewTextBoxColumn})
+        dgvTacticsParameters.DataSource = TacticParameterBindingSource
+        dgvTacticsParameters.Dock = DockStyle.Fill
+        dgvTacticsParameters.Location = New Point(445, 3)
+        dgvTacticsParameters.Name = "dgvTacticsParameters"
+        dgvTacticsParameters.Size = New Size(436, 155)
+        dgvTacticsParameters.TabIndex = 1
         ' 
-        ' EncounterIDWrathDataGridViewTextBoxColumn
+        ' IdDataGridViewTextBoxColumn5
         ' 
-        EncounterIDWrathDataGridViewTextBoxColumn.DataPropertyName = "EncounterIDWrath"
-        EncounterIDWrathDataGridViewTextBoxColumn.HeaderText = "EncounterIDWrath"
-        EncounterIDWrathDataGridViewTextBoxColumn.Name = "EncounterIDWrathDataGridViewTextBoxColumn"
+        IdDataGridViewTextBoxColumn5.DataPropertyName = "Id"
+        IdDataGridViewTextBoxColumn5.HeaderText = "Id"
+        IdDataGridViewTextBoxColumn5.Name = "IdDataGridViewTextBoxColumn5"
         ' 
-        ' InstanceIdDataGridViewTextBoxColumn1
+        ' OrderDataGridViewTextBoxColumn1
         ' 
-        InstanceIdDataGridViewTextBoxColumn1.DataPropertyName = "InstanceId"
-        InstanceIdDataGridViewTextBoxColumn1.HeaderText = "InstanceId"
-        InstanceIdDataGridViewTextBoxColumn1.Name = "InstanceIdDataGridViewTextBoxColumn1"
+        OrderDataGridViewTextBoxColumn1.DataPropertyName = "Order"
+        OrderDataGridViewTextBoxColumn1.HeaderText = "Order"
+        OrderDataGridViewTextBoxColumn1.Name = "OrderDataGridViewTextBoxColumn1"
         ' 
-        ' InstanceDataGridViewTextBoxColumn
+        ' ParameterIDDataGridViewTextBoxColumn
         ' 
-        InstanceDataGridViewTextBoxColumn.DataPropertyName = "Instance"
-        InstanceDataGridViewTextBoxColumn.HeaderText = "Instance"
-        InstanceDataGridViewTextBoxColumn.Name = "InstanceDataGridViewTextBoxColumn"
+        ParameterIDDataGridViewTextBoxColumn.DataPropertyName = "ParameterID"
+        ParameterIDDataGridViewTextBoxColumn.HeaderText = "ParameterID"
+        ParameterIDDataGridViewTextBoxColumn.Name = "ParameterIDDataGridViewTextBoxColumn"
+        ' 
+        ' ParameterTypeDataGridViewTextBoxColumn
+        ' 
+        ParameterTypeDataGridViewTextBoxColumn.DataPropertyName = "ParameterType"
+        ParameterTypeDataGridViewTextBoxColumn.HeaderText = "ParameterType"
+        ParameterTypeDataGridViewTextBoxColumn.Name = "ParameterTypeDataGridViewTextBoxColumn"
+        ' 
+        ' TacticParameterBindingSource
+        ' 
+        TacticParameterBindingSource.DataMember = "TacticParameter"
+        TacticParameterBindingSource.DataSource = TacticsBindingSource
+        ' 
+        ' tlpContentLeft
+        ' 
+        tlpContentLeft.ColumnCount = 1
+        tlpContentLeft.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0F))
+        tlpContentLeft.Controls.Add(Panel2, 0, 0)
+        tlpContentLeft.Controls.Add(txtInGame, 0, 3)
+        tlpContentLeft.Controls.Add(txtTacticsLocale, 0, 2)
+        tlpContentLeft.Controls.Add(txtNewTactics, 0, 1)
+        tlpContentLeft.Dock = DockStyle.Fill
+        tlpContentLeft.Location = New Point(3, 3)
+        tlpContentLeft.Name = "tlpContentLeft"
+        tlpContentLeft.RowCount = 4
+        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
+        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
+        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
+        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
+        tlpContentLeft.Size = New Size(587, 497)
+        tlpContentLeft.TabIndex = 1
+        ' 
+        ' Panel2
+        ' 
+        Panel2.Controls.Add(btnTestTranslationClassic)
+        Panel2.Controls.Add(Label1)
+        Panel2.Controls.Add(btnUploadLocaleClassic)
+        Panel2.Controls.Add(btnGenerateLocalisationClassic)
+        Panel2.Controls.Add(cboBosses)
+        Panel2.Controls.Add(btnGenerateLocaleNoUpload)
+        Panel2.Controls.Add(Label3)
+        Panel2.Controls.Add(btnUploadLocale)
+        Panel2.Controls.Add(btnAddSpell)
+        Panel2.Controls.Add(btnGenerateLocalisation)
+        Panel2.Controls.Add(cboNPC)
+        Panel2.Controls.Add(btnInsertTactic)
+        Panel2.Controls.Add(txtSpellName)
+        Panel2.Controls.Add(Label4)
+        Panel2.Dock = DockStyle.Fill
+        Panel2.Location = New Point(3, 3)
+        Panel2.Name = "Panel2"
+        Panel2.Size = New Size(581, 118)
+        Panel2.TabIndex = 0
         ' 
         ' frmIATDatabaseManager
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1497, 531)
+        ClientSize = New Size(1489, 527)
         Controls.Add(tlpContainer)
         Controls.Add(MenuStrip1)
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
@@ -805,20 +888,26 @@ Partial Class frmIATDatabaseManager
         MenuStrip1.ResumeLayout(False)
         MenuStrip1.PerformLayout()
         CType(dgvExpansions, ComponentModel.ISupportInitialize).EndInit()
+        CType(ExpansionBindingSource, ComponentModel.ISupportInitialize).EndInit()
         tlpContainer.ResumeLayout(False)
         tlpContentRight.ResumeLayout(False)
-        CType(dgvBosses, ComponentModel.ISupportInitialize).EndInit()
         TableLayoutPanel1.ResumeLayout(False)
         CType(dgvInstanceTypes, ComponentModel.ISupportInitialize).EndInit()
+        CType(InstanceTypesBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        TableLayoutPanel2.ResumeLayout(False)
+        CType(dgvBosses, ComponentModel.ISupportInitialize).EndInit()
+        CType(BossesBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(InstancesBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(dgvInstances, ComponentModel.ISupportInitialize).EndInit()
+        TableLayoutPanel3.ResumeLayout(False)
+        CType(dgvTactics, ComponentModel.ISupportInitialize).EndInit()
+        CType(TacticsBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(dgvTacticsParameters, ComponentModel.ISupportInitialize).EndInit()
+        CType(TacticParameterBindingSource, ComponentModel.ISupportInitialize).EndInit()
         tlpContentLeft.ResumeLayout(False)
         tlpContentLeft.PerformLayout()
         Panel2.ResumeLayout(False)
         Panel2.PerformLayout()
-        CType(ExpansionBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        CType(InstanceTypesBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        CType(InstancesBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        CType(BossesBindingSource, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
 
@@ -861,25 +950,21 @@ Partial Class frmIATDatabaseManager
     Friend WithEvents Panel2 As Panel
     Friend WithEvents dgvBosses As DataGridView
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
-    Friend WithEvents ExpansionIdDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents InstanceTypeIdDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents NameDataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
+    Friend WithEvents IdDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents ExpansionGameIdDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents NameDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents InstanceTypesDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents ExpansionBindingSource As BindingSource
+    Friend WithEvents IdDataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
+    Friend WithEvents NameDataGridViewTextBoxColumn2 As DataGridViewTextBoxColumn
+    Friend WithEvents InstanceTypesDataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
     Friend WithEvents BossIdDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents OrderDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents BossNameDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents BossNameIDDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents BossIDsDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents AchievementIDDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents PlayersDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents TacticsDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents EnabledDataGridViewCheckBoxColumn As DataGridViewCheckBoxColumn
-    Friend WithEvents TrackDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents PartialTrackDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents EncounterIDDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents DisplayInfoFrameDataGridViewCheckBoxColumn As DataGridViewCheckBoxColumn
     Friend WithEvents LocaleTextDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents LocaleNameDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents ImgurLinkDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents HTMLTacticsDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents ImageDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents BossNameWrathDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
@@ -889,24 +974,59 @@ Partial Class frmIATDatabaseManager
     Friend WithEvents ImgurLinkClassicDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents ImageClassicDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents EncounterIDWrathDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents InstanceIdDataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
-    Friend WithEvents InstanceDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents BossesBindingSource As BindingSource
     Friend WithEvents InstancesBindingSource As BindingSource
     Friend WithEvents InstanceTypesBindingSource As BindingSource
-    Friend WithEvents InstanceTypeIdDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents NameDataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
-    Friend WithEvents IdDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents IdDataGridViewTextBoxColumn2 As DataGridViewTextBoxColumn
     Friend WithEvents InstanceIdDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents NameDataGridViewTextBoxColumn2 As DataGridViewTextBoxColumn
+    Friend WithEvents NameDataGridViewTextBoxColumn3 As DataGridViewTextBoxColumn
     Friend WithEvents NameWrathDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents InstanceNameIDDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents ClassicPhaseDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents RetailOnlyDataGridViewCheckBoxColumn As DataGridViewCheckBoxColumn
     Friend WithEvents ClassicOnlyDataGridViewCheckBoxColumn As DataGridViewCheckBoxColumn
     Friend WithEvents LegacySizeDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents ExpansionIdDataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
-    Friend WithEvents InstanceTypeIdDataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
-    Friend WithEvents ExpansionDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
     Friend WithEvents InstanceTypeDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
+    Friend WithEvents TableLayoutPanel3 As TableLayoutPanel
+    Friend WithEvents dgvTactics As DataGridView
+    Friend WithEvents DataGridViewTextBoxColumn2 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn3 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn4 As DataGridViewTextBoxColumn
+    Friend WithEvents dgvTacticsParameters As DataGridView
+    Friend WithEvents IdDataGridViewTextBoxColumn4 As DataGridViewTextBoxColumn
+    Friend WithEvents OrderDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents BossNameDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents BossNameIDDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents BossNameID2DataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents BossNameLocaleDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents BossIDsDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents AchievementIDDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents EnabledDataGridViewCheckBoxColumn As DataGridViewCheckBoxColumn
+    Friend WithEvents TrackDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents PartialTrackDataGridViewCheckBoxColumn As DataGridViewCheckBoxColumn
+    Friend WithEvents EncounterIDDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents EncounterID2DataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents DisplayInfoFrameDataGridViewCheckBoxColumn As DataGridViewCheckBoxColumn
+    Friend WithEvents InstanceIdDataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
+    Friend WithEvents InstanceDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents BossesBindingSource As BindingSource
+    Friend WithEvents DataGridViewTextBoxColumn6 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn7 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn12 As DataGridViewTextBoxColumn
+    Friend WithEvents IdDataGridViewTextBoxColumn3 As DataGridViewTextBoxColumn
+    Friend WithEvents PatchDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents ImgurLinkDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents ImageNameDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents ImageWidthDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents ImageHeightDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents LocalisationIdDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents TacticParameterIdDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents LocalisationDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents TacticsBindingSource As BindingSource
+    Friend WithEvents IdDataGridViewTextBoxColumn5 As DataGridViewTextBoxColumn
+    Friend WithEvents OrderDataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
+    Friend WithEvents ParameterIDDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents ParameterTypeDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents TacticParameterBindingSource As BindingSource
 End Class
