@@ -32,432 +32,6 @@ Public Class frmIATDatabaseManager
         End Using
     End Sub
 
-    Private Sub ImportExpansions()
-        Using db As New IATDbContext()
-            Using reader As New StreamReader("expansionsDB.csv")
-                Dim line As String = reader.ReadLine()
-
-                While line IsNot Nothing
-                    Dim strArr() As String = line.Split(","c)
-
-                    Dim newExpansion As New Expansion With {
-                        .ExpansionGameId = Integer.Parse(strArr(0)),
-                        .Name = strArr(1)
-                    }
-
-                    db.Expansions.Add(newExpansion)
-
-                    line = reader.ReadLine()
-                End While
-
-            End Using
-
-            db.SaveChanges()
-        End Using
-    End Sub
-
-    Private Sub ImportInstanceTypes()
-        Using db As New IATDbContext()
-
-            ' Get all expansions
-            Dim allExpansions = db.Expansions.ToList()
-
-            For Each expansion In allExpansions
-                ' Always add Raids and Dungeons
-                Dim instanceTypes As New List(Of InstanceType) From {
-                New InstanceType With {.Name = "Raids", .Expansion = expansion},
-                New InstanceType With {.Name = "Dungeons", .Expansion = expansion}
-            }
-
-                ' Special case for Expansion 5: add Scenarios
-                If expansion.ExpansionGameId = 5 Then
-                    instanceTypes.Add(New InstanceType With {.Name = "Scenarios", .Expansion = expansion})
-                End If
-
-                ' Special case for Expansion 11: add Delves
-                If expansion.ExpansionGameId = 11 Then
-                    instanceTypes.Add(New InstanceType With {.Name = "Delves", .Expansion = expansion})
-                End If
-
-                db.InstanceTypes.AddRange(instanceTypes)
-            Next
-
-            db.SaveChanges()
-
-        End Using
-    End Sub
-
-    Private Sub ImportInstances()
-        Using db As New IATDbContext()
-            Using reader As New StreamReader("instancesDB.csv")
-                Dim line = reader.ReadLine()
-
-                While line IsNot Nothing
-                    Dim strArr() As String = line.Split(","c)
-                    Dim newInstance As New Instance
-
-                    ' Split InstanceId by the decimal point
-                    Dim instanceIdParts As String() = strArr(0).Split("."c)
-
-                    ' Store the first part (before the decimal) as InstanceId
-                    newInstance.InstanceId = Integer.Parse(instanceIdParts(0))
-
-                    ' Store the second part (after the decimal) as LegacySize (if it exists)
-                    If instanceIdParts.Length > 1 Then
-                        newInstance.LegacySize = instanceIdParts(1)
-                    End If
-
-                    ' Set the other properties
-                    newInstance.Name = strArr(1)
-                    newInstance.InstanceNameID = Integer.Parse(strArr(2))
-
-                    ' Optional fields (safe parsing)
-                    If strArr.Length > 5 AndAlso Not String.IsNullOrWhiteSpace(strArr(5)) Then
-                        newInstance.NameWrath = strArr(5)
-                        newInstance.NameWrath = Regex.Replace(newInstance.NameWrath, "^L\[""(.+?)""\]$", "$1")
-                    End If
-                    If strArr.Length > 6 AndAlso Not String.IsNullOrWhiteSpace(strArr(6)) Then
-                        newInstance.ClassicPhase = strArr(6)
-                    End If
-                    If strArr.Length > 7 AndAlso Not String.IsNullOrWhiteSpace(strArr(7)) Then
-                        newInstance.RetailOnly = strArr(7)
-                    End If
-                    If strArr.Length > 8 AndAlso Not String.IsNullOrWhiteSpace(strArr(8)) Then
-                        newInstance.ClassicOnly = strArr(8)
-                    End If
-
-                    ' Now link by foreign key:
-                    Dim expansionName As String = strArr(3)
-                    Dim instanceTypeName As String = strArr(4)
-
-                    ' Find InstanceType
-                    Dim instanceType = db.InstanceTypes.FirstOrDefault(Function(it) it.Name = instanceTypeName And it.Expansion.Name = expansionName)
-                    If instanceType IsNot Nothing Then
-                        newInstance.InstanceType = instanceType
-                    Else
-                        ' Handle missing instance type (optional)
-                        Throw New Exception($"InstanceType '{instanceTypeName}' not found for Instance '{newInstance.Name}'")
-                    End If
-
-                    ' Finally add to database
-                    db.Instances.Add(newInstance)
-
-                    ' Read next line
-                    line = reader.ReadLine()
-                End While
-
-                ' Save all to database
-                db.SaveChanges()
-            End Using
-        End Using
-    End Sub
-
-    Private Sub ImportBosses()
-        Using db As New IATDbContext
-            Using reader As New StreamReader("bossesDB.csv")
-                Dim line = reader.ReadLine()
-                Dim bossCounter As Integer = 1
-
-                While line IsNot Nothing
-                    If line.Contains(";"c) Then
-                        Dim strArr() As String = line.Split(";"c)
-
-                        ' Handle Image
-                        Dim Image As New List(Of String)
-                        If strArr(14).Length > 0 Then
-                            Dim trimmed = strArr(14).Trim("{"c, "}"c)
-                            Image = trimmed.Split(","c).Select(Function(s) s.Trim(""""c)).ToList()
-                        End If
-
-                        ' Handle Tactics (Retail)
-                        Dim tactic As String = strArr(6)
-
-                        ' Extract localisation key and text
-                        Dim keyMatch = Regex.Match(tactic, "L\[""(?<key>[^""]+)""\]")
-                        Dim localisationKey As String = If(keyMatch.Success, keyMatch.Groups("key").Value, Nothing)
-                        Dim localisationId As Integer = Nothing
-
-                        ' Final result list
-                        Dim parameters As New ObservableCollectionListSource(Of TacticParameter)
-
-                        If tactic.Contains("format(") Then
-                            ' Extract parameters only
-                            Dim paramsRaw = Regex.Match(tactic, "format\s*\(.*?,\s*(?<params>.*)\)").Groups("params").Value
-                            Dim order As Integer = 1
-
-                            ' Match all IAT_XXXX IDs (NPCs)
-                            Dim npcMatches = Regex.Matches(paramsRaw, """IAT_(\d+)""")
-                            For Each m As Match In npcMatches
-                                Dim linkedNpc As NPC = db.NPCs.FirstOrDefault(Function(e) e.NPCID = m.Groups(1).Value)
-
-                                parameters.Add(New TacticParameter With {
-                                           .Order = order,
-                                           .ParameterID = m.Groups(1).Value,
-                                           .ParameterType = "NPC",
-                                           .NPC = linkedNpc
-                                           })
-
-                                order += 1
-                            Next
-
-                            ' Match all spell links
-                            Dim spellMatches = Regex.Matches(paramsRaw, "C_Spell\.GetSpellLink\((\d+)\)")
-                            For Each m As Match In spellMatches
-                                parameters.Add(New TacticParameter With {
-                                                .Order = order,
-                                                .ParameterID = m.Groups(1).Value,
-                                                .ParameterType = "Spell"
-                                               })
-                                order += 1
-                            Next
-                        End If
-
-                        ' Find the localisation id based on the key
-                        Dim localisation As Localisation = db.Localisations.FirstOrDefault(Function(e) e.Key = localisationKey)
-
-                        ' Handle Tactics (Wrath)
-                        Dim tacticWrath As String = strArr(6)
-
-                        ' Extract localisation key
-                        keyMatch = Regex.Match(tactic, "L\[""(?<key>[^""]+)""\]")
-                        Dim localisationKeyWrath As String = If(keyMatch.Success, keyMatch.Groups("key").Value, Nothing)
-                        Dim localisationIdWrath As Integer = Nothing
-
-                        ' Final result list
-                        Dim parametersWrath As New ObservableCollectionListSource(Of TacticParameter)
-
-                        If tactic.Contains("format(") Then
-                            ' Extract parameters only
-                            Dim paramsRaw = Regex.Match(tacticWrath, "format\s*\(.*?,\s*(?<params>.*)\)").Groups("params").Value
-                            Dim order As Integer = 1
-
-                            ' Match all IAT_XXXX IDs (NPCs)
-                            Dim npcMatches = Regex.Matches(paramsRaw, """IAT_(\d+)""")
-                            For Each m As Match In npcMatches
-                                parametersWrath.Add(New TacticParameter With {
-                                               .Order = order,
-                                               .ParameterID = m.Groups(1).Value,
-                                               .ParameterType = "NPC"
-                                               })
-                                order += 1
-                            Next
-
-                            ' Match all spell links
-                            Dim spellMatches = Regex.Matches(paramsRaw, "C_Spell\.GetSpellLink\((\d+)\)")
-                            For Each m As Match In spellMatches
-                                parametersWrath.Add(New TacticParameter With {
-                                                .Order = order,
-                                                .ParameterID = m.Groups(1).Value,
-                                                .ParameterType = "Spell"
-                                               })
-                            Next
-                        End If
-
-                        ' Find the localisation id based on the key
-                        Dim localisationWrath As Localisation = db.Localisations.FirstOrDefault(Function(e) e.Key = localisationKeyWrath)
-
-                        Dim tacticsList As New ObservableCollectionListSource(Of Tactic)
-
-                        tacticsList.Add(New Tactic With {
-                                .ImageName = If(Image.Count > 0, Image(0), Nothing),
-                                .ImageHeight = If(Image.Count > 0, Image(1), Nothing),
-                                .ImageWidth = If(Image.Count > 0, Image(2), Nothing),
-                                .ImgurLink = strArr(13),
-                                .TacticParameter = parameters,
-                                .Localisation = localisation})
-
-                        If strArr.Length > 16 AndAlso Not String.IsNullOrWhiteSpace(strArr(16)) Then
-                            tacticsList.Add(New Tactic With {
-                                .Patch = "3.4.0",
-                                .ImageName = If(Image.Count > 0, Image(0), Nothing),
-                                .ImageHeight = If(Image.Count > 0, Image(1), Nothing),
-                                .ImageWidth = If(Image.Count > 0, Image(2), Nothing),
-                                .ImgurLink = strArr(17),
-                                .TacticParameter = parametersWrath,
-                                .Localisation = localisationWrath})
-                        End If
-
-                        Dim encounterIds As String() = strArr(10).Trim("{"c, "}"c).Split(","c).Select(Function(id) id.Trim()).ToArray()
-
-                        ' Handle Boss Name ID
-                        ' 1. If a single integer ID then save into BossNameID
-                        ' 2. If a array of ints then save into BossNameID and BossNameID2
-                        ' 3. If a string then save into BossNameLocale
-
-                        Dim bossNameIDArray As String() = strArr(2).Trim("{"c, "}"c).Split(","c).Select(Function(id) id.Trim()).ToArray()
-                        Dim newBossID As Integer = Nothing
-                        Dim newBossID2 As Integer = Nothing
-                        Dim newBossLocale As String = Nothing
-
-                        If bossNameIDArray.Count = 1 Then
-                            ' Either a single int or a localised string
-                            If Integer.TryParse(bossNameIDArray(0), New Integer) Then
-                                ' It's an int so saved into BossNameID
-                                newBossID = bossNameIDArray(0)
-                            Else
-                                ' It's a string so saved into BossNameLocale
-                                newBossLocale = bossNameIDArray(0)
-                            End If
-                        ElseIf bossNameIDArray.Count = 2 Then
-                            ' Two ints so saved into BossNameID and BossNameID2
-                            If Integer.TryParse(bossNameIDArray(0), newBossID) AndAlso Integer.TryParse(bossNameIDArray(1), newBossID2) Then
-                                ' Both are ints
-                                newBossID = bossNameIDArray(0)
-                                newBossID2 = bossNameIDArray(1)
-                            Else
-                                ' Handle error
-                                Throw New Exception($"Invalid Boss Name ID format: {strArr(2)}")
-                            End If
-                        ElseIf bossNameIDArray.Count > 2 Then
-                            ' Handle error
-                            Throw New Exception($"Invalid Boss Name ID format: {strArr(2)}")
-                        End If
-
-                        ' If boss name locale is not populated yet then save to index 15
-                        If String.IsNullOrEmpty(newBossLocale) Then
-                            newBossLocale = strArr(15)
-                        End If
-
-                        ' Clean NewBossLocale
-                        newBossLocale = Regex.Replace(newBossLocale, "^L\[""(.+?)""\]$", "$1")
-
-                        Dim newBoss As New Boss With {
-                            .BossName = If(strArr(1).Length > 1, strArr(1), $"MISSINGNAME{bossCounter}"),
-                            .BossNameLocale = newBossLocale,
-                            .Order = Integer.Parse(Regex.Match(strArr(0), "\d+").Value),
-                            .Track = strArr(8),
-                            .Enabled = If(strArr(7) = "nil", False, Boolean.Parse(strArr(7))),
-                            .DisplayInfoFrame = strArr(11),
-                            .BossNameID = newBossID,
-                            .BossNameID2 = newBossID2,
-                            .AchievementID = strArr(4),
-                            .EncounterID = If(encounterIds.Length > 0 AndAlso encounterIds(0).Length > 0, encounterIds(0), Nothing),
-                            .EncounterID2 = If(encounterIds.Length > 1 AndAlso encounterIds(1).Length > 0, encounterIds(1), Nothing),
-                            .BossIDs = strArr(3),
-                            .PartialTrack = If(strArr(9).Length = 0 Or strArr(9).ToLower() = "false", False, True),
-                            .Tactics = tacticsList
-                            }
-
-                        bossCounter += 1
-
-                        ' Find Instance by Name (col 12 is the Instance Name)
-                        Dim instanceName As String = strArr(12)
-                            Dim instance = db.Instances.FirstOrDefault(Function(inst) inst.Name = instanceName)
-
-                            If instance IsNot Nothing Then
-                                ' Link via FK
-                                newBoss.InstanceId = instance.Id
-
-                                ' Add boss
-                                db.Bosses.Add(newBoss)
-                            Else
-                                ' Optional: Throw error or skip
-                                Throw New Exception($"Instance '{instanceName}' not found for Boss '{newBoss.BossName}'")
-                            End If
-                        End If
-
-                    ' Next line
-                    line = reader.ReadLine()
-                End While
-
-                ' Batch Save
-                db.SaveChanges()
-            End Using
-        End Using
-    End Sub
-
-    Private Sub ImportLocalisation()
-        Dim lines = File.ReadAllLines("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua")
-
-        Using db As New IATDbContext()
-            For Each line As String In lines
-                Dim match As Match = Regex.Match(line, "\[\""(.*?)\""\]\s*=\s*\""(.*?)\""\s*")
-                If match.Success Then
-                    Dim key As String = match.Groups(1).Value
-                    Dim value As String = match.Groups(2).Value
-
-                    db.Localisations.Add(New Localisation With {.Key = key, .Value = value})
-                End If
-            Next
-
-            db.SaveChanges()
-        End Using
-    End Sub
-
-    Private Sub ImportTranslations(filePath As String, languageCode As String)
-        ' Read the lines from the given language file (e.g., "Localization.frFR.lua")
-        Dim lines = File.ReadAllLines(filePath)
-
-        Using db As New IATDbContext()
-            ' Iterate through each line in the localisation file
-            For Each line As String In lines
-                ' Match lines in the format ["Key"] = "Value"
-                Dim match As Match = Regex.Match(line, "\[\""(.*?)\""\]\s*=\s*\""(.*?)\""\s*")
-                If match.Success Then
-                    Dim key As String = match.Groups(1).Value
-                    Dim value As String = match.Groups(2).Value
-
-                    ' Check if the localisation key exists in the Localisations table (English version)
-                    Dim masterLocalisation = db.Localisations.FirstOrDefault(Function(l) l.Key = key)
-
-                    ' If the English localisation does not exist, skip this translation
-                    If masterLocalisation IsNot Nothing Then
-                        ' Add the translation for the other language
-                        db.Translations.Add(New Translation With {
-                            .Localisation = masterLocalisation,
-                            .LanguageCode = languageCode,
-                            .Value = value
-                        })
-                    End If
-                End If
-            Next
-
-            ' Save changes to the database
-            db.SaveChanges()
-        End Using
-    End Sub
-
-    Private Sub ImportNPCCache()
-        Dim lines = File.ReadAllLines("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua")
-
-        Using db As New IATDbContext()
-            For Each line As String In lines
-                ' Match pattern like: [123456] =123456, --Name
-                Dim match As Match = Regex.Match(line, "\[(\d+)\]\s*=\s*\d+,\s*--(.+)$")
-
-                If match.Success Then
-                    Dim npcId As Integer = Integer.Parse(match.Groups(1).Value)
-                    Dim name As String = match.Groups(2).Value.Trim()
-
-                    Dim npc As New NPC With {
-                        .NPCID = npcId,
-                        .Name = name,
-                        .Cache = True
-                    }
-
-                    db.Npcs.Add(npc)
-                End If
-            Next
-
-            db.SaveChanges()
-        End Using
-    End Sub
-
-    Public Sub ResponsiveSleep(ByRef iMilliSeconds As Integer)
-        Dim i As Integer, iHalfSeconds As Integer = iMilliSeconds / 500
-        For i = 1 To iHalfSeconds
-            Threading.Thread.Sleep(500) : Application.DoEvents()
-        Next i
-    End Sub
-
-    Public Sub LoadWebsite(website)
-        Console.WriteLine("Adding site:" & website)
-        PreviousSites.Add(website)
-        CurrentSite = website
-        Dim Address = New Uri(website)
-        'WebView2.Source = Address
-    End Sub
-
     Private Sub frmIATDatabaseManager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Make sure SQLite Database is created
         InitialiseDatabase()
@@ -1169,64 +743,260 @@ Public Class frmIATDatabaseManager
         save()
     End Sub
 
+    Private Function Indent(level As Integer) As String
+        Return New String(vbTab, level)
+    End Function
+
     Public Sub save()
-        ''Save changes to DB
-        'For Each expansion In CentralDB
-        '    For Each instancetype In expansion.InstanceTypes
-        '        For Each instance In instancetype.Instances
-        '            For Each boss In instance.Bosses
-        '                If cboBosses.SelectedValue = boss.AchievementID And cboBosses.SelectedValue <> Nothing And boss.AchievementID <> Nothing Then
-        '                    If cboBosses.SelectedValue.length > 1 And boss.AchievementID.Length > 1 And txtAchievement.Text.Length > 1 Then
-        '                        boss.Order = txtIndex.Text
-        '                        boss.AchievementID = txtAchievement.Text
-        '                        boss.BossIDs = txtBossIDs.Text
-        '                        boss.BossName = txtBossName.Text
-        '                        boss.Enabled = txtEnabled.Text
-        '                        boss.EncounterID = txtEncounterID.Text
-        '                        boss.Order = txtIndex.Text
-        '                        boss.DisplayInfoFrame = txtInfoFrame.Text
-        '                        boss.BossNameID = txtNameID.Text
-        '                        boss.PartialTrack = txtPartial.Text
-        '                        boss.Players = txtPlayers.Text
-        '                        boss.Tactics = txtTactics.Text
-        '                        boss.Track = txtTrack.Text
-        '                        instance.InstanceID = txtInstanceID.Text
-        '                        instance.Name = txtInstanceName.Text
-        '                        instance.NameWrath = txtInstanceNameWrath.Text
-        '                        instance.InstanceNameID = txtInstanceNameID.Text
-        '                        instancetype.Name = txtInstanceType.Text
-        '                        expansion.Name = txtExpansion.Text
-        '                        expansion.ExpansionGameId = txtExpansionID.Text
-        '                        boss.LocaleText = txtTacticsLocale.Text
-        '                        boss.LocaleName = txtLocaleString.Text
-        '                        boss.ImgurLink = txtImgurLink.Text
-        '                        boss.Image = txtImage.Text
+        'Save changes to DB
 
-        '                        'Classic
-        '                        boss.BossNameWrath = txtBossNameWrath.Text
-        '                        boss.ClassicTactics = txtClassicTactics.Text
-        '                        instance.ClassicPhase = txtClassicPhase.Text
-        '                        instance.RetailOnly = txtRetailOnly.Text
-        '                        instance.ClassicOnly = txtClassicOnly.Text
-        '                        boss.LocaleTextClassic = txtTacticsLocaleClassic.Text
-        '                        boss.LocaleNameClassic = txtLocaleStringClassic.Text
-        '                        boss.ImgurLinkClassic = txtImgurLinkClassic.Text
-        '                        boss.EncounterIDWrath = txtEncounterIDWrath.Text
+        ' Connect to database
+        Using db As New IATDbContext
+            ' Get all expansions
+            Dim Expansions As List(Of Expansion) = db.Expansions.ToList()
 
-        '                        'Update LocaleDB
-        '                        For Each locale In LocalisationDB
-        '                            If locale.Name = boss.LocaleName Then
-        '                                locale.Text = txtTacticsLocale.Text
-        '                            End If
-        '                            If locale.Name = boss.LocaleNameClassic Then
-        '                                locale.Text = txtTacticsLocaleClassic.Text
-        '                            End If
-        '                        Next
-        '                    End If
-        '                End If
+            ' Backup File
+            File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua", "Backup\Instances.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
+            If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua") = True Then
+                File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua")
+            End If
 
-        '                'Generate HTML
-        '                Dim Items As New List(Of String)
+            ' StringBuilder to store Instances.lua content
+            Dim sb As New Text.StringBuilder()
+
+            ' Write new file
+            Using writer As StreamWriter = New StreamWriter("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua", True)
+                writer.WriteLine("--------------------------------------")
+                writer.WriteLine("-- Last Auto Generated: " & DateTime.Now)
+                writer.WriteLine("--------------------------------------")
+                writer.WriteLine("local _, core = ...")
+                writer.WriteLine("local L = core.L")
+                writer.WriteLine("local instances = {}")
+                writer.WriteLine()
+                writer.WriteLine("core.Instances = {")
+
+                Dim firstExpansion = False
+                Dim firstInstance = False
+
+                ' Loop through each expansion
+                For Each expansion In Expansions
+
+                    ' Seperate expansions with a new line
+                    If firstExpansion = False Then
+                        firstExpansion = True
+                    Else
+                        writer.WriteLine()
+                    End If
+
+                    ' Write expansion name
+                    writer.WriteLine($"{Indent(1)}--{expansion.Name}")
+                    ' Write expansion ID
+                    writer.WriteLine($"{Indent(1)}[{expansion.ExpansionGameId}] = {{")
+
+                    ' Loop through each instance type
+                    For Each instancetype In expansion.InstanceTypes
+
+                        ' Seperate instance types with a new line apart from raids as raids appear first in the table
+                        If instancetype.Name <> "Raids" Then
+                            writer.WriteLine()
+                        End If
+
+                        ' Write instance type name
+                        writer.WriteLine($"{Indent(2)}{instancetype.Name} = {{")
+
+                        ' Loop through each instance
+                        For Each instance In instancetype.Instances
+
+                            ' Seperate instances with a new line
+                            If firstInstance = False Then
+                                firstInstance = True
+                            Else
+                                writer.WriteLine()
+                            End If
+
+                            ' Write instance name
+                            If instance.LegacySize > 0 Then
+                                ' Include legacy size as part of id
+                                writer.WriteLine($"{Indent(3)}[{instance.InstanceId}.{instance.LegacySize}] = {{ --{instance.Name}")
+                            Else
+                                writer.WriteLine($"{Indent(3)}[{instance.InstanceId}] = {{ --{instance.Name}")
+                            End If
+
+                            ' Write instance ID
+                            writer.WriteLine($"{Indent(4)}name = {instance.InstanceNameID},")
+
+                            ' Write wrath instance name if it exists
+                            If instance.NameWrath IsNot Nothing AndAlso instance.NameWrath.Length > 1 Then
+                                writer.WriteLine($"{Indent(4)}nameLocalised = L[""{instance.NameWrath}""],")
+                            End If
+
+                            ' Classic only variables
+                            If expansion.ExpansionGameId = 3 Or expansion.ExpansionGameId = 4 Then
+
+                                ' Write which classic phase we are in for classic wow instances
+                                If instance.ClassicPhase IsNot Nothing Then
+                                    writer.WriteLine($"{Indent(4)}classicPhase = {instance.ClassicPhase},")
+                                Else
+                                    ' Default to phase 1 if not set
+                                    writer.WriteLine($"{Indent(4)}classicPhase = 1,")
+                                End If
+
+                                ' Write if instance is retail only
+                                If instance.RetailOnly Then
+                                    writer.WriteLine($"{Indent(4)}retailOnly = {instance.RetailOnly.ToString.ToLower()},")
+                                End If
+
+                                ' Write if instance is classic only
+                                If instance.ClassicOnly Then
+                                    writer.WriteLine($"{Indent(4)}classicOnly = {instance.ClassicOnly.ToString.ToLower()},")
+                                End If
+                            End If
+
+                            ' Loop through each boss in the instance
+                            For Each boss In instance.Bosses
+
+                                ' Write boss order
+                                writer.WriteLine($"{Indent(4)}boss{boss.Order} = {{")
+
+                                ' Write boss name id
+                                If boss.BossNameID > 0 Then
+                                    ' We have id for boss
+                                    writer.WriteLine($"{Indent(5)}name = {boss.BossNameID}, --{boss.BossName}")
+                                Else
+                                    ' No id so use localised string
+                                    writer.WriteLine($"{Indent(5)}name = L[""{boss.BossNameLocale}""], --{boss.BossName}")
+                                End If
+
+                                ' Write boss id's
+                                writer.WriteLine($"{Indent(5)}bossIDs = {boss.BossIDs},")
+
+                                ' Write achievement id
+                                writer.WriteLine($"{Indent(5)}achievement = {boss.AchievementID},")
+
+                                ' Write players
+                                writer.WriteLine($"{Indent(5)}players = {{}},")
+
+                                ' Write tactics
+                                If boss.Tactics.Count > 0 Then
+                                    ' Write tactics header
+                                    writer.WriteLine($"{Indent(5)}tactics = {{")
+
+                                    ' Group tactics by their ExpansionId
+                                    Dim groupedTactics = boss.Tactics.GroupBy(Function(t) t.ExpansionId).OrderBy(Function(s) s.Key)
+
+                                    ' Loop through each expansion group
+                                    For Each group In groupedTactics
+                                        ' Write expansion id header
+                                        writer.WriteLine($"{Indent(6)}[{group.Key}] = {{")
+
+                                        ' Loop through each tactic in the expansion group
+                                        For Each tactic In group
+
+                                            ' Get the tactic parameters and sort by Order
+                                            Dim parameters As List(Of TacticParameter) = tactic.TacticParameter.OrderBy(Function(p) p.Order).ToList()
+                                            Dim parameterList As New List(Of String)
+                                            For Each param In parameters
+                                                Select Case param.ParameterType
+                                                    Case "Spell"
+                                                        parameterList.Add($"C_Spell.GetSpellLink({param.ParameterID})")
+                                                    Case "NPC"
+                                                        parameterList.Add($"""IAT_{param.ParameterID}""")
+                                                End Select
+                                            Next
+
+                                            ' Join the parameter list in a comma seperated string
+                                            Dim parameterString = String.Join(", ", parameterList)
+
+                                            ' If we have parameters then write format string
+                                            ' Otherwise just write locale string
+                                            If parameterList.Count > 0 Then
+                                                writer.WriteLine($"{Indent(7)}{{ tactic = format(L[""{tactic.Localisation.Key}""], {parameterString}) }},")
+                                            Else
+                                                writer.WriteLine($"{Indent(7)}{{ tactic = L[""{tactic.Localisation.Key}""] }},")
+                                            End If
+                                        Next
+
+                                        ' Close expansion group
+                                        writer.WriteLine($"{Indent(6)}}},")
+                                    Next
+
+                                    ' Close tactics
+                                    writer.WriteLine($"{Indent(5)}}},")
+                                Else
+                                    ' Write the tactics localisation string
+                                    writer.WriteLine($"{Indent(5)}tactics = L[""{boss.Tactics}""],")
+                                End If
+
+                                ' Write enabled state
+                                writer.WriteLine($"{Indent(5)}enabled = {boss.Enabled.ToString.ToLower()},")
+
+                                ' Write tracking function
+                                writer.WriteLine($"{Indent(5)}track = {boss.Track},")
+
+                                writer.WriteLine($"{Indent(5)}partial = {boss.PartialTrack.ToString.ToLower()},")
+
+                                If boss.EncounterID > 0 Then
+                                    writer.WriteLine($"{Indent(5)}encounterID = {boss.EncounterID},")
+                                End If
+
+                                'If expansion.ExpansionGameId = 3 And boss.EncounterIDWrath > 0 Then
+                                '    writer.WriteLine($"{Indent(5)}encounterIDWrath = " & boss.EncounterIDWrath & ",")
+                                'End If
+
+                                If boss.DisplayInfoFrame = "true" Then
+                                    writer.WriteLine($"{Indent(5)}displayInfoFrame = {boss.DisplayInfoFrame.ToString.ToLower()},")
+                                End If
+
+                                If boss.BossNameLocale.Length > 1 Then
+                                    writer.WriteLine($"{Indent(5)}nameWrath = L[""{boss.BossNameLocale}""],")
+                                End If
+
+                                'If expansion.ExpansionGameId = 3 Or expansion.ExpansionGameId = 4 Then
+                                '    If boss.tac.Length > 1 Then
+                                '        writer.WriteLine($"{Indent(5)}tacticsClassic = " & boss.ClassicTactics & ",")
+                                '    Else
+                                '        writer.WriteLine($"{Indent(5)}tacticsClassic = """",")
+                                '    End If
+                                'End If
+
+                                ' Close the boss table
+                                writer.WriteLine($"{Indent(4)}}},")
+
+                                'Check if localisation is new
+                                'Dim localeFound = False
+                                'For Each locale In LocalisationDB
+                                '    If boss.Tactics.Contains(locale.Name) Then
+                                '        localeFound = True
+                                '    End If
+                                'Next
+                                'If localeFound = False Then
+                                '    Dim newLocale As New Localisation
+                                '    newLocale.Name = boss.Tactics.Replace("L[""", "").Replace("""]", "")
+                                '    newLocale.Text = ""
+                                '    LocalisationDB.Add(newLocale)
+                                'End If
+                            Next
+
+                            ' Close the instance table
+                            writer.WriteLine($"{Indent(3)}}},")
+                        Next
+
+                        ' Close the instance type table
+                        writer.WriteLine($"{Indent(2)}}},")
+                        firstInstance = False
+                    Next
+
+                    ' Close the expansion table
+                    writer.WriteLine($"{Indent(1)}}},")
+                Next
+
+                ' Close table root
+                writer.WriteLine("}")
+            End Using
+        End Using
+
+        'Generate HTML
+        'Dim Items As New List(Of String)
         '                Dim ItemsID As New List(Of String)
         '                Dim ItemType As New List(Of String)
         '                Console.WriteLine(boss.Tactics)
@@ -1237,9 +1007,9 @@ Public Class frmIATDatabaseManager
         '                            'NPC Found
         '                            Dim npcID As String = item.Replace("""", "").Replace("IAT_", "").Trim()
         '                            For Each npc In NPCDB
-        '                                If npc.ID = npcID Then
+        '                                If npc.Id = npcID Then
         '                                    Items.Add(npc.Name)
-        '                                    ItemsID.Add(npc.ID)
+        '                                    ItemsID.Add(npc.Id)
         '                                    ItemType.Add("NPC")
         '                                End If
         '                            Next
@@ -1260,13 +1030,7 @@ Public Class frmIATDatabaseManager
         '    Next
         'Next
 
-        ''Backup Files
-        'File.Copy("expansionsDB.csv", "Backup\expansionsDB" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
-        'File.Copy("instancesDB.csv", "Backup\instancesDB" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
-        'File.Copy("bossesDB.csv", "Backup\bossesDB" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
-        'File.Delete("expansionsDB.csv")
-        'File.Delete("instancesDB.csv")
-        'File.Delete("bossesDB.csv")
+        'Backup Files
         'If Not File.Exists("bossesDB.csv") And Not File.Exists("instancesDB.csv") And Not File.Exists("expansionsDB.csv") Then
         '    For Each expansion In CentralDB
         '        Using writer As StreamWriter = New StreamWriter("expansionsDB.csv", True)
@@ -1275,7 +1039,7 @@ Public Class frmIATDatabaseManager
         '        For Each instancetype In expansion.InstanceTypes
         '            For Each instance In instancetype.Instances
         '                Using writer As StreamWriter = New StreamWriter("instancesDB.csv", True)
-        '                    writer.WriteLine(instance.InstanceID & "," & instance.Name & "," & instance.InstanceNameID & "," & expansion.Name & "," & instancetype.Name & "," & instance.NameWrath & "," & instance.ClassicPhase & "," & instance.RetailOnly & "," & instance.ClassicOnly)
+        '                    writer.WriteLine(instance.InstanceId & "," & instance.Name & "," & instance.InstanceNameID & "," & expansion.Name & "," & instancetype.Name & "," & instance.NameWrath & "," & instance.ClassicPhase & "," & instance.RetailOnly & "," & instance.ClassicOnly)
         '                End Using
         '                For Each boss In instance.Bosses
         '                    Using writer As StreamWriter = New StreamWriter("bossesDB.csv", True)
@@ -1290,202 +1054,59 @@ Public Class frmIATDatabaseManager
         'End If
 
 
-        ''Generate Instances.lua
-        'File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua", "Backup\Instances.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
-        'If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua") = True Then
-        '    File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua")
-        'End If
-        'Using writer As StreamWriter = New StreamWriter("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua", True)
-        '    writer.WriteLine("--------------------------------------")
-        '    writer.WriteLine("-- Last Auto Generated: " & DateTime.Now)
-        '    writer.WriteLine("--------------------------------------")
-        '    writer.WriteLine("local _, core = ...")
-        '    writer.WriteLine("local L = core.L")
-        '    writer.WriteLine("local instances = {}")
-        '    writer.WriteLine()
-        '    writer.WriteLine("core.Instances = {")
-
-        '    Dim firstExpansion = False
-        '    Dim firstInstance = False
-        '    For Each expansion In CentralDB
-        '        If firstExpansion = False Then
-        '            firstExpansion = True
-        '        Else
-        '            writer.WriteLine()
-        '        End If
-        '        writer.WriteLine(vbTab & "--" & expansion.Name)
-        '        writer.WriteLine(vbTab & "[" & expansion.ExpansionID & "] = {")
-        '        For Each instancetype In expansion.InstanceTypes
-        '            If instancetype.Name = "Dungeons" Or instancetype.Name = "Scenarios" Or instancetype.Name = "Delves" Then
-        '                writer.WriteLine()
-        '            End If
-        '            writer.WriteLine(vbTab & vbTab & instancetype.Name & " = {")
-        '            For Each instance In instancetype.Instances
-        '                If firstInstance = False Then
-        '                    firstInstance = True
-        '                Else
-        '                    writer.WriteLine()
-        '                End If
-        '                If instance.InstanceID.Contains("-") Then
-        '                    writer.WriteLine(vbTab & vbTab & vbTab & "[""" & instance.InstanceID & """] = { --" & instance.Name)
-        '                Else
-        '                    writer.WriteLine(vbTab & vbTab & vbTab & "[" & instance.InstanceID & "] = { --" & instance.Name)
-        '                End If
-        '                writer.WriteLine(vbTab & vbTab & vbTab & vbTab & "name = " & instance.InstanceNameID & ",")
-
-        '                If Not instance.NameWrath Is Nothing Then
-        '                    If instance.NameWrath.Length > 1 Then
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & "nameLocalised = " & instance.NameWrath & ",")
-        '                    End If
-        '                End If
-
-
-        '                If expansion.ExpansionID = 3 Or expansion.ExpansionID = 4 Then
-        '                    If instance.ClassicPhase.Length > 0 Then
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & "classicPhase = " & instance.ClassicPhase & ",")
-        '                    Else
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & "classicPhase = 1,")
-        '                    End If
-        '                End If
-
-        '                If expansion.ExpansionID = 3 Or expansion.ExpansionID = 4 Then
-        '                    If instance.RetailOnly.Length > 0 Then
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & "retailOnly = " & instance.RetailOnly & ",")
-        '                    End If
-        '                End If
-
-        '                If expansion.ExpansionID = 3 Or expansion.ExpansionID = 4 Then
-        '                    If instance.ClassicOnly.Length > 0 Then
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & "classicOnly = " & instance.ClassicOnly & ",")
-        '                    End If
-        '                End If
-
-        '                For Each boss In instance.Bosses
-        '                    writer.WriteLine(vbTab & vbTab & vbTab & vbTab & boss.Order & " = {")
-        '                    writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "name = " & boss.BossNameID & ", --" & boss.BossName)
-        '                    writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "bossIDs = " & boss.BossIDs & ",")
-        '                    If boss.AchievementID.Length > 0 Then
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "achievement = " & boss.AchievementID & ",")
-        '                    Else
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "achievement = 6,")
-        '                    End If
-        '                    writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "players = " & boss.Players & ",")
-        '                    writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "tactics = " & boss.Tactics & ",")
-        '                    'writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "tacticsHTML = " & boss.HTMLTactics & ",")
-        '                    writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "enabled = " & boss.Enabled & ",")
-        '                    writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "track = " & boss.Track & ",")
-
-        '                    If boss.PartialTrack.Length > 1 Then
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "partial = " & boss.PartialTrack & ",")
-        '                    Else
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "partial = false,")
-        '                    End If
-
-        '                    If boss.EncounterID.Length > 1 Then
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "encounterID = " & boss.EncounterID & ",")
-        '                    End If
-
-        '                    If expansion.ExpansionID = 3 And boss.EncounterIDWrath.Length > 1 Then
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "encounterIDWrath = " & boss.EncounterIDWrath & ",")
-        '                    End If
-
-        '                    If boss.DisplayInfoFrame = "true" Then
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "displayInfoFrame = " & boss.DisplayInfoFrame & ",")
-        '                    End If
-
-        '                    If boss.Image.Length > 1 Then
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "image = " & boss.Image & ",")
-        '                    End If
-
-        '                    If boss.BossNameWrath.Length > 1 Then
-        '                        writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "nameWrath = " & boss.BossNameWrath & ",")
-        '                    End If
-
-        '                    If expansion.ExpansionID = 3 Or expansion.ExpansionID = 4 Then
-        '                        If boss.ClassicTactics.Length > 1 Then
-        '                            writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "tacticsClassic = " & boss.ClassicTactics & ",")
-        '                        Else
-        '                            writer.WriteLine(vbTab & vbTab & vbTab & vbTab & vbTab & "tacticsClassic = """",")
-        '                        End If
-        '                    End If
-
-        '                    writer.WriteLine(vbTab & vbTab & vbTab & vbTab & "},")
-
-        '                    'Check if localisation is new
-        '                    Dim localeFound = False
-        '                    For Each locale In LocalisationDB
-        '                        If boss.Tactics.Contains(locale.Name) Then
-        '                            localeFound = True
-        '                        End If
-        '                    Next
-        '                    If localeFound = False Then
-        '                        Dim newLocale As New Localisation
-        '                        newLocale.Name = boss.Tactics.Replace("L[""", "").Replace("""]", "")
-        '                        newLocale.Text = ""
-        '                        LocalisationDB.Add(newLocale)
-        '                    End If
-        '                Next
-        '                writer.WriteLine(vbTab & vbTab & vbTab & "},")
-        '            Next
-        '            writer.WriteLine(vbTab & vbTab & "},")
-        '            firstInstance = False
-        '        Next
-        '        writer.WriteLine(vbTab & "},")
-        '    Next
-        '    writer.WriteLine("}")
-        'End Using
+        'Generate Instances.lua
 
         'Generate Localization.enUS.lua
-        File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua", "Backup\Localization.enUS.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
-        If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua") = True Then
-            File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua")
-        End If
-        Using writer As StreamWriter = New StreamWriter("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua", True)
-            writer.WriteLine("local _, core = ...")
-            writer.WriteLine("local baseLocale = {")
-            For Each locale In LocalisationDB
-                'writer.WriteLine(vbTab & "[""" & locale.Name & """] = """ & locale.Text & """,")
-            Next
-            writer.WriteLine("}")
-            writer.Write("core:RegisterLocale('enUS', baseLocale)")
-        End Using
+        'File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua", "Backup\Localization.enUS.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
+        'If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua") = True Then
+        '    File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua")
+        'End If
+        'Using writer As StreamWriter = New StreamWriter("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua", True)
+        '    writer.WriteLine("local _, core = ...")
+        '    writer.WriteLine("local baseLocale = {")
+        '    For Each locale In LocalisationDB
+        '        'writer.WriteLine(vbTab & "[""" & locale.Name & """] = """ & locale.Text & """,")
+        '    Next
+        '    writer.WriteLine("}")
+        '    writer.Write("core:RegisterLocale('enUS', baseLocale)")
+        'End Using
 
-        'Generate NPCCache.lua
-        File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua", "Backup\NPCCache.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
-        If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua") = True Then
-            File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua")
-        End If
-        Using writer As StreamWriter = New StreamWriter("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua", True)
-            writer.WriteLine("local _, core = ...")
-            writer.WriteLine()
-            writer.WriteLine("core.NPCCache = {")
-            For Each npc In NPCCacheDB
-                writer.WriteLine(vbTab & "[" & npc.id & "] =" & npc.id & ", --" & npc.name)
-            Next
-            writer.Write("}")
+        ''Generate NPCCache.lua
+        'File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua", "Backup\NPCCache.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
+        'If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua") = True Then
+        '    File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua")
+        'End If
+        'Using writer As StreamWriter = New StreamWriter("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua", True)
+        '    writer.WriteLine("local _, core = ...")
+        '    writer.WriteLine()
+        '    writer.WriteLine("core.NPCCache = {")
+        '    For Each npc In NPCCacheDB
+        '        writer.WriteLine(vbTab & "[" & npc.id & "] =" & npc.id & ", --" & npc.name)
+        '    Next
+        '    writer.Write("}")
 
-            writer.WriteLine()
-            writer.WriteLine("core.NPCCacheClassic = {")
-            For Each npc In NPCCacheClassicDB
-                writer.WriteLine(vbTab & "[" & npc.id & "] =" & npc.id & ", --" & npc.name)
-            Next
-            writer.Write("}")
-        End Using
+        '    writer.WriteLine()
+        '    writer.WriteLine("core.NPCCacheClassic = {")
+        '    For Each npc In NPCCacheClassicDB
+        '        writer.WriteLine(vbTab & "[" & npc.id & "] =" & npc.id & ", --" & npc.name)
+        '    Next
+        '    writer.Write("}")
+        'End Using
 
-        'Generate ItemCache.lua
-        File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua", "Backup\ItemCache.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
-        If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua") = True Then
-            File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua")
-        End If
-        Using writer As StreamWriter = New StreamWriter("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua", True)
-            writer.WriteLine("local _, core = ...")
-            writer.WriteLine()
-            writer.WriteLine("core.ItemCache = {")
-            For Each item In ItemCacheDB
-                writer.WriteLine(vbTab & "[" & item.ID & "] = " & item.ID & ", --" & item.Name)
-            Next
-            writer.Write("}")
-        End Using
+        ''Generate ItemCache.lua
+        'File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua", "Backup\ItemCache.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
+        'If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua") = True Then
+        '    File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua")
+        'End If
+        'Using writer As StreamWriter = New StreamWriter("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua", True)
+        '    writer.WriteLine("local _, core = ...")
+        '    writer.WriteLine()
+        '    writer.WriteLine("core.ItemCache = {")
+        '    For Each item In ItemCacheDB
+        '        writer.WriteLine(vbTab & "[" & item.ID & "] = " & item.ID & ", --" & item.Name)
+        '    Next
+        '    writer.Write("}")
+        'End Using
 
         MsgBox("Save Successful")
     End Sub

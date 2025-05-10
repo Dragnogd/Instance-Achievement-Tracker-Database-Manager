@@ -3,8 +3,8 @@
 Public Class Tactic
     ' Primary Key
     Public Property Id As Integer
-    ' Patch the tactic is associated with
-    Public Property Patch As String
+    ' Expansion the tactic is associated with
+    Public Property ExpansionId As Integer
     ' Localse Name for the tactic
     Public Property ImgurLink As String
     ' Image Name
@@ -16,7 +16,6 @@ Public Class Tactic
 
     ' Foreign Key
     Public Property LocalisationId As Integer
-    Public Property TacticParameterId As Integer
     ' Navigation Property
     Public Overridable Property Localisation As Localisation
     Public Overridable Property TacticParameter As New ObservableCollectionListSource(Of TacticParameter)()
