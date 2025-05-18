@@ -242,7 +242,7 @@ Module DBMigration
                         Dim tacticWrath As String = strArr(16)
 
                         ' Extract localisation key
-                        Dim keyMatchWrath As Match = Regex.Match(tactic, "L\[""(?<key>[^""]+)""\]")
+                        Dim keyMatchWrath As Match = Regex.Match(tacticWrath, "L\[""(?<key>[^""]+)""\]")
                         Dim localisationKeyWrath As String = If(keyMatchWrath.Success, keyMatchWrath.Groups("key").Value, Nothing)
                         Dim localisationIdWrath As Integer = Nothing
 

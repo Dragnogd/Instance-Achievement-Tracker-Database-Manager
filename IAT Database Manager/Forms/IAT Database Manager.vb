@@ -951,14 +951,6 @@ Public Class frmIATDatabaseManager
                                     writer.WriteLine($"{Indent(5)}nameWrath = L[""{boss.BossNameLocale}""],")
                                 End If
 
-                                'If expansion.ExpansionGameId = 3 Or expansion.ExpansionGameId = 4 Then
-                                '    If boss.tac.Length > 1 Then
-                                '        writer.WriteLine($"{Indent(5)}tacticsClassic = " & boss.ClassicTactics & ",")
-                                '    Else
-                                '        writer.WriteLine($"{Indent(5)}tacticsClassic = """",")
-                                '    End If
-                                'End If
-
                                 ' Close the boss table
                                 writer.WriteLine($"{Indent(4)}}},")
 
