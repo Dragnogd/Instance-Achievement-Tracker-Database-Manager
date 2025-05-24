@@ -740,34 +740,41 @@ Public Class frmIATDatabaseManager
     End Sub
 
     Private Sub btnInsertTactic_Click(sender As Object, e As EventArgs) Handles btnInsertTactic.Click
-        save()
+        ' Retail DB
+        save(11)
+        ' Wrath DB
+        save(3, "Wrath")
+        ' Cataclysm DB
+        save(4, "Cataclysm")
+        ' Mop DB
+        save(5, "Pandaria")
     End Sub
 
     Private Function Indent(level As Integer) As String
         Return New String(vbTab, level)
     End Function
 
-    Public Sub save()
+    Public Sub save(maxExpansions As Integer, Optional expansionSuffix As String = "")
         'Save changes to DB
 
         ' Connect to database
         Using db As New IATDbContext
             ' Get all expansions
-            Dim Expansions As List(Of Expansion) = db.Expansions.ToList()
+            Dim Expansions As List(Of Expansion) = db.Expansions.Where(Function(e) e.ExpansionGameId <= maxExpansions).ToList()
 
             ' Backup File
-            File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua", "Backup\Instances.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
-            If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua") = True Then
-                File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua")
-            End If
+            'File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua", "Backup\Instances.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
+            'If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua") = True Then
+            '    File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua")
+            'End If
 
             ' StringBuilder to store Instances.lua content
             Dim sb As New Text.StringBuilder()
 
             ' Write new file
-            Using writer As StreamWriter = New StreamWriter("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua", True)
+            Using writer As StreamWriter = New StreamWriter($"C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances{expansionSuffix}.lua", True)
                 writer.WriteLine("--------------------------------------")
-                writer.WriteLine("-- Last Auto Generated: " & DateTime.Now)
+                writer.WriteLine("-- Last Auto Generated: " & DateTime.Now & " using https://github.com/Dragnogd/Instance-Achievement-Tracker-Database-Manager")
                 writer.WriteLine("--------------------------------------")
                 writer.WriteLine("local _, core = ...")
                 writer.WriteLine("local L = core.L")
