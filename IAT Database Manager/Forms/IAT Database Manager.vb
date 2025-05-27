@@ -755,21 +755,10 @@ Public Class frmIATDatabaseManager
     End Function
 
     Public Sub save(maxExpansions As Integer, Optional expansionSuffix As String = "")
-        'Save changes to DB
-
         ' Connect to database
         Using db As New IATDbContext
             ' Get all expansions
             Dim Expansions As List(Of Expansion) = db.Expansions.Where(Function(e) e.ExpansionGameId <= maxExpansions).ToList()
-
-            ' Backup File
-            'File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua", "Backup\Instances.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
-            'If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua") = True Then
-            '    File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances.lua")
-            'End If
-
-            ' StringBuilder to store Instances.lua content
-            Dim sb As New Text.StringBuilder()
 
             ' Write new file
             Using writer As StreamWriter = New StreamWriter($"C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances{expansionSuffix}.lua", True)
@@ -889,7 +878,9 @@ Public Class frmIATDatabaseManager
                                     writer.WriteLine($"{Indent(5)}tactics = {{")
 
                                     ' Group tactics by their ExpansionId
-                                    Dim groupedTactics = boss.Tactics.GroupBy(Function(t) t.ExpansionId).OrderBy(Function(s) s.Key)
+                                    Dim groupedTactics = boss.Tactics.Where(Function(t) t.ExpansionId <= maxExpansions) _
+                                                                     .GroupBy(Function(t) t.ExpansionId) _
+                                                                     .OrderBy(Function(s) s.Key)
 
                                     ' Loop through each expansion group
                                     For Each group In groupedTactics
