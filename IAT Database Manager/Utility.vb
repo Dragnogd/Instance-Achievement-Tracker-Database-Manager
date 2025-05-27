@@ -21,4 +21,10 @@
         'Dim Address = New Uri(website)
         'WebView2.Source = Address
     End Sub
+
+    Public Function ReplaceFirst(input As String, search As String, replace As String) As String
+        Dim pos = input.IndexOf(search)
+        If pos < 0 Then Return input
+        Return input.Substring(0, pos) & replace & input.Substring(pos + search.Length)
+    End Function
 End Module

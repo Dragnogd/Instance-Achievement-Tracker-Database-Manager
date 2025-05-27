@@ -6,6 +6,7 @@ Imports Imgur.API.Authentication
 Imports Imgur.API.Endpoints
 Imports Microsoft.EntityFrameworkCore
 Imports Microsoft.EntityFrameworkCore.ChangeTracking
+Imports Microsoft.Web.WebView2.WinForms
 
 
 Public Class frmIATDatabaseManager
@@ -24,6 +25,9 @@ Public Class frmIATDatabaseManager
     Public CheckingSpellName = False
 
     Private IATContext As IATDbContext
+
+    ' Add this at class level to remember the clicked link ID or text
+    Private lastClickedNpcElementId As String = ""
 
     Private Sub InitialiseDatabase()
         Using db As New IATDbContext
@@ -77,37 +81,13 @@ Public Class frmIATDatabaseManager
         IATContext.Expansions.Load()
         ExpansionBindingSource.DataSource = IATContext.Expansions.Local.ToBindingList()
 
-        'Using db As New IATDbContext
-        '    Dim expansions = db.Expansions.ToList()
-        '    Dim instances = db.Instances.ToList()
-        '    Dim instanceTypes = db.InstanceTypes.ToList()
-        '    Dim bosses = db.Bosses.ToList()
-
-        '    ' Create a BindingSource for expansions and bind it to a DataGridView
-        '    Dim bindingSource As New BindingSource()
-        '    bindingSource.DataSource = expansions
-        '    dgvExpansions.DataSource = bindingSource
-
-        '    ' Create a BindingSource for instanceTypes and bind it to a DataGridView
-        '    bindingSource = New BindingSource()
-        '    bindingSource.DataSource = instanceTypes
-        '    dgvInstanceTypes.DataSource = bindingSource
-
-        '    ' Create a BindingSource for instances and bind it to a DataGridView
-        '    bindingSource = New BindingSource()
-        '    bindingSource.DataSource = instances
-        '    dgvInstances.DataSource = bindingSource
-
-        '    ' Create a BindingSource for bosses and bind it to a DataGridView
-        '    bindingSource = New BindingSource()
-        '    bindingSource.DataSource = bosses
-        '    dgvBosses.DataSource = bindingSource
-        'End Using
-
-        'splash.UpdateProgress("Populating Bosses (6/13)", 6)
-        'cboBosses.DataSource = BossesTable
-        'cboBosses.DisplayMember = "BossName"
-        'cboBosses.ValueMember = "AchievementID"
+        ' Setup Boss Combobox selection
+        Using db As New IATDbContext
+            Dim bosses As List(Of Boss) = db.Bosses.ToList()
+            cboBosses.DataSource = bosses
+            cboBosses.DisplayMember = "BossName"
+            cboBosses.ValueMember = "Id"
+        End Using
 
         'splash.UpdateProgress("Loading Localisation (7/13)", 7)
         ''Insert Localisation
@@ -250,8 +230,6 @@ Public Class frmIATDatabaseManager
         '        line = reader.ReadLine
         '    End While
         'End Using
-
-        'Me.WindowState = WindowState.Maximized
     End Sub
 
     Private Sub ExpansionToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExpansionToolStripMenuItem.Click
@@ -266,186 +244,141 @@ Public Class frmIATDatabaseManager
         InsertBoss.Show()
     End Sub
 
-    Private Sub cboBosses_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboBosses.SelectedIndexChanged
-        Try
-            Console.WriteLine(cboBosses.Text.ToString())
-            Console.WriteLine(cboBosses.SelectedValue)
+    Private Async Sub cboBosses_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboBosses.SelectedIndexChanged
+        Dim selectedBoss As Boss = TryCast(cboBosses.SelectedItem, Boss)
+        If selectedBoss IsNot Nothing Then
+            Using db As New IATDbContext
+                Dim boss = db.Bosses.Find(selectedBoss.Id)
 
-            'For Each expansion In CentralDB
-            '    For Each instancetype In expansion.InstanceTypes
-            '        For Each instance In instancetype.Instances
-            '            For Each boss In instance.Bosses
-            '                If cboBosses.SelectedValue = boss.AchievementID Then
-            '                    txtIndex.Text = boss.Order
-            '                    txtAchievement.Text = boss.AchievementID
-            '                    txtBossIDs.Text = boss.BossIDs
-            '                    txtBossName.Text = boss.BossName
-            '                    txtEnabled.Text = boss.Enabled
-            '                    txtEncounterID.Text = boss.EncounterID
-            '                    txtIndex.Text = boss.Order
-            '                    txtInfoFrame.Text = boss.DisplayInfoFrame
-            '                    txtNameID.Text = boss.BossNameID
-            '                    txtPartial.Text = boss.PartialTrack
-            '                    txtPlayers.Text = boss.Players
-            '                    txtTactics.Text = boss.Tactics
-            '                    txtTrack.Text = boss.Track
-            '                    txtInstanceID.Text = instance.InstanceID
-            '                    txtInstanceName.Text = instance.Name
-            '                    txtInstanceNameWrath.Text = instance.NameWrath
-            '                    txtInstanceNameID.Text = instance.InstanceNameID
-            '                    txtInstanceType.Text = instancetype.Name
-            '                    txtExpansion.Text = expansion.Name
-            '                    txtExpansionID.Text = expansion.ExpansionGameId
-            '                    txtTacticsLocale.Text = boss.LocaleText
-            '                    txtLocaleString.Text = boss.LocaleName
-            '                    txtNewTactics.Text = ""
-            '                    txtInGame.Text = ""
-            '                    txtImgurLink.Text = boss.ImgurLink
-            '                    txtContext.Text = ""
-            '                    txtImage.Text = boss.Image
+                ' Clear existing tab pages
+                tcTactics.TabPages.Clear()
 
-            '                    'Classic
-            '                    txtBossNameWrath.Text = boss.BossNameWrath
-            '                    txtInGameClassic.Text = ""
-            '                    txtNewTacticsClassic.Text = ""
-            '                    txtTacticsLocaleClassic.Text = boss.LocaleTextClassic
-            '                    txtClassicTactics.Text = boss.ClassicTactics
-            '                    txtClassicPhase.Text = instance.ClassicPhase
-            '                    txtRetailOnly.Text = instance.RetailOnly
-            '                    txtClassicOnly.Text = instance.ClassicOnly
-            '                    txtLocaleStringClassic.Text = boss.LocaleNameClassic
-            '                    txtImgurLinkClassic.Text = boss.ImgurLinkClassic
-            '                    txtEncounterIDWrath.Text = boss.EncounterIDWrath
+                Dim index As Integer = 1
+                For Each tactic As Tactic In boss.Tactics
+                    Dim tabPage As New TabPage("Tactic " & index)
+                    index += 1
 
-            '                    'Populate NewTactics by reading format string
-            '                    Dim Items As New List(Of String)
-            '                    Dim ItemsID As New List(Of String)
-            '                    Dim ItemType As New List(Of String)
-            '                    If boss.Tactics.Contains("format(") Then
-            '                        Dim strArr() As String = boss.Tactics.Split(",")
-            '                        For Each item In strArr
-            '                            If item.Contains("IAT_") Then
-            '                                'NPC Found
-            '                                Dim npcID As String = item.Replace("""", "").Replace("IAT_", "").Trim().Replace(")", "")
-            '                                For Each npc In NPCDB
-            '                                    If npc.ID = npcID Then
-            '                                        Items.Add(npc.Name)
-            '                                        ItemsID.Add(npc.ID)
-            '                                        ItemType.Add("NPC")
-            '                                    End If
-            '                                Next
-            '                            ElseIf item.Contains("C_Spell.GetSpellLink") Then
-            '                                Dim spellID As String = item.Replace("C_Spell.GetSpellLink(", "").Replace(")", "").Trim()
-            '                                Items.Add(GetSpellName(spellID))
-            '                                ItemsID.Add(spellID)
-            '                                ItemType.Add("Spell")
-            '                            End If
-            '                        Next
+                    ' Prepare parameters ordered by position
+                    Dim parameters = tactic.TacticParameter.OrderBy(Function(p) p.Order).ToList()
 
-            '                        Dim PercentFound = False
-            '                        Dim ListIndex = 0
-            '                        For Each c As Char In boss.LocaleText
-            '                            If PercentFound Then
-            '                                If c = "s" Then
-            '                                    'Insert from list
-            '                                    If ItemType(ListIndex) = "NPC" Then
-            '                                        txtNewTactics.Text += "{" & ItemsID(ListIndex) & "|" & Items(ListIndex) & "}"
-            '                                    ElseIf ItemType(ListIndex) = "Spell" Then
-            '                                        txtNewTactics.Text += "[" & ItemsID(ListIndex) & "|" & Items(ListIndex) & "]"
-            '                                    End If
-            '                                    ListIndex += 1
-            '                                Else
-            '                                    txtNewTactics.Text += "%%"
-            '                                End If
-            '                                PercentFound = False
-            '                            ElseIf c = "%" And PercentFound = False Then
-            '                                PercentFound = True
-            '                            Else
-            '                                txtNewTactics.Text += c
-            '                            End If
-            '                            Application.DoEvents()
-            '                        Next
-            '                    End If
+                    ' Replace %s with clickable NPC/spell links in HTML format
+                    Dim tacticText As String = tactic.Localisation.Value
+                    For Each param In parameters
+                        Dim replacement As String = param.ParameterID
 
-            '                    'Populate Classic Tactics
-            '                    Items = New List(Of String)
-            '                    ItemsID = New List(Of String)
-            '                    ItemType = New List(Of String)
-            '                    If boss.ClassicTactics.Contains("format(") Then
-            '                        Dim strArr() As String = boss.ClassicTactics.Split(",")
-            '                        For Each item In strArr
-            '                            If item.Contains("IAT_") Then
-            '                                'NPC Found
-            '                                Dim npcID As String = item.Replace("""", "").Replace("IAT_", "").Trim().Replace(")", "")
-            '                                For Each npc In NPCDB
-            '                                    If npc.ID = npcID Then
-            '                                        Items.Add(npc.Name)
-            '                                        ItemsID.Add(npc.ID)
-            '                                        ItemType.Add("NPC")
-            '                                    End If
-            '                                Next
-            '                            ElseIf item.Contains("C_Spell.GetSpellLink") Then
-            '                                Dim spellID As String = item.Replace("C_Spell.GetSpellLink(", "").Replace(")", "").Trim()
-            '                                Items.Add(GetSpellName(spellID))
-            '                                ItemsID.Add(spellID)
-            '                                ItemType.Add("Spell")
-            '                            End If
-            '                        Next
+                        If param.ParameterType = "NPC" Then
+                            Dim npc = db.NPCs.FirstOrDefault(Function(n) n.NPCID = param.ParameterID)
+                            If npc IsNot Nothing Then
+                                replacement = $"<a href=""npc:{npc.NPCID}:pos:{param.Id}"" id=""{param.Id}"" >{npc.Name}</a>"
+                            Else
+                                replacement = "[Unknown NPC]"
+                            End If
+                        ElseIf param.ParameterType = "Spell" Then
+                            ' TODO: Add spell link if needed
+                            replacement = $"<a href=""spell:{param.ParameterID}"" >[Spell {param.ParameterID}]</a>"
+                        End If
 
-            '                        Dim PercentFound = False
-            '                        Dim ListIndex = 0
+                        tacticText = ReplaceFirst(tacticText, "%s", replacement)
+                    Next
 
-            '                        If boss.LocaleTextClassic = Nothing Then
-            '                            Dim localeTextC = InputBox("Please enter Locale Text Classic")
-            '                            boss.LocaleTextClassic = localeTextC
-            '                            txtTacticsLocaleClassic.Text = localeTextC
-            '                        End If
+                    ' Replace \n\n with <br><br> for HTML new lines
+                    tacticText = tacticText.Replace("\n\n", "<br><br>")
 
-            '                        For Each c As Char In boss.LocaleTextClassic
-            '                            If PercentFound Then
-            '                                If c = "s" Then
-            '                                    'Insert from list
-            '                                    If ItemType(ListIndex) = "NPC" Then
-            '                                        txtNewTacticsClassic.Text += "{" & ItemsID(ListIndex) & "|" & Items(ListIndex) & "}"
-            '                                    ElseIf ItemType(ListIndex) = "Spell" Then
-            '                                        txtNewTacticsClassic.Text += "[" & ItemsID(ListIndex) & "|" & Items(ListIndex) & "]"
-            '                                    End If
-            '                                    ListIndex += 1
-            '                                Else
-            '                                    txtNewTacticsClassic.Text += "%%"
-            '                                End If
-            '                                PercentFound = False
-            '                            ElseIf c = "%" And PercentFound = False Then
-            '                                PercentFound = True
-            '                            Else
-            '                                txtNewTacticsClassic.Text += c
-            '                            End If
-            '                            Application.DoEvents()
-            '                        Next
-            '                    End If
-            '                End If
-            '            Next
-            '        Next
-            '    Next
-            'Next
 
-            ' LoadWebsite("https://www.wowhead.com/achievement=" & txtAchievement.Text & "#comments")
-        Catch ex As Exception
+                    ' Wrap tacticText in simple HTML body with basic styling
+                    Dim html As String = $"<html>
+                    <head>
+                    <style>body {{ font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; padding: 10px; }}</style>
+                    </head>
+                    <body><div contenteditable=""false"">{tacticText}</div></body>
+                    </html>"
 
-        End Try
+                    ' Create WebView2 control
+                    Dim webView As New WebView2 With {
+                        .Dock = DockStyle.Fill
+                    }
+
+                    tabPage.Controls.Add(webView)
+                    tcTactics.TabPages.Add(tabPage)
+
+                    ' Initialize WebView2 and navigate to generated HTML string
+                    Await webView.EnsureCoreWebView2Async()
+
+                    ' Hook navigation event to intercept npc: links
+                    AddHandler webView.CoreWebView2.NavigationStarting, Sub(sender2, e2)
+                                                                            If e2.Uri.StartsWith("npc:") Then
+                                                                                e2.Cancel = True
+
+                                                                                ' Split the href into parts: "npc:12345:pos:3"
+                                                                                Dim parts = e2.Uri.Substring("npc:".Length).Split(":"c)
+                                                                                Dim npcId = parts(0)
+                                                                                Dim positionInfo As String = If(parts.Length > 2, parts(2), Nothing)
+
+                                                                                ' For example, assume positionInfo is the element ID suffix (e.g., 3)
+                                                                                lastClickedNpcElementId = positionInfo
+
+                                                                                ' Open NPC Selector
+                                                                                Dim selector As New NpcSelector()
+                                                                                If selector.ShowDialog = DialogResult.OK Then
+                                                                                    ' Get selected NPC from the selector
+                                                                                    Dim selectedNpc As NPC = selector.SelectedNPC
+                                                                                    If selectedNpc IsNot Nothing Then
+                                                                                        ' Update the HTML element with the new NPC name and ID
+
+                                                                                        Dim npcNameEscaped As String = selectedNpc.Name.Replace("\", "\\").Replace("'", "\'")
+
+                                                                                        Dim script As String =
+                                                                                            $"var elem = document.getElementById('{lastClickedNpcElementId}');" &
+                                                                                            $"if (elem) {{" &
+                                                                                                $"elem.innerText = '{npcNameEscaped}';" &
+                                                                                                $"elem.setAttribute('href', 'npc:{selectedNpc.NPCID}:pos:{lastClickedNpcElementId}');" &
+                                                                                            $"}}"
+                                                                                        webView.CoreWebView2.ExecuteScriptAsync(script)
+                                                                                    End If
+                                                                                End If
+                                                                            ElseIf e2.Uri.StartsWith("spell:") Then
+                                                                                e2.Cancel = True
+                                                                                Dim spellId = e2.Uri.Substring("spell:".Length)
+                                                                                ' Handle spell link click if you want
+                                                                            End If
+                                                                        End Sub
+                    ' Load HTML content into WebView2
+                    webView.NavigateToString(html)
+                Next
+            End Using
+        End If
     End Sub
 
-    Private Sub cboNPC_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboNPC.SelectedIndexChanged
-        Try
-            Console.WriteLine(cboNPC.Text.ToString())
-            Console.WriteLine(cboNPC.SelectedValue)
+    Private Sub Tactics_LinkClicked(sender As Object, e As LinkClickedEventArgs)
+        Dim link = e.LinkText
 
-            Clipboard.SetText("{" & cboNPC.SelectedValue & "|" & cboNPC.Text.ToString() & "}")
-            LoadWebsite("https://wowhead.com/npc=" & cboNPC.SelectedValue)
-        Catch ex As Exception
-
-        End Try
+        If link.StartsWith("<npc:") AndAlso link.EndsWith(">") Then
+            Dim npcId = link.Substring(5, link.Length - 6) ' Remove <npc: and >
+            ' Open your NPC form, pass npcId
+            MsgBox(npcId)
+        End If
     End Sub
+
+    Private Function ConvertTextToRtfWithLinks(template As String, parameters As List(Of TacticParameter), db As IATDbContext) As String
+        Dim i = 0
+        For Each param In parameters
+            Dim replacement As String = param.ParameterID
+
+            If param.ParameterType = "NPC" Then
+                Dim npc = db.NPCs.FirstOrDefault(Function(n) n.NPCID = param.ParameterID)
+                If npc IsNot Nothing Then
+                    ' RTF link format: \v hidden_value \v0 visible_text
+                    replacement = $"{{\ul\b\cf1\v<npc:{npc.NPCID}>\v0[{npc.Name}]}}"
+                End If
+            End If
+
+            template = template.Replace("%s", replacement, 1)
+            i += 1
+        Next
+
+        ' Wrap in minimal RTF document structure
+        Return "{\rtf1\ansi\deff0{\colortbl;\red0\green0\blue255;}" & template & "}"
+    End Function
 
     Private Async Sub btnGenerateLocalisation_Click(sender As Object, e As EventArgs) Handles btnGenerateLocalisation.Click
         'txtTacticsLocale.Text = ""
@@ -1144,19 +1077,19 @@ Public Class frmIATDatabaseManager
         ' WebView2.Dispose()
     End Sub
 
-    Private Sub SpellsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SpellsToolStripMenuItem.Click
+    Private Sub SpellsToolStripMenuItem_Click(sender As Object, e As EventArgs)
         'Insert Spells
-        Using reader As StreamReader = New StreamReader("C:\Program Files (x86)\World of Warcraft\_retail_\WTF\Account\DRAGNOG657\SavedVariables\SpellDump.lua")
+        Using reader = New StreamReader("C:\Program Files (x86)\World of Warcraft\_retail_\WTF\Account\DRAGNOG657\SavedVariables\SpellDump.lua")
             Dim line = reader.ReadLine
 
             While Not line Is Nothing
                 If line.Contains("=") Then
-                    Dim strArr() As String = line.Split("=")
+                    Dim strArr = line.Split("=")
                     Dim NewSpell = New Spell
-                    NewSpell.name = strArr(1).Trim().Trim(",".ToCharArray()).Trim("""".ToCharArray())
-                    NewSpell.id = strArr(0).Trim().Replace("[", "").Replace("]", "").Replace("""", "")
+                    NewSpell.name = strArr(1).Trim.Trim(",".ToCharArray).Trim("""".ToCharArray)
+                    NewSpell.id = strArr(0).Trim.Replace("[", "").Replace("]", "").Replace("""", "")
 
-                    Using writer As StreamWriter = New StreamWriter("SpellDB.csv", True)
+                    Using writer = New StreamWriter("SpellDB.csv", True)
                         writer.WriteLine(NewSpell.name & ";" & NewSpell.id)
                     End Using
                 End If
@@ -1165,10 +1098,6 @@ Public Class frmIATDatabaseManager
             End While
         End Using
         MsgBox("Complete")
-    End Sub
-
-    Private Sub ViewSpellsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewSpellsToolStripMenuItem.Click
-        SpellData.Show()
     End Sub
 
     Private Sub btnAddSpell_Click(sender As Object, e As EventArgs) Handles btnAddSpell.Click
@@ -1398,10 +1327,6 @@ Public Class frmIATDatabaseManager
 
     Private Sub btnBack_Click(sender As Object, e As EventArgs)
         LoadWebsite("https://google.com")
-    End Sub
-
-    Private Sub CoordinateBuilderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CoordinateBuilderToolStripMenuItem.Click
-        CoordinateBulder.Show()
     End Sub
 
     Public Function GetSpellName(spellId)
@@ -1664,19 +1589,5 @@ Public Class frmIATDatabaseManager
         Catch ex As Exception
 
         End Try
-    End Sub
-
-    Private Sub dgvTactics_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvTactics.CellContentClick
-        'Try
-        '    If IATContext IsNot Nothing And dgvTactics.CurrentRow IsNot Nothing Then
-        '        Dim tactic = CType(dgvTactics.CurrentRow.DataBoundItem, Tactic)
-
-        '        If tactic IsNot Nothing Then
-        '            IATContext.Entry(tactic).Collection(Function(f) f.TacticParameter).Load()
-        '        End If
-        '    End If
-        'Catch ex As Exception
-
-        'End Try
     End Sub
 End Class

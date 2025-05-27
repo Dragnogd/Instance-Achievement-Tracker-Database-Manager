@@ -26,25 +26,16 @@ Partial Class frmIATDatabaseManager
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmIATDatabaseManager))
         cboBosses = New ComboBox()
         Label1 = New Label()
-        txtTacticsLocale = New TextBox()
         btnInsertTactic = New Button()
-        Label3 = New Label()
-        cboNPC = New ComboBox()
         Label4 = New Label()
         MenuStrip1 = New MenuStrip()
         InsertToolStripMenuItem = New ToolStripMenuItem()
         ExpansionToolStripMenuItem = New ToolStripMenuItem()
         InstanceToolStripMenuItem = New ToolStripMenuItem()
         BossToolStripMenuItem = New ToolStripMenuItem()
-        ImportToolStripMenuItem = New ToolStripMenuItem()
-        NPCsToolStripMenuItem = New ToolStripMenuItem()
-        SpellsToolStripMenuItem = New ToolStripMenuItem()
-        ViewSpellsToolStripMenuItem = New ToolStripMenuItem()
         LocalisationManagerToolStripMenuItem = New ToolStripMenuItem()
         CoordinateBuilderToolStripMenuItem = New ToolStripMenuItem()
-        txtNewTactics = New TextBox()
         btnGenerateLocalisation = New Button()
-        txtInGame = New TextBox()
         btnUploadLocale = New Button()
         txtSpellName = New TextBox()
         btnAddSpell = New Button()
@@ -99,13 +90,11 @@ Partial Class frmIATDatabaseManager
         TableLayoutPanel3 = New TableLayoutPanel()
         dgvTactics = New DataGridView()
         IdDataGridViewTextBoxColumn3 = New DataGridViewTextBoxColumn()
-        PatchDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         ImgurLinkDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         ImageNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         ImageWidthDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         ImageHeightDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         LocalisationIdDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        TacticParameterIdDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         LocalisationDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         TacticsBindingSource = New BindingSource(components)
         dgvTacticsParameters = New DataGridView()
@@ -116,6 +105,9 @@ Partial Class frmIATDatabaseManager
         TacticParameterBindingSource = New BindingSource(components)
         tlpContentLeft = New TableLayoutPanel()
         Panel2 = New Panel()
+        tcTactics = New TabControl()
+        TabPage1 = New TabPage()
+        TabPage2 = New TabPage()
         MenuStrip1.SuspendLayout()
         CType(dgvExpansions, ComponentModel.ISupportInitialize).BeginInit()
         CType(ExpansionBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -136,6 +128,7 @@ Partial Class frmIATDatabaseManager
         CType(TacticParameterBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         tlpContentLeft.SuspendLayout()
         Panel2.SuspendLayout()
+        tcTactics.SuspendLayout()
         SuspendLayout()
         ' 
         ' cboBosses
@@ -157,17 +150,6 @@ Partial Class frmIATDatabaseManager
         Label1.TabIndex = 1
         Label1.Text = "Select Boss"
         ' 
-        ' txtTacticsLocale
-        ' 
-        txtTacticsLocale.Dock = DockStyle.Fill
-        txtTacticsLocale.Location = New Point(4, 251)
-        txtTacticsLocale.Margin = New Padding(4, 3, 4, 3)
-        txtTacticsLocale.Multiline = True
-        txtTacticsLocale.Name = "txtTacticsLocale"
-        txtTacticsLocale.ScrollBars = ScrollBars.Vertical
-        txtTacticsLocale.Size = New Size(579, 118)
-        txtTacticsLocale.TabIndex = 2
-        ' 
         ' btnInsertTactic
         ' 
         btnInsertTactic.Font = New Font("Microsoft Sans Serif", 8.25F)
@@ -178,25 +160,6 @@ Partial Class frmIATDatabaseManager
         btnInsertTactic.TabIndex = 4
         btnInsertTactic.Text = "Save Changes"
         btnInsertTactic.UseVisualStyleBackColor = True
-        ' 
-        ' Label3
-        ' 
-        Label3.AutoSize = True
-        Label3.Location = New Point(9, 68)
-        Label3.Margin = New Padding(4, 0, 4, 0)
-        Label3.Name = "Label3"
-        Label3.Size = New Size(63, 15)
-        Label3.TabIndex = 6
-        Label3.Text = "Insert NPC"
-        ' 
-        ' cboNPC
-        ' 
-        cboNPC.FormattingEnabled = True
-        cboNPC.Location = New Point(80, 65)
-        cboNPC.Margin = New Padding(4, 3, 4, 3)
-        cboNPC.Name = "cboNPC"
-        cboNPC.Size = New Size(140, 23)
-        cboNPC.TabIndex = 5
         ' 
         ' Label4
         ' 
@@ -210,7 +173,7 @@ Partial Class frmIATDatabaseManager
         ' 
         ' MenuStrip1
         ' 
-        MenuStrip1.Items.AddRange(New ToolStripItem() {InsertToolStripMenuItem, ImportToolStripMenuItem, ViewSpellsToolStripMenuItem, LocalisationManagerToolStripMenuItem, CoordinateBuilderToolStripMenuItem})
+        MenuStrip1.Items.AddRange(New ToolStripItem() {InsertToolStripMenuItem, LocalisationManagerToolStripMenuItem, CoordinateBuilderToolStripMenuItem})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.Name = "MenuStrip1"
         MenuStrip1.Padding = New Padding(7, 2, 0, 2)
@@ -243,31 +206,6 @@ Partial Class frmIATDatabaseManager
         BossToolStripMenuItem.Size = New Size(127, 22)
         BossToolStripMenuItem.Text = "Boss"
         ' 
-        ' ImportToolStripMenuItem
-        ' 
-        ImportToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {NPCsToolStripMenuItem, SpellsToolStripMenuItem})
-        ImportToolStripMenuItem.Name = "ImportToolStripMenuItem"
-        ImportToolStripMenuItem.Size = New Size(55, 20)
-        ImportToolStripMenuItem.Text = "Import"
-        ' 
-        ' NPCsToolStripMenuItem
-        ' 
-        NPCsToolStripMenuItem.Name = "NPCsToolStripMenuItem"
-        NPCsToolStripMenuItem.Size = New Size(106, 22)
-        NPCsToolStripMenuItem.Text = "NPC's"
-        ' 
-        ' SpellsToolStripMenuItem
-        ' 
-        SpellsToolStripMenuItem.Name = "SpellsToolStripMenuItem"
-        SpellsToolStripMenuItem.Size = New Size(106, 22)
-        SpellsToolStripMenuItem.Text = "Spells"
-        ' 
-        ' ViewSpellsToolStripMenuItem
-        ' 
-        ViewSpellsToolStripMenuItem.Name = "ViewSpellsToolStripMenuItem"
-        ViewSpellsToolStripMenuItem.Size = New Size(77, 20)
-        ViewSpellsToolStripMenuItem.Text = "View Spells"
-        ' 
         ' LocalisationManagerToolStripMenuItem
         ' 
         LocalisationManagerToolStripMenuItem.Name = "LocalisationManagerToolStripMenuItem"
@@ -280,17 +218,6 @@ Partial Class frmIATDatabaseManager
         CoordinateBuilderToolStripMenuItem.Size = New Size(118, 20)
         CoordinateBuilderToolStripMenuItem.Text = "Coordinate Builder"
         ' 
-        ' txtNewTactics
-        ' 
-        txtNewTactics.Dock = DockStyle.Fill
-        txtNewTactics.Location = New Point(4, 127)
-        txtNewTactics.Margin = New Padding(4, 3, 4, 3)
-        txtNewTactics.Multiline = True
-        txtNewTactics.Name = "txtNewTactics"
-        txtNewTactics.ScrollBars = ScrollBars.Vertical
-        txtNewTactics.Size = New Size(579, 118)
-        txtNewTactics.TabIndex = 53
-        ' 
         ' btnGenerateLocalisation
         ' 
         btnGenerateLocalisation.Location = New Point(391, 4)
@@ -300,17 +227,6 @@ Partial Class frmIATDatabaseManager
         btnGenerateLocalisation.TabIndex = 54
         btnGenerateLocalisation.Text = "Create Imgur Link"
         btnGenerateLocalisation.UseVisualStyleBackColor = True
-        ' 
-        ' txtInGame
-        ' 
-        txtInGame.Dock = DockStyle.Fill
-        txtInGame.Font = New Font("Microsoft Sans Serif", 11.25F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        txtInGame.Location = New Point(4, 375)
-        txtInGame.Margin = New Padding(4, 3, 4, 3)
-        txtInGame.Multiline = True
-        txtInGame.Name = "txtInGame"
-        txtInGame.Size = New Size(579, 119)
-        txtInGame.TabIndex = 55
         ' 
         ' btnUploadLocale
         ' 
@@ -723,7 +639,7 @@ Partial Class frmIATDatabaseManager
         ' 
         dgvTactics.AutoGenerateColumns = False
         dgvTactics.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        dgvTactics.Columns.AddRange(New DataGridViewColumn() {IdDataGridViewTextBoxColumn3, PatchDataGridViewTextBoxColumn, ImgurLinkDataGridViewTextBoxColumn, ImageNameDataGridViewTextBoxColumn, ImageWidthDataGridViewTextBoxColumn, ImageHeightDataGridViewTextBoxColumn, LocalisationIdDataGridViewTextBoxColumn, TacticParameterIdDataGridViewTextBoxColumn, LocalisationDataGridViewTextBoxColumn})
+        dgvTactics.Columns.AddRange(New DataGridViewColumn() {IdDataGridViewTextBoxColumn3, ImgurLinkDataGridViewTextBoxColumn, ImageNameDataGridViewTextBoxColumn, ImageWidthDataGridViewTextBoxColumn, ImageHeightDataGridViewTextBoxColumn, LocalisationIdDataGridViewTextBoxColumn, LocalisationDataGridViewTextBoxColumn})
         dgvTactics.DataSource = TacticsBindingSource
         dgvTactics.Dock = DockStyle.Fill
         dgvTactics.Location = New Point(3, 3)
@@ -736,12 +652,6 @@ Partial Class frmIATDatabaseManager
         IdDataGridViewTextBoxColumn3.DataPropertyName = "Id"
         IdDataGridViewTextBoxColumn3.HeaderText = "Id"
         IdDataGridViewTextBoxColumn3.Name = "IdDataGridViewTextBoxColumn3"
-        ' 
-        ' PatchDataGridViewTextBoxColumn
-        ' 
-        PatchDataGridViewTextBoxColumn.DataPropertyName = "Patch"
-        PatchDataGridViewTextBoxColumn.HeaderText = "Patch"
-        PatchDataGridViewTextBoxColumn.Name = "PatchDataGridViewTextBoxColumn"
         ' 
         ' ImgurLinkDataGridViewTextBoxColumn
         ' 
@@ -772,12 +682,6 @@ Partial Class frmIATDatabaseManager
         LocalisationIdDataGridViewTextBoxColumn.DataPropertyName = "LocalisationId"
         LocalisationIdDataGridViewTextBoxColumn.HeaderText = "LocalisationId"
         LocalisationIdDataGridViewTextBoxColumn.Name = "LocalisationIdDataGridViewTextBoxColumn"
-        ' 
-        ' TacticParameterIdDataGridViewTextBoxColumn
-        ' 
-        TacticParameterIdDataGridViewTextBoxColumn.DataPropertyName = "TacticParameterId"
-        TacticParameterIdDataGridViewTextBoxColumn.HeaderText = "TacticParameterId"
-        TacticParameterIdDataGridViewTextBoxColumn.Name = "TacticParameterIdDataGridViewTextBoxColumn"
         ' 
         ' LocalisationDataGridViewTextBoxColumn
         ' 
@@ -836,17 +740,15 @@ Partial Class frmIATDatabaseManager
         tlpContentLeft.ColumnCount = 1
         tlpContentLeft.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0F))
         tlpContentLeft.Controls.Add(Panel2, 0, 0)
-        tlpContentLeft.Controls.Add(txtInGame, 0, 3)
-        tlpContentLeft.Controls.Add(txtTacticsLocale, 0, 2)
-        tlpContentLeft.Controls.Add(txtNewTactics, 0, 1)
+        tlpContentLeft.Controls.Add(tcTactics, 0, 1)
         tlpContentLeft.Dock = DockStyle.Fill
         tlpContentLeft.Location = New Point(3, 3)
         tlpContentLeft.Name = "tlpContentLeft"
-        tlpContentLeft.RowCount = 4
+        tlpContentLeft.RowCount = 2
         tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
-        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
-        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
-        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
+        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 75.0F))
+        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
+        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
         tlpContentLeft.Size = New Size(587, 497)
         tlpContentLeft.TabIndex = 1
         ' 
@@ -858,11 +760,9 @@ Partial Class frmIATDatabaseManager
         Panel2.Controls.Add(btnGenerateLocalisationClassic)
         Panel2.Controls.Add(cboBosses)
         Panel2.Controls.Add(btnGenerateLocaleNoUpload)
-        Panel2.Controls.Add(Label3)
         Panel2.Controls.Add(btnUploadLocale)
         Panel2.Controls.Add(btnAddSpell)
         Panel2.Controls.Add(btnGenerateLocalisation)
-        Panel2.Controls.Add(cboNPC)
         Panel2.Controls.Add(btnInsertTactic)
         Panel2.Controls.Add(txtSpellName)
         Panel2.Controls.Add(Label4)
@@ -871,6 +771,37 @@ Partial Class frmIATDatabaseManager
         Panel2.Name = "Panel2"
         Panel2.Size = New Size(581, 118)
         Panel2.TabIndex = 0
+        ' 
+        ' tcTactics
+        ' 
+        tcTactics.Controls.Add(TabPage1)
+        tcTactics.Controls.Add(TabPage2)
+        tcTactics.Dock = DockStyle.Fill
+        tcTactics.Location = New Point(3, 127)
+        tcTactics.Name = "tcTactics"
+        tcTactics.SelectedIndex = 0
+        tcTactics.Size = New Size(581, 367)
+        tcTactics.TabIndex = 1
+        ' 
+        ' TabPage1
+        ' 
+        TabPage1.Location = New Point(4, 24)
+        TabPage1.Name = "TabPage1"
+        TabPage1.Padding = New Padding(3)
+        TabPage1.Size = New Size(573, 339)
+        TabPage1.TabIndex = 0
+        TabPage1.Text = "TabPage1"
+        TabPage1.UseVisualStyleBackColor = True
+        ' 
+        ' TabPage2
+        ' 
+        TabPage2.Location = New Point(4, 24)
+        TabPage2.Name = "TabPage2"
+        TabPage2.Padding = New Padding(3)
+        TabPage2.Size = New Size(573, 339)
+        TabPage2.TabIndex = 1
+        TabPage2.Text = "TabPage2"
+        TabPage2.UseVisualStyleBackColor = True
         ' 
         ' frmIATDatabaseManager
         ' 
@@ -905,9 +836,9 @@ Partial Class frmIATDatabaseManager
         CType(dgvTacticsParameters, ComponentModel.ISupportInitialize).EndInit()
         CType(TacticParameterBindingSource, ComponentModel.ISupportInitialize).EndInit()
         tlpContentLeft.ResumeLayout(False)
-        tlpContentLeft.PerformLayout()
         Panel2.ResumeLayout(False)
         Panel2.PerformLayout()
+        tcTactics.ResumeLayout(False)
         ResumeLayout(False)
         PerformLayout()
 
@@ -915,24 +846,15 @@ Partial Class frmIATDatabaseManager
 
     Friend WithEvents cboBosses As ComboBox
     Friend WithEvents Label1 As Label
-    Friend WithEvents txtTacticsLocale As TextBox
     Friend WithEvents btnInsertTactic As Button
-    Friend WithEvents Label3 As Label
-    Friend WithEvents cboNPC As ComboBox
     Friend WithEvents Label4 As Label
     Friend WithEvents MenuStrip1 As MenuStrip
     Friend WithEvents InsertToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ExpansionToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents InstanceToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BossToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents txtNewTactics As TextBox
     Friend WithEvents btnGenerateLocalisation As Button
-    Friend WithEvents txtInGame As TextBox
     Friend WithEvents btnUploadLocale As Button
-    Friend WithEvents ImportToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents NPCsToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents SpellsToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ViewSpellsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents txtSpellName As TextBox
     Friend WithEvents btnAddSpell As Button
     Friend WithEvents btnGenerateLocaleNoUpload As Button
@@ -1029,4 +951,7 @@ Partial Class frmIATDatabaseManager
     Friend WithEvents ParameterIDDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents ParameterTypeDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents TacticParameterBindingSource As BindingSource
+    Friend WithEvents tcTactics As TabControl
+    Friend WithEvents TabPage1 As TabPage
+    Friend WithEvents TabPage2 As TabPage
 End Class
