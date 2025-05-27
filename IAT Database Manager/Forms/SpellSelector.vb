@@ -1,26 +1,25 @@
-﻿Public Class NpcSelector
+﻿Public Class SpellSelector
     Private npcBindingSource As New BindingSource()
-    Private allNpcs As List(Of NPC)
+    Private allSpells As List(Of Spell)
 
-    Public SelectedNPC As NPC
+    Public SelectedSpell As Spell
 
     Private Async Sub NpcSelector_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Using db As New IATDbContext()
-            allNpcs = db.NPCs.OrderBy(Function(n) n.Name).ToList()
-            npcBindingSource.DataSource = allNpcs
-            dgvNPCs.DataSource = npcBindingSource
+            allSpells = db.Spells.OrderBy(Function(n) n.Name).ToList()
+            npcBindingSource.DataSource = allSpells
+            dgvSpells.DataSource = npcBindingSource
         End Using
 
-        dgvNPCs.Columns("Id").Visible = False
-        dgvNPCs.Columns("Cache").Visible = False
+        dgvSpells.Columns("Id").Visible = False
     End Sub
 
     Private Sub txtSearch_TextChanged(sender As Object, e As EventArgs) Handles txtSearch.TextChanged
         Dim filterText = txtSearch.Text.ToLower()
-        npcBindingSource.DataSource = allNpcs _
+        npcBindingSource.DataSource = allSpells _
         .Where(Function(n) n.Name IsNot Nothing AndAlso n.Name.ToLower().Contains(filterText)) _
         .ToList()
-        dgvNPCs.DataSource = npcBindingSource
+        dgvSpells.DataSource = npcBindingSource
 
         ' Open search in wowhead too
         Dim searchUrl As Uri = New Uri("https://www.wowhead.com/npcs/name:" & filterText)
@@ -32,16 +31,16 @@
         Me.Close()
     End Sub
 
-    Private Sub dgvNPCs_SelectionChanged(sender As Object, e As EventArgs) Handles dgvNPCs.SelectionChanged
-        If dgvNPCs.SelectedRows.Count > 0 Then
-            Dim npc As NPC = TryCast(dgvNPCs.SelectedRows(0).DataBoundItem, NPC)
-            If npc IsNot Nothing Then
-                SelectedNPC = npc
+    Private Sub dgvSpells_SelectionChanged(sender As Object, e As EventArgs) Handles dgvSpells.SelectionChanged
+        If dgvSpells.SelectedRows.Count > 0 Then
+            Dim spell As Spell = TryCast(dgvSpells.SelectedRows(0).DataBoundItem, Spell)
+            If spell IsNot Nothing Then
+                SelectedSpell = spell
             End If
         End If
     End Sub
 
-    Private Sub btnAddNPC_Click(sender As Object, e As EventArgs) Handles btnAddNPC.Click
+    Private Sub btnAddNPC_Click(sender As Object, e As EventArgs) Handles btnAddSpell.Click
         Browser.Show()
         Browser.wvBrowser.Source = New Uri("https://www.wowhead.com/npcs/name" & txtSearch.Text)
     End Sub

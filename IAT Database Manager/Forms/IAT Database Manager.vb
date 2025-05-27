@@ -27,7 +27,7 @@ Public Class frmIATDatabaseManager
     Private IATContext As IATDbContext
 
     ' Add this at class level to remember the clicked link ID or text
-    Private lastClickedNpcElementId As String = ""
+    Private lastClickedElementId As String = ""
 
     Private Sub InitialiseDatabase()
         Using db As New IATDbContext
@@ -48,6 +48,9 @@ Public Class frmIATDatabaseManager
 
         ' Import NPC Cache
         ImportNPCCache()
+
+        ' Spell Cache
+        ImportSpellIds()
 
         ' Load Translations
         splash.UpdateProgress("Loading Translations (0/13)", 1)
@@ -274,8 +277,12 @@ Public Class frmIATDatabaseManager
                                 replacement = "[Unknown NPC]"
                             End If
                         ElseIf param.ParameterType = "Spell" Then
-                            ' TODO: Add spell link if needed
-                            replacement = $"<a href=""spell:{param.ParameterID}"" >[Spell {param.ParameterID}]</a>"
+                            Dim spell = db.Spells.FirstOrDefault(Function(n) n.SpellId = param.ParameterID)
+                            If spell IsNot Nothing Then
+                                replacement = $"<a href=""spell:{spell.SpellId}:pos:{param.Id}"" id=""{param.Id}"" >[{spell.Name}]</a>"
+                            Else
+                                replacement = "[Unknown Spell]"
+                            End If
                         End If
 
                         tacticText = ReplaceFirst(tacticText, "%s", replacement)
@@ -315,7 +322,7 @@ Public Class frmIATDatabaseManager
                                                                                 Dim positionInfo As String = If(parts.Length > 2, parts(2), Nothing)
 
                                                                                 ' For example, assume positionInfo is the element ID suffix (e.g., 3)
-                                                                                lastClickedNpcElementId = positionInfo
+                                                                                lastClickedElementId = positionInfo
 
                                                                                 ' Open NPC Selector
                                                                                 Dim selector As New NpcSelector()
@@ -328,18 +335,44 @@ Public Class frmIATDatabaseManager
                                                                                         Dim npcNameEscaped As String = selectedNpc.Name.Replace("\", "\\").Replace("'", "\'")
 
                                                                                         Dim script As String =
-                                                                                            $"var elem = document.getElementById('{lastClickedNpcElementId}');" &
+                                                                                            $"var elem = document.getElementById('{lastClickedElementId}');" &
                                                                                             $"if (elem) {{" &
                                                                                                 $"elem.innerText = '{npcNameEscaped}';" &
-                                                                                                $"elem.setAttribute('href', 'npc:{selectedNpc.NPCID}:pos:{lastClickedNpcElementId}');" &
+                                                                                                $"elem.setAttribute('href', 'npc:{selectedNpc.NPCID}:pos:{lastClickedElementId}');" &
                                                                                             $"}}"
                                                                                         webView.CoreWebView2.ExecuteScriptAsync(script)
                                                                                     End If
                                                                                 End If
                                                                             ElseIf e2.Uri.StartsWith("spell:") Then
                                                                                 e2.Cancel = True
-                                                                                Dim spellId = e2.Uri.Substring("spell:".Length)
-                                                                                ' Handle spell link click if you want
+
+                                                                                ' Split the href into parts: "spell:12345:pos:3"
+                                                                                Dim parts = e2.Uri.Substring("spell:".Length).Split(":"c)
+                                                                                Dim npcId = parts(0)
+                                                                                Dim positionInfo As String = If(parts.Length > 2, parts(2), Nothing)
+
+                                                                                ' For example, assume positionInfo is the element ID suffix (e.g., 3)
+                                                                                lastClickedElementId = positionInfo
+
+                                                                                ' Open Spell Selector
+                                                                                Dim selector As New SpellSelector()
+                                                                                If selector.ShowDialog = DialogResult.OK Then
+                                                                                    ' Get selected NPC from the selector
+                                                                                    Dim selectedSpell As Spell = selector.SelectedSpell
+                                                                                    If selectedSpell IsNot Nothing Then
+                                                                                        ' Update the HTML element with the new NPC name and ID
+
+                                                                                        Dim spellNameEscaped As String = selectedSpell.Name.Replace("\", "\\").Replace("'", "\'")
+
+                                                                                        Dim script As String =
+                                                                                            $"var elem = document.getElementById('{lastClickedElementId}');" &
+                                                                                            $"if (elem) {{" &
+                                                                                                $"elem.innerText = '{spellNameEscaped}';" &
+                                                                                                $"elem.setAttribute('href', 'npc:{selectedSpell.SpellId}:pos:{lastClickedElementId}');" &
+                                                                                            $"}}"
+                                                                                        webView.CoreWebView2.ExecuteScriptAsync(script)
+                                                                                    End If
+                                                                                End If
                                                                             End If
                                                                         End Sub
                     ' Load HTML content into WebView2

@@ -466,4 +466,26 @@ Module DBMigration
             db.SaveChanges()
         End Using
     End Sub
+
+    ''' <summary>
+    ''' Import Spell ID's from SpellIDs.lua
+    ''' </summary>
+    Public Sub ImportSpellIds()
+        Dim lines = File.ReadAllLines("SpellIDs.csv")
+
+        Using db As New IATDbContext()
+            For Each line As String In lines
+                Dim strArr As String() = line.Split(",")
+
+                Dim spell As New Spell With {
+                    .SpellId = strArr(0),
+                    .Name = strArr(1)
+                }
+
+                db.Spells.Add(spell)
+            Next
+
+            db.SaveChanges()
+        End Using
+    End Sub
 End Module

@@ -12,6 +12,7 @@ Public Class IATDbContext
     Public Property Localisations As DbSet(Of Localisation)
     Public Property Translations As DbSet(Of Translation)
     Public Property NPCs As DbSet(Of NPC)
+    Public Property Spells As DbSet(Of Spell)
 
     Protected Overrides Sub OnConfiguring(optionsBuilder As DbContextOptionsBuilder)
         optionsBuilder.UseLazyLoadingProxies()
