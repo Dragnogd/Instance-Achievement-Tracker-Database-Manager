@@ -468,6 +468,34 @@ Module DBMigration
     End Sub
 
     ''' <summary>
+    ''' Import Item Cache from ItemCache.lua
+    ''' </summary>
+    Public Sub ImportItemCache()
+        Dim lines = File.ReadAllLines("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua")
+
+        Using db As New IATDbContext()
+            For Each line As String In lines
+                ' Match pattern like: [123456] =123456, --Name
+                Dim match As Match = Regex.Match(line, "\[(\d+)\]\s*=\s*\d+,\s*--(.+)$")
+
+                If match.Success Then
+                    Dim itemId As Integer = Integer.Parse(match.Groups(1).Value)
+                    Dim name As String = match.Groups(2).Value.Trim()
+
+                    Dim item As New Item With {
+                        .ItemId = itemId,
+                        .Name = name
+                    }
+
+                    db.Items.Add(item)
+                End If
+            Next
+
+            db.SaveChanges()
+        End Using
+    End Sub
+
+    ''' <summary>
     ''' Import Spell ID's from SpellIDs.lua
     ''' </summary>
     Public Sub ImportSpellIds()

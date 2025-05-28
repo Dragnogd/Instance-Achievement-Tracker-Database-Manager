@@ -27,18 +27,14 @@ Partial Class frmIATDatabaseManager
         cboBosses = New ComboBox()
         Label1 = New Label()
         btnInsertTactic = New Button()
-        Label4 = New Label()
         MenuStrip1 = New MenuStrip()
         InsertToolStripMenuItem = New ToolStripMenuItem()
         ExpansionToolStripMenuItem = New ToolStripMenuItem()
         InstanceToolStripMenuItem = New ToolStripMenuItem()
         BossToolStripMenuItem = New ToolStripMenuItem()
         LocalisationManagerToolStripMenuItem = New ToolStripMenuItem()
-        CoordinateBuilderToolStripMenuItem = New ToolStripMenuItem()
         btnGenerateLocalisation = New Button()
         btnUploadLocale = New Button()
-        txtSpellName = New TextBox()
-        btnAddSpell = New Button()
         btnGenerateLocaleNoUpload = New Button()
         btnTestTranslationClassic = New Button()
         btnUploadLocaleClassic = New Button()
@@ -153,7 +149,7 @@ Partial Class frmIATDatabaseManager
         ' btnInsertTactic
         ' 
         btnInsertTactic.Font = New Font("Microsoft Sans Serif", 8.25F)
-        btnInsertTactic.Location = New Point(286, 87)
+        btnInsertTactic.Location = New Point(447, 4)
         btnInsertTactic.Margin = New Padding(4, 3, 4, 3)
         btnInsertTactic.Name = "btnInsertTactic"
         btnInsertTactic.Size = New Size(130, 26)
@@ -161,19 +157,9 @@ Partial Class frmIATDatabaseManager
         btnInsertTactic.Text = "Save Changes"
         btnInsertTactic.UseVisualStyleBackColor = True
         ' 
-        ' Label4
-        ' 
-        Label4.AutoSize = True
-        Label4.Location = New Point(10, 43)
-        Label4.Margin = New Padding(4, 0, 4, 0)
-        Label4.Name = "Label4"
-        Label4.Size = New Size(96, 15)
-        Label4.TabIndex = 8
-        Label4.Text = "Item/Spell Name"
-        ' 
         ' MenuStrip1
         ' 
-        MenuStrip1.Items.AddRange(New ToolStripItem() {InsertToolStripMenuItem, LocalisationManagerToolStripMenuItem, CoordinateBuilderToolStripMenuItem})
+        MenuStrip1.Items.AddRange(New ToolStripItem() {InsertToolStripMenuItem, LocalisationManagerToolStripMenuItem})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.Name = "MenuStrip1"
         MenuStrip1.Padding = New Padding(7, 2, 0, 2)
@@ -191,19 +177,19 @@ Partial Class frmIATDatabaseManager
         ' ExpansionToolStripMenuItem
         ' 
         ExpansionToolStripMenuItem.Name = "ExpansionToolStripMenuItem"
-        ExpansionToolStripMenuItem.Size = New Size(127, 22)
+        ExpansionToolStripMenuItem.Size = New Size(180, 22)
         ExpansionToolStripMenuItem.Text = "Expansion"
         ' 
         ' InstanceToolStripMenuItem
         ' 
         InstanceToolStripMenuItem.Name = "InstanceToolStripMenuItem"
-        InstanceToolStripMenuItem.Size = New Size(127, 22)
+        InstanceToolStripMenuItem.Size = New Size(180, 22)
         InstanceToolStripMenuItem.Text = "Instance"
         ' 
         ' BossToolStripMenuItem
         ' 
         BossToolStripMenuItem.Name = "BossToolStripMenuItem"
-        BossToolStripMenuItem.Size = New Size(127, 22)
+        BossToolStripMenuItem.Size = New Size(180, 22)
         BossToolStripMenuItem.Text = "Boss"
         ' 
         ' LocalisationManagerToolStripMenuItem
@@ -212,15 +198,9 @@ Partial Class frmIATDatabaseManager
         LocalisationManagerToolStripMenuItem.Size = New Size(123, 20)
         LocalisationManagerToolStripMenuItem.Text = "Update Localisation"
         ' 
-        ' CoordinateBuilderToolStripMenuItem
-        ' 
-        CoordinateBuilderToolStripMenuItem.Name = "CoordinateBuilderToolStripMenuItem"
-        CoordinateBuilderToolStripMenuItem.Size = New Size(118, 20)
-        CoordinateBuilderToolStripMenuItem.Text = "Coordinate Builder"
-        ' 
         ' btnGenerateLocalisation
         ' 
-        btnGenerateLocalisation.Location = New Point(391, 4)
+        btnGenerateLocalisation.Location = New Point(285, 62)
         btnGenerateLocalisation.Margin = New Padding(4, 3, 4, 3)
         btnGenerateLocalisation.Name = "btnGenerateLocalisation"
         btnGenerateLocalisation.Size = New Size(126, 22)
@@ -231,7 +211,7 @@ Partial Class frmIATDatabaseManager
         ' btnUploadLocale
         ' 
         btnUploadLocale.Font = New Font("Microsoft Sans Serif", 8.25F)
-        btnUploadLocale.Location = New Point(148, 93)
+        btnUploadLocale.Location = New Point(148, 64)
         btnUploadLocale.Margin = New Padding(4, 3, 4, 3)
         btnUploadLocale.Name = "btnUploadLocale"
         btnUploadLocale.Size = New Size(130, 20)
@@ -239,27 +219,9 @@ Partial Class frmIATDatabaseManager
         btnUploadLocale.Text = "Upload Locale"
         btnUploadLocale.UseVisualStyleBackColor = True
         ' 
-        ' txtSpellName
-        ' 
-        txtSpellName.Location = New Point(114, 36)
-        txtSpellName.Margin = New Padding(4, 3, 4, 3)
-        txtSpellName.Name = "txtSpellName"
-        txtSpellName.Size = New Size(148, 23)
-        txtSpellName.TabIndex = 61
-        ' 
-        ' btnAddSpell
-        ' 
-        btnAddSpell.Location = New Point(269, 32)
-        btnAddSpell.Margin = New Padding(4, 3, 4, 3)
-        btnAddSpell.Name = "btnAddSpell"
-        btnAddSpell.Size = New Size(58, 28)
-        btnAddSpell.TabIndex = 62
-        btnAddSpell.Text = "Insert"
-        btnAddSpell.UseVisualStyleBackColor = True
-        ' 
         ' btnGenerateLocaleNoUpload
         ' 
-        btnGenerateLocaleNoUpload.Location = New Point(391, 28)
+        btnGenerateLocaleNoUpload.Location = New Point(82, 37)
         btnGenerateLocaleNoUpload.Margin = New Padding(4, 3, 4, 3)
         btnGenerateLocaleNoUpload.Name = "btnGenerateLocaleNoUpload"
         btnGenerateLocaleNoUpload.Size = New Size(135, 22)
@@ -269,7 +231,7 @@ Partial Class frmIATDatabaseManager
         ' 
         ' btnTestTranslationClassic
         ' 
-        btnTestTranslationClassic.Location = New Point(419, 82)
+        btnTestTranslationClassic.Location = New Point(417, 62)
         btnTestTranslationClassic.Margin = New Padding(4, 3, 4, 3)
         btnTestTranslationClassic.Name = "btnTestTranslationClassic"
         btnTestTranslationClassic.Size = New Size(160, 22)
@@ -280,7 +242,7 @@ Partial Class frmIATDatabaseManager
         ' btnUploadLocaleClassic
         ' 
         btnUploadLocaleClassic.Font = New Font("Microsoft Sans Serif", 8.25F)
-        btnUploadLocaleClassic.Location = New Point(10, 94)
+        btnUploadLocaleClassic.Location = New Point(10, 65)
         btnUploadLocaleClassic.Margin = New Padding(4, 3, 4, 3)
         btnUploadLocaleClassic.Name = "btnUploadLocaleClassic"
         btnUploadLocaleClassic.Size = New Size(130, 19)
@@ -290,7 +252,7 @@ Partial Class frmIATDatabaseManager
         ' 
         ' btnGenerateLocalisationClassic
         ' 
-        btnGenerateLocalisationClassic.Location = New Point(393, 54)
+        btnGenerateLocalisationClassic.Location = New Point(255, 37)
         btnGenerateLocalisationClassic.Margin = New Padding(4, 3, 4, 3)
         btnGenerateLocalisationClassic.Name = "btnGenerateLocalisationClassic"
         btnGenerateLocalisationClassic.Size = New Size(186, 22)
@@ -343,14 +305,14 @@ Partial Class frmIATDatabaseManager
         tlpContainer.Location = New Point(0, 24)
         tlpContainer.Name = "tlpContainer"
         tlpContainer.RowCount = 1
-        tlpContainer.RowStyles.Add(New RowStyle(SizeType.Percent, 100.0F))
+        tlpContainer.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
         tlpContainer.Size = New Size(1489, 503)
         tlpContainer.TabIndex = 76
         ' 
         ' tlpContentRight
         ' 
         tlpContentRight.ColumnCount = 1
-        tlpContentRight.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0F))
+        tlpContentRight.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
         tlpContentRight.Controls.Add(TableLayoutPanel1, 0, 0)
         tlpContentRight.Controls.Add(TableLayoutPanel2, 0, 1)
         tlpContentRight.Controls.Add(TableLayoutPanel3, 0, 2)
@@ -358,24 +320,24 @@ Partial Class frmIATDatabaseManager
         tlpContentRight.Location = New Point(596, 3)
         tlpContentRight.Name = "tlpContentRight"
         tlpContentRight.RowCount = 3
-        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
-        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
-        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
+        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 25F))
+        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 25F))
+        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 25F))
         tlpContentRight.Size = New Size(890, 497)
         tlpContentRight.TabIndex = 0
         ' 
         ' TableLayoutPanel1
         ' 
         TableLayoutPanel1.ColumnCount = 2
-        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0F))
-        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0F))
+        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
+        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
         TableLayoutPanel1.Controls.Add(dgvExpansions, 0, 0)
         TableLayoutPanel1.Controls.Add(dgvInstanceTypes, 1, 0)
         TableLayoutPanel1.Dock = DockStyle.Fill
         TableLayoutPanel1.Location = New Point(3, 3)
         TableLayoutPanel1.Name = "TableLayoutPanel1"
         TableLayoutPanel1.RowCount = 1
-        TableLayoutPanel1.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0F))
+        TableLayoutPanel1.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
         TableLayoutPanel1.Size = New Size(884, 159)
         TableLayoutPanel1.TabIndex = 79
         ' 
@@ -411,15 +373,15 @@ Partial Class frmIATDatabaseManager
         ' TableLayoutPanel2
         ' 
         TableLayoutPanel2.ColumnCount = 2
-        TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0F))
-        TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0F))
+        TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
+        TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
         TableLayoutPanel2.Controls.Add(dgvBosses, 1, 0)
         TableLayoutPanel2.Controls.Add(dgvInstances, 0, 0)
         TableLayoutPanel2.Dock = DockStyle.Fill
         TableLayoutPanel2.Location = New Point(3, 168)
         TableLayoutPanel2.Name = "TableLayoutPanel2"
         TableLayoutPanel2.RowCount = 1
-        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0F))
+        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
         TableLayoutPanel2.Size = New Size(884, 159)
         TableLayoutPanel2.TabIndex = 80
         ' 
@@ -631,7 +593,7 @@ Partial Class frmIATDatabaseManager
         TableLayoutPanel3.Location = New Point(3, 333)
         TableLayoutPanel3.Name = "TableLayoutPanel3"
         TableLayoutPanel3.RowCount = 1
-        TableLayoutPanel3.RowStyles.Add(New RowStyle(SizeType.Percent, 100.0F))
+        TableLayoutPanel3.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
         TableLayoutPanel3.Size = New Size(884, 161)
         TableLayoutPanel3.TabIndex = 81
         ' 
@@ -738,17 +700,17 @@ Partial Class frmIATDatabaseManager
         ' tlpContentLeft
         ' 
         tlpContentLeft.ColumnCount = 1
-        tlpContentLeft.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0F))
+        tlpContentLeft.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
         tlpContentLeft.Controls.Add(Panel2, 0, 0)
         tlpContentLeft.Controls.Add(tcTactics, 0, 1)
         tlpContentLeft.Dock = DockStyle.Fill
         tlpContentLeft.Location = New Point(3, 3)
         tlpContentLeft.Name = "tlpContentLeft"
         tlpContentLeft.RowCount = 2
-        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
-        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 75.0F))
-        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
-        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
+        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25F))
+        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 75F))
+        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
         tlpContentLeft.Size = New Size(587, 497)
         tlpContentLeft.TabIndex = 1
         ' 
@@ -761,11 +723,8 @@ Partial Class frmIATDatabaseManager
         Panel2.Controls.Add(cboBosses)
         Panel2.Controls.Add(btnGenerateLocaleNoUpload)
         Panel2.Controls.Add(btnUploadLocale)
-        Panel2.Controls.Add(btnAddSpell)
         Panel2.Controls.Add(btnGenerateLocalisation)
         Panel2.Controls.Add(btnInsertTactic)
-        Panel2.Controls.Add(txtSpellName)
-        Panel2.Controls.Add(Label4)
         Panel2.Dock = DockStyle.Fill
         Panel2.Location = New Point(3, 3)
         Panel2.Name = "Panel2"
@@ -805,7 +764,7 @@ Partial Class frmIATDatabaseManager
         ' 
         ' frmIATDatabaseManager
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1489, 527)
         Controls.Add(tlpContainer)
@@ -847,7 +806,6 @@ Partial Class frmIATDatabaseManager
     Friend WithEvents cboBosses As ComboBox
     Friend WithEvents Label1 As Label
     Friend WithEvents btnInsertTactic As Button
-    Friend WithEvents Label4 As Label
     Friend WithEvents MenuStrip1 As MenuStrip
     Friend WithEvents InsertToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ExpansionToolStripMenuItem As ToolStripMenuItem
@@ -855,11 +813,8 @@ Partial Class frmIATDatabaseManager
     Friend WithEvents BossToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents btnGenerateLocalisation As Button
     Friend WithEvents btnUploadLocale As Button
-    Friend WithEvents txtSpellName As TextBox
-    Friend WithEvents btnAddSpell As Button
     Friend WithEvents btnGenerateLocaleNoUpload As Button
     Friend WithEvents LocalisationManagerToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents CoordinateBuilderToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents btnTestTranslationClassic As Button
     Friend WithEvents btnUploadLocaleClassic As Button
     Friend WithEvents btnGenerateLocalisationClassic As Button

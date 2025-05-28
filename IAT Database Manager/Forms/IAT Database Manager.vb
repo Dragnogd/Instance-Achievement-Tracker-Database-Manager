@@ -52,6 +52,9 @@ Public Class frmIATDatabaseManager
         ' Spell Cache
         ImportSpellIds()
 
+        ' Item Cache
+        ImportItemCache()
+
         ' Load Translations
         splash.UpdateProgress("Loading Translations (0/13)", 1)
         Dim languageFiles As String() = {"Localization.frFR.lua", "Localization.deDE.lua", "Localization.esES.lua", "Localization.ruRU.lua", "Localization.esMX.lua", "Localization.zhCN.lua", "Localization.zhTW.lua", "Localization.ptBR.lua", "Localization.koKR.lua"}
@@ -321,28 +324,11 @@ Public Class frmIATDatabaseManager
                                                                                 Dim npcId = parts(0)
                                                                                 Dim positionInfo As String = If(parts.Length > 2, parts(2), Nothing)
 
-                                                                                ' For example, assume positionInfo is the element ID suffix (e.g., 3)
-                                                                                lastClickedElementId = positionInfo
-
-                                                                                ' Open NPC Selector
-                                                                                Dim selector As New NpcSelector()
-                                                                                If selector.ShowDialog = DialogResult.OK Then
-                                                                                    ' Get selected NPC from the selector
-                                                                                    Dim selectedNpc As NPC = selector.SelectedNPC
-                                                                                    If selectedNpc IsNot Nothing Then
-                                                                                        ' Update the HTML element with the new NPC name and ID
-
-                                                                                        Dim npcNameEscaped As String = selectedNpc.Name.Replace("\", "\\").Replace("'", "\'")
-
-                                                                                        Dim script As String =
-                                                                                            $"var elem = document.getElementById('{lastClickedElementId}');" &
-                                                                                            $"if (elem) {{" &
-                                                                                                $"elem.innerText = '{npcNameEscaped}';" &
-                                                                                                $"elem.setAttribute('href', 'npc:{selectedNpc.NPCID}:pos:{lastClickedElementId}');" &
-                                                                                            $"}}"
-                                                                                        webView.CoreWebView2.ExecuteScriptAsync(script)
-                                                                                    End If
-                                                                                End If
+                                                                                Dim selector As New EntitySelector With {
+                                                                                    .TypeToLoad = EntityType.NPC,
+                                                                                    .SelectedItemIndex = positionInfo
+                                                                                }
+                                                                                selector.Show()
                                                                             ElseIf e2.Uri.StartsWith("spell:") Then
                                                                                 e2.Cancel = True
 
@@ -355,24 +341,11 @@ Public Class frmIATDatabaseManager
                                                                                 lastClickedElementId = positionInfo
 
                                                                                 ' Open Spell Selector
-                                                                                Dim selector As New SpellSelector()
-                                                                                If selector.ShowDialog = DialogResult.OK Then
-                                                                                    ' Get selected NPC from the selector
-                                                                                    Dim selectedSpell As Spell = selector.SelectedSpell
-                                                                                    If selectedSpell IsNot Nothing Then
-                                                                                        ' Update the HTML element with the new NPC name and ID
-
-                                                                                        Dim spellNameEscaped As String = selectedSpell.Name.Replace("\", "\\").Replace("'", "\'")
-
-                                                                                        Dim script As String =
-                                                                                            $"var elem = document.getElementById('{lastClickedElementId}');" &
-                                                                                            $"if (elem) {{" &
-                                                                                                $"elem.innerText = '{spellNameEscaped}';" &
-                                                                                                $"elem.setAttribute('href', 'npc:{selectedSpell.SpellId}:pos:{lastClickedElementId}');" &
-                                                                                            $"}}"
-                                                                                        webView.CoreWebView2.ExecuteScriptAsync(script)
-                                                                                    End If
-                                                                                End If
+                                                                                Dim selector As New EntitySelector With {
+                                                                                    .TypeToLoad = EntityType.Spell,
+                                                                                    .SelectedItemIndex = positionInfo
+                                                                                }
+                                                                                selector.Show()
                                                                             End If
                                                                         End Sub
                     ' Load HTML content into WebView2
@@ -1133,64 +1106,6 @@ Public Class frmIATDatabaseManager
         MsgBox("Complete")
     End Sub
 
-    Private Sub btnAddSpell_Click(sender As Object, e As EventArgs) Handles btnAddSpell.Click
-        ''Found a spell
-        'If WebView2.CoreWebView2.Source.ToString.Contains("https://www.wowhead.com/spell=") Then
-        '    Dim address = WebView2.CoreWebView2.Source.ToString.Replace("https://www.wowhead.com/spell=", "").Split("/")(0)
-        '    'Dim address = chromeBrowser.Address.Replace("https://www.wowhead.com/spell=", "").Split("/")(0)
-        '    Clipboard.SetText("[" & address & "|" & txtSpellName.Text & "]")
-
-        '    Dim IDFoundInCache = False
-        '    Using reader As StreamReader = New StreamReader("SpellIDS.csv")
-        '        Dim line = reader.ReadLine
-
-        '        While Not line Is Nothing
-        '            If line.Contains(address) Then
-        '                IDFoundInCache = True
-        '            End If
-        '            line = reader.ReadLine
-        '        End While
-        '    End Using
-
-        '    If IDFoundInCache = False Then
-        '        Using writer As StreamWriter = New StreamWriter("SpellIDS.csv", True)
-        '            writer.WriteLine(address & "," & txtSpellName.Text)
-        '        End Using
-        '    End If
-        'ElseIf WebView2.CoreWebView2.Source.ToString.Contains("https://www.wowhead.com/item=") Then
-        '    Dim address = WebView2.CoreWebView2.Source.ToString.Replace("https://www.wowhead.com/item=", "").Split("/")(0)
-        '    Clipboard.SetText("[ITEM_" & address & "|" & txtSpellName.Text & "]")
-
-        '    Dim IDFoundInCache = False
-        '    Using reader As StreamReader = New StreamReader("ItemIDS.csv")
-        '        Dim line = reader.ReadLine
-
-        '        While Not line Is Nothing
-        '            If line.Contains(address) Then
-        '                IDFoundInCache = True
-        '            End If
-        '            line = reader.ReadLine
-        '        End While
-        '    End Using
-
-        '    If IDFoundInCache = False Then
-        '        Using writer As StreamWriter = New StreamWriter("ItemIDS.csv", True)
-        '            writer.WriteLine(address & "," & txtSpellName.Text)
-        '        End Using
-        '    End If
-        'End If
-
-        'LoadWebsite("https://www.wowhead.com/achievement=" & txtAchievement.Text & "#comments")
-    End Sub
-
-    Private Sub txtSpellName_Enter(sender As Object, e As EventArgs) Handles txtSpellName.Enter
-        LoadWebsite("https://www.wowhead.com/search?q=" & txtSpellName.Text)
-    End Sub
-
-    Private Sub Label25_Click(sender As Object, e As EventArgs)
-        ' LoadWebsite("https://www.wowhead.com/achievement=" & txtAchievement.Text)
-    End Sub
-
     Private Sub btnGenerateLocaleNoUpload_Click(sender As Object, e As EventArgs) Handles btnGenerateLocaleNoUpload.Click
         'txtTacticsLocale.Text = ""
         'txtTactics.Text = ""
@@ -1388,10 +1303,6 @@ Public Class frmIATDatabaseManager
         'Return result.Result.Split("\u003")(0).Trim("""").Trim()
         CheckingSpellName = True
     End Function
-
-    Private Sub txtSpellName_TextChanged(sender As Object, e As EventArgs) Handles txtSpellName.TextChanged
-        LoadWebsite("https://www.wowhead.com/search?q=" & txtSpellName.Text)
-    End Sub
 
     Private Sub btnTestTranslationClassic_Click(sender As Object, e As EventArgs) Handles btnTestTranslationClassic.Click
         'txtTacticsLocaleClassic.Text = ""

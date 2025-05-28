@@ -1,10 +1,8 @@
-﻿Public Class NPC
+﻿Public Class Item
     ' Primary Key
     Public Property Id As Integer
     ' NPC ID
-    Public Property NPCId As Integer
+    Public Property ItemId As Integer
     ' The user friendly name of the NPC
     Public Property Name As String
-    ' Whether we are caching the NPC in client
-    Public Property Cache As Boolean = False
 End Class
