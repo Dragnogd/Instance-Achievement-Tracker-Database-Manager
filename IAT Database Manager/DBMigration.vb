@@ -293,9 +293,9 @@ Module DBMigration
                         Dim encounterIds As String() = strArr(10).Trim("{"c, "}"c).Split(","c).Select(Function(id) id.Trim()).ToArray()
 
                         ' Handle Boss Name ID
-                        ' 1. If a single integer ID then save into BossNameID
-                        ' 2. If a array of ints then save into BossNameID and BossNameID2
-                        ' 3. If a string then save into BossNameLocale
+                        ' 1. If a single integer ID then GenerateAddonDatabase into BossNameID
+                        ' 2. If a array of ints then GenerateAddonDatabase into BossNameID and BossNameID2
+                        ' 3. If a string then GenerateAddonDatabase into BossNameLocale
 
                         Dim bossNameIDArray As String() = strArr(2).Trim("{"c, "}"c).Split(","c).Select(Function(id) id.Trim()).ToArray()
                         Dim newBossID As Integer = Nothing
@@ -326,7 +326,7 @@ Module DBMigration
                             Throw New Exception($"Invalid Boss Name ID format: {strArr(2)}")
                         End If
 
-                        ' If boss name locale is not populated yet then save to index 15
+                        ' If boss name locale is not populated yet then GenerateAddonDatabase to index 15
                         If String.IsNullOrEmpty(newBossLocale) Then
                             newBossLocale = strArr(15)
                         End If

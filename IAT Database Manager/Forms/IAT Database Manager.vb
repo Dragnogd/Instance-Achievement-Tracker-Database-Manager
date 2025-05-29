@@ -1,13 +1,17 @@
 ﻿Imports System.Data
 Imports System.IO
 Imports System.Net.Http
+Imports System.Runtime.Intrinsics
 Imports System.Text.RegularExpressions
+Imports System.Windows.Controls
 Imports Imgur.API.Authentication
 Imports Imgur.API.Endpoints
 Imports Microsoft.EntityFrameworkCore
 Imports Microsoft.EntityFrameworkCore.ChangeTracking
 Imports Microsoft.Web.WebView2.WinForms
-
+Imports Serilog
+Imports Serilog.Sinks.RichTextBox.WinForms
+Imports Serilog.Sinks.RichTextBox.WinForms.Themes
 
 Public Class frmIATDatabaseManager
     Public CentralDB As New List(Of Expansion)
@@ -33,10 +37,16 @@ Public Class frmIATDatabaseManager
         Using db As New IATDbContext
             db.Database.EnsureDeleted()
             db.Database.EnsureCreated()
+            Log.Information("Database initialised successfully")
         End Using
     End Sub
 
     Private Sub frmIATDatabaseManager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Initialize Serilog logger
+        Log.Logger = New LoggerConfiguration() _
+            .WriteTo.RichTextBox(rtbLog) _
+            .CreateLogger()
+
         ' Make sure SQLite Database is created
         InitialiseDatabase()
 
@@ -95,147 +105,6 @@ Public Class frmIATDatabaseManager
             cboBosses.ValueMember = "Id"
         End Using
 
-        'splash.UpdateProgress("Loading Localisation (7/13)", 7)
-        ''Insert Localisation
-        'If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua") Then
-        '    Try
-        '        File.Delete("Localization.enUS.lua")
-        '        File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua", "Localization.enUS.lua")
-        '    Catch ex As Exception
-
-        '    End Try
-        'End If
-        'Using reader As StreamReader = New StreamReader("Localization.enUS.lua")
-        '    Dim line = reader.ReadLine
-
-        '    While Not line Is Nothing
-        '        If line.Contains("] =") And line.Contains("[""") Then
-        '            Dim regex As Regex = New Regex("\[(.*?)\]")
-        '            Dim match As Match = regex.Match(line)
-        '            Dim Locale = match.Value.Trim("[".ToCharArray()).Trim("]".ToCharArray())
-
-        '            For Each expansion In CentralDB
-        '                For Each instancetype In expansion.InstanceTypes
-        '                    For Each instance In instancetype.Instances
-        '                        For Each boss In instance.Bosses
-        '                            If boss.Tactics.Contains(Locale) Then
-        '                                boss.LocaleText = line.Split("=")(1).Trim().Trim("""".ToCharArray()).Trim(",").Trim("""")
-        '                                boss.LocaleName = line.Split("=")(0).Trim().Replace("[", "").Replace("]", "").Replace("""", "")
-        '                            End If
-        '                            If boss.ClassicTactics.Contains(Locale) Then
-        '                                boss.LocaleTextClassic = line.Split("=")(1).Trim().Trim("""".ToCharArray()).Trim(",").Trim("""")
-        '                                boss.LocaleNameClassic = line.Split("=")(0).Trim().Replace("[", "").Replace("]", "").Replace("""", "")
-        '                            End If
-        '                        Next
-        '                    Next
-        '                Next
-        '            Next
-
-        '            Dim NewLocalisation = New Localisation
-        '            NewLocalisation.Text = line.Split("=")(1).Trim().Trim("""".ToCharArray()).Trim(",").Trim("""")
-        '            NewLocalisation.Name = line.Split("=")(0).Trim().Replace("[", "").Replace("]", "").Replace("""", "")
-        '            LocalisationDB.Add(NewLocalisation)
-        '        End If
-        '        line = reader.ReadLine
-        '    End While
-        'End Using
-
-        'splash.UpdateProgress("Populating Expansions & Instances (8/13)", 8)
-        'For Each expansion In CentralDB
-        '    cboExpansions.Items.Add(expansion.Name)
-        '    For Each instancetype In expansion.InstanceTypes
-        '        For Each instance In instancetype.Instances
-        '            cboInstances.Items.Add(instance.Name)
-        '            For Each boss In instance.Bosses
-        '                'cboBosses.Items.Add(boss.BossName)
-        '            Next
-        '        Next
-        '    Next
-        'Next
-
-        'splash.UpdateProgress("Loading NPC Data (9/13)", 9)
-        ''Insert NPC's
-        'lines = IO.File.ReadAllLines("NPCDB.csv")
-        'NPCTable.Columns.Add(New DataColumn("ID", GetType(String)))
-        'NPCTable.Columns.Add(New DataColumn("Name", GetType(String)))
-        'Dim Count = 0
-        'For Each line In lines
-        '    If line.Contains(";") Then
-        '        Dim strArr() As String = line.Split(";")
-        '        Dim NewNPC = New NPC
-        '        NewNPC.Name = strArr(1)
-        '        NewNPC.ID = strArr(0)
-        '        NPCDB.Add(NewNPC)
-        '        Dim R As DataRow = NPCTable.NewRow
-        '        R("Name") = NewNPC.Name
-        '        R("ID") = NewNPC.ID
-        '        NPCTable.Rows.Add(R)
-        '    End If
-        '    Count += 1
-        'Next
-        'Console.WriteLine("Loaded " & Count & " NPC's")
-
-        'splash.UpdateProgress("Populating NPC's (10/13)", 10)
-        'cboNPC.DataSource = NPCTable
-        'cboNPC.DisplayMember = "Name"
-        'cboNPC.ValueMember = "ID"
-
-        'splash.UpdateProgress("Loading NPC Cache (13/13)", 13)
-        ''Insert NPCCache
-        'If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua") Then
-        '    Try
-        '        File.Delete("NPCCache.lua")
-        '        File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua", "NPCCache.lua")
-        '    Catch ex As Exception
-
-        '    End Try
-        'End If
-        'Using reader As StreamReader = New StreamReader("NPCCache.lua")
-        '    Dim line = reader.ReadLine
-        '    Dim NpcCacheType = "Retail"
-
-        '    While Not line Is Nothing
-        '        If line.Contains("core.NPCCacheClassic = {") Then
-        '            NpcCacheType = "Classic"
-        '        End If
-        '        If line.Contains("] =") Then
-        '            Dim NewNPCCache = New NPCCache
-        '            NewNPCCache.Name = line.Split("=")(1).Split(",")(1).Replace("--", "").Trim().Trim("""".ToCharArray()).Trim(",").Trim("""")
-        '            NewNPCCache.ID = line.Split("=")(0).Trim().Replace("[", "").Replace("]", "").Replace("""", "")
-
-        '            If NpcCacheType = "Retail" Then
-        '                NPCCacheDB.Add(NewNPCCache)
-        '            ElseIf NpcCacheType = "Classic" Then
-        '                NPCCacheClassicDB.add(NewNPCCache)
-        '            End If
-        '        End If
-        '        line = reader.ReadLine
-        '    End While
-        'End Using
-
-        'splash.UpdateProgress("Loading Item Cache (14/13)", 13)
-        ''Insert ItemCache
-        'If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua") Then
-        '    Try
-        '        File.Delete("ItemCache.lua")
-        '        File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua", "ItemCache.lua")
-        '    Catch ex As Exception
-
-        '    End Try
-        'End If
-        'Using reader As StreamReader = New StreamReader("ItemCache.lua")
-        '    Dim line = reader.ReadLine
-
-        '    While Not line Is Nothing
-        '        If line.Contains("] =") Then
-        '            Dim NewItemCache = New ItemCache
-        '            NewItemCache.Name = line.Split("=")(1).Split(",")(1).Replace("--", "").Trim().Trim("""".ToCharArray()).Trim(",").Trim("""")
-        '            NewItemCache.ID = line.Split("=")(0).Trim().Replace("[", "").Replace("]", "").Replace("""", "")
-        '            ItemCacheDB.Add(NewItemCache)
-        '        End If
-        '        line = reader.ReadLine
-        '    End While
-        'End Using
     End Sub
 
     Private Sub ExpansionToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExpansionToolStripMenuItem.Click
@@ -261,7 +130,7 @@ Public Class frmIATDatabaseManager
 
                 Dim index As Integer = 1
                 For Each tactic As Tactic In boss.Tactics
-                    Dim tabPage As New TabPage("Tactic " & index)
+                    Dim tabPage As New TabPage("Tactic-" & tactic.Id)
                     index += 1
 
                     ' Prepare parameters ordered by position
@@ -273,9 +142,9 @@ Public Class frmIATDatabaseManager
                         Dim replacement As String = param.ParameterID
 
                         If param.ParameterType = "NPC" Then
-                            Dim npc = db.NPCs.FirstOrDefault(Function(n) n.NPCID = param.ParameterID)
+                            Dim npc = db.NPCs.FirstOrDefault(Function(n) n.NPCId = param.ParameterID)
                             If npc IsNot Nothing Then
-                                replacement = $"<a href=""npc:{npc.NPCID}:pos:{param.Id}"" id=""{param.Id}"" >{npc.Name}</a>"
+                                replacement = $"<a href=""npc:{npc.NPCId}:pos:{param.Id}"" id=""{param.Id}"" >{npc.Name}</a>"
                             Else
                                 replacement = "[Unknown NPC]"
                             End If
@@ -371,10 +240,10 @@ Public Class frmIATDatabaseManager
             Dim replacement As String = param.ParameterID
 
             If param.ParameterType = "NPC" Then
-                Dim npc = db.NPCs.FirstOrDefault(Function(n) n.NPCID = param.ParameterID)
+                Dim npc = db.NPCs.FirstOrDefault(Function(n) n.NPCId = param.ParameterID)
                 If npc IsNot Nothing Then
                     ' RTF link format: \v hidden_value \v0 visible_text
-                    replacement = $"{{\ul\b\cf1\v<npc:{npc.NPCID}>\v0[{npc.Name}]}}"
+                    replacement = $"{{\ul\b\cf1\v<npc:{npc.NPCId}>\v0[{npc.Name}]}}"
                 End If
             End If
 
@@ -387,124 +256,6 @@ Public Class frmIATDatabaseManager
     End Function
 
     Private Async Sub btnGenerateLocalisation_Click(sender As Object, e As EventArgs) Handles btnGenerateLocalisation.Click
-        'txtTacticsLocale.Text = ""
-        'txtTactics.Text = ""
-
-        'Dim NPCName = ""
-        'Dim InsideNPC = False
-        'Dim InsideSpell = False
-        'Dim SpellName = ""
-        'Dim FormatStarted = False
-        'Dim WebpageString = ""
-        'Dim StopString = False
-        'Dim NewLineFound = False
-        'For Each c As Char In txtNewTactics.Text
-        '    If c = "{" Then
-        '        'Start of NPC name
-        '        InsideNPC = True
-        '    ElseIf c = "}" Then
-        '        'End of NPC name
-        '        For Each NPC In NPCDB
-        '            If NPC.ID = NPCName Then
-        '                txtTacticsLocale.Text += "%s"
-        '                WebpageString += NPC.Name
-
-        '                'Add to cache if needed
-        '                Dim foundNPC = False
-        '                For Each npc2 As NPCCache In NPCCacheDB
-        '                    If npc2.ID = NPC.ID Then
-        '                        foundNPC = True
-        '                    End If
-        '                Next
-
-        '                If foundNPC = False Then
-        '                    Dim NewNPC = New NPCCache
-        '                    NewNPC.Name = NPC.Name
-        '                    NewNPC.ID = NPC.ID
-        '                    NPCCacheDB.add(NewNPC)
-        '                    Console.WriteLine("Added: " & NPC.Name)
-        '                End If
-
-        '                If FormatStarted = False Then
-        '                    FormatStarted = True
-        '                    txtTactics.Text = "format(L[""" & txtLocaleString.Text & """], ""IAT_" & NPC.ID & """"
-        '                    Exit For
-        '                Else
-        '                    txtTactics.Text += ", ""IAT_" & NPC.ID & """"
-        '                    Exit For
-        '                End If
-        '            End If
-        '        Next
-
-        '        InsideNPC = False
-        '        NPCName = ""
-        '        StopString = False
-        '    ElseIf c = "|" Then
-        '        StopString = True
-        '    ElseIf c = "[" Then
-        '        'Start of Spell name
-        '        InsideSpell = True
-        '    ElseIf c = "]" Then
-        '        'End of spell/item name
-        '        txtTacticsLocale.Text += "%s"
-
-        '        If SpellName.Contains("ITEM_") Then
-        '            Dim ItemID = SpellName.Replace("ITEM_", "")
-        '            WebpageString += "[" & GetItemName(ItemID) & "]"
-
-        '            If FormatStarted = False Then
-        '                FormatStarted = True
-        '                txtTactics.Text = "format(L[""" & txtLocaleString.Text & """], ""IAT_" & ItemID & """"
-        '                'Exit For
-        '            Else
-        '                txtTactics.Text += ", ""IAT_" & ItemID & """"
-        '                'Exit For
-        '            End If
-        '        Else
-        '            WebpageString += "[" & GetSpellName(SpellName) & "]"
-
-        '            If FormatStarted = False Then
-        '                FormatStarted = True
-        '                txtTactics.Text = "format(L[""" & txtLocaleString.Text & """], C_Spell.GetSpellLink(" & SpellName & ")"
-        '                'Exit For
-        '            Else
-        '                txtTactics.Text += ", C_Spell.GetSpellLink(" & SpellName & ")"
-        '                'Exit For
-        '            End If
-        '        End If
-
-        '        InsideSpell = False
-        '        SpellName = ""
-        '        StopString = False
-        '    ElseIf InsideSpell Then
-        '        If StopString = False Then
-        '            SpellName += c
-        '        End If
-        '    ElseIf InsideNPC Then
-        '        If StopString = False Then
-        '            NPCName += c
-        '        End If
-        '    ElseIf c = "\" Then
-        '        NewLineFound = True
-        '    ElseIf NewLineFound Then
-        '        If c = "n" Then
-        '            txtTacticsLocale.Text += "\n"
-        '            WebpageString += vbNewLine
-        '            NewLineFound = False
-        '        End If
-        '    Else
-        '        txtTacticsLocale.Text += c
-        '        WebpageString += c
-        '    End If
-        'Next
-        'If FormatStarted Then
-        '    txtTactics.Text += ")"
-        'Else
-        '    txtTactics.Text = "L[""" & txtLocaleString.Text & """]"
-        'End If
-
-        'txtInGame.Text = WebpageString.Replace("%%", "%")
-
         'Dim bmp As Bitmap = New Bitmap(txtInGame.Width, txtInGame.Height)
         'txtInGame.DrawToBitmap(bmp, New Rectangle(0, 0, txtInGame.Width, txtInGame.Height))
         'bmp.Save("Screenshots/" & txtBossName.Text & ".jpg")
@@ -513,7 +264,7 @@ Public Class frmIATDatabaseManager
 
         'Dim apiClient = New ApiClient("3c704f8deefd409", "82cf43f64495b192b1083ed8a59e30139bd4d797")
         'Dim httpClient = New HttpClient()
-        'Dim oAuth2Endpoint = New OAuth2Endpoint(apiClient, httpClient)
+        'Dim oAuth2Endpoint = New OAuth2Endpoint(apiClient, httpClient) -
         ''Dim authUrl = oAuth2Endpoint.GetAuthorizationUrl()
 
         'Dim filePath = "Screenshots/" & txtBossName.Text & ".jpg"
@@ -526,174 +277,113 @@ Public Class frmIATDatabaseManager
         'End Using
     End Sub
 
-    Private Async Sub btnGenerateLocalisationClassic_Click(sender As Object, e As EventArgs) Handles btnGenerateLocalisationClassic.Click
-        'txtTacticsLocaleClassic.Text = ""
-        'txtClassicTactics.Text = ""
-
-        'Dim NPCName = ""
-        'Dim InsideNPC = False
-        'Dim InsideSpell = False
-        'Dim SpellName = ""
-        'Dim FormatStarted = False
-        'Dim WebpageString = ""
-        'Dim StopString = False
-        'Dim NewLineFound = False
-        'For Each c As Char In txtNewTacticsClassic.Text
-        '    If c = "{" Then
-        '        'Start of NPC name
-        '        InsideNPC = True
-        '    ElseIf c = "}" Then
-        '        'End of NPC name
-        '        For Each NPC In NPCDB
-        '            If NPC.ID = NPCName Then
-        '                txtTacticsLocaleClassic.Text += "%s"
-        '                WebpageString += NPC.Name
-
-        '                'Add to cache if needed
-        '                Dim foundNPC = False
-        '                For Each npc2 As NPCCache In NPCCacheClassicDB
-        '                    If npc2.ID = NPC.ID Then
-        '                        foundNPC = True
-        '                    End If
-        '                Next
-
-        '                If foundNPC = False Then
-        '                    Dim NewNPC = New NPCCache
-        '                    NewNPC.Name = NPC.Name
-        '                    NewNPC.ID = NPC.ID
-        '                    NPCCacheClassicDB.add(NewNPC)
-        '                    Console.WriteLine("Added: " & NPC.Name)
-        '                End If
-
-        '                If FormatStarted = False Then
-        '                    FormatStarted = True
-        '                    txtClassicTactics.Text = "format(L[""" & txtLocaleStringClassic.Text & """], ""IAT_" & NPC.ID & """"
-        '                    Exit For
-        '                Else
-        '                    txtClassicTactics.Text += ", ""IAT_" & NPC.ID & """"
-        '                    Exit For
-        '                End If
-        '            End If
-        '        Next
-
-        '        InsideNPC = False
-        '        NPCName = ""
-        '        StopString = False
-        '    ElseIf c = "|" Then
-        '        StopString = True
-        '    ElseIf c = "[" Then
-        '        'Start of Spell name
-        '        InsideSpell = True
-        '    ElseIf c = "]" Then
-        '        'End of spell/item name
-        '        txtTacticsLocaleClassic.Text += "%s"
-
-        '        If SpellName.Contains("ITEM_") Then
-        '            Dim ItemID = SpellName.Replace("ITEM_", "")
-        '            WebpageString += "[" & GetItemName(ItemID) & "]"
-
-        '            If FormatStarted = False Then
-        '                FormatStarted = True
-        '                txtClassicTactics.Text = "format(L[""" & txtLocaleStringClassic.Text & """], ""IAT_" & ItemID & """"
-        '                'Exit For
-        '            Else
-        '                txtClassicTactics.Text += ", ""IAT_" & ItemID & """"
-        '                'Exit For
-        '            End If
-        '        Else
-        '            WebpageString += "[" & GetSpellName(SpellName) & "]"
-
-        '            If FormatStarted = False Then
-        '                FormatStarted = True
-        '                txtClassicTactics.Text = "format(L[""" & txtLocaleStringClassic.Text & """], C_Spell.GetSpellLink(" & SpellName & ")"
-        '                'Exit For
-        '            Else
-        '                txtClassicTactics.Text += ", C_Spell.GetSpellLink(" & SpellName & ")"
-        '                'Exit For
-        '            End If
-        '        End If
-
-        '        InsideSpell = False
-        '        SpellName = ""
-        '        StopString = False
-        '    ElseIf InsideSpell Then
-        '        If StopString = False Then
-        '            SpellName += c
-        '        End If
-        '    ElseIf InsideNPC Then
-        '        If StopString = False Then
-        '            NPCName += c
-        '        End If
-        '    ElseIf c = "\" Then
-        '        NewLineFound = True
-        '    ElseIf NewLineFound Then
-        '        If c = "n" Then
-        '            txtTacticsLocaleClassic.Text += "\n"
-        '            WebpageString += vbNewLine
-        '            NewLineFound = False
-        '        End If
-        '    Else
-        '        txtTacticsLocaleClassic.Text += c
-        '        WebpageString += c
-        '    End If
-        'Next
-        'If FormatStarted Then
-        '    txtClassicTactics.Text += ")"
-        'Else
-        '    txtClassicTactics.Text = "L[""" & txtLocaleStringClassic.Text & """]"
-        'End If
-
-        'txtInGameClassic.Text = WebpageString.Replace("%%", "%")
-
-        'Dim bmp As Bitmap = New Bitmap(txtInGameClassic.Width, txtInGameClassic.Height)
-        'txtInGameClassic.DrawToBitmap(bmp, New Rectangle(0, 0, txtInGameClassic.Width, txtInGameClassic.Height))
-        'bmp.Save("Screenshots/" & txtBossName.Text & "_Classic.jpg")
-
-        'Await Task.Delay(2000)
-
-        'If My.Settings.ImgurClient Is Nothing OrElse My.Settings.ImgurClient.Length < 1 Then
-        '    Dim clientID As String = InputBox("Enter Client ID")
-        '    My.Settings.ImgurClient = clientID
-        '    My.Settings.Save()
-        'End If
-
-        'If My.Settings.ImgurSecret Is Nothing OrElse My.Settings.ImgurSecret.Length = 0 Then
-        '    Dim secret As String = InputBox("Enter Imgur Secret")
-        '    My.Settings.ImgurSecret = secret
-        '    My.Settings.Save()
-        'End If
-
-        'Dim apiClient = New ApiClient(My.Settings.ImgurClient, My.Settings.ImgurSecret)
-        'Dim httpClient = New HttpClient()
-        'Dim oAuth2Endpoint = New OAuth2Endpoint(apiClient, httpClient)
-        ''Dim authUrl = oAuth2Endpoint.GetAuthorizationUrl()
-
-        'Dim filePath = "Screenshots/" & txtBossName.Text & "_Classic.jpg"
-        'Using FileStream = File.OpenRead(filePath)
-        '    Dim imageEndpoint = New ImageEndpoint(apiClient, httpClient)
-        '    Dim imageUpload = Await imageEndpoint.UploadImageAsync(FileStream)
-        '    txtImgurLinkClassic.Text = "https://imgur.com/" & imageUpload.Id
-        '    txtContextClassic.Text = "*** Notes *** Please don't remove the %s strings or ""\n"" as these refer to names of spells/ npc's in the game or new lines. They can be moved around in the sentence however if that makes more sense in your language.English Text:" & txtImgurLink.Text
-        '    LoadWebsite(txtImgurLinkClassic.Text)
-        'End Using
-    End Sub
-
     Private Sub btnInsertTactic_Click(sender As Object, e As EventArgs) Handles btnInsertTactic.Click
+        ' Save changes to the tactics
+        SaveTactics()
+
         ' Retail DB
-        save(11)
+
+        GenerateAddonDatabase(11)
         ' Wrath DB
-        save(3, "Wrath")
+        GenerateAddonDatabase(3, "Wrath")
         ' Cataclysm DB
-        save(4, "Cataclysm")
+        GenerateAddonDatabase(4, "Cataclysm")
         ' Mop DB
-        save(5, "Pandaria")
+        GenerateAddonDatabase(5, "Pandaria")
     End Sub
 
     Private Function Indent(level As Integer) As String
         Return New String(vbTab, level)
     End Function
 
-    Public Sub save(maxExpansions As Integer, Optional expansionSuffix As String = "")
+    Private Async Sub SaveTactics()
+        Using db As New IATDbContext()
+            For Each tab As TabPage In tcTactics.TabPages
+                ' Extract tactic ID from tab name (e.g. "tactics-150")
+                Dim idPart = tab.Text.Replace("Tactic-", "")
+                Dim tacticId As Integer
+                If Integer.TryParse(idPart, tacticId) Then
+                    ' Load tactic from DB with parameters and localisation
+                    Dim tactic = db.Tactics.FirstOrDefault(Function(t) t.Id = tacticId)
+
+                    If tactic Is Nothing Then Continue For
+
+                    Dim webView = tab.Controls.OfType(Of WebView2).FirstOrDefault()
+                    If webView Is Nothing OrElse webView.CoreWebView2 Is Nothing Then Continue For
+
+                    ' Get the edited HTML content from WebView
+                    Dim js = "document.querySelector('body > div').innerHTML"
+                    Dim htmlRaw = Await webView.CoreWebView2.ExecuteScriptAsync(js)
+                    Dim html = System.Text.RegularExpressions.Regex.Unescape(htmlRaw.Trim(""""c))
+
+                    ' Decode back to original string with %s
+                    Dim cleanedText As String = html
+                    Dim newParams As New ObservableCollectionListSource(Of TacticParameter)
+
+                    ' Regex to match: <a href="npc:12345:pos:5" id="5">Name</a>
+                    Dim linkPattern As String = "<a[^>]+href=""(?<href>[^""]+)""[^>]*id=""(?<id>\d+)""[^>]*>(?<text>.*?)</a>"
+                    Dim matches = Regex.Matches(html, linkPattern)
+
+                    For Each match As Match In matches
+                        Dim href = match.Groups("href").Value
+                        Dim id = Integer.Parse(match.Groups("id").Value)
+
+                        Dim parts = href.Split(":"c)
+                        If parts.Length >= 3 Then
+                            Dim type = parts(0).ToLower() ' npc or spell
+                            Dim paramId = parts(1)
+
+                            ' Replace this <a> tag with a %s
+                            cleanedText = cleanedText.Replace(match.Value, "%s")
+
+                            Dim parameterType As String
+
+                            Select Case type.ToLowerInvariant()
+                                Case "npc"
+                                    parameterType = "NPC"
+                                Case "spell"
+                                    parameterType = "Spell"
+                                Case "item"
+                                    parameterType = "Item"
+                                Case Else
+                                    Throw New ArgumentException($"Unsupported parameter type: {type}")
+                            End Select
+
+                            Dim param As New TacticParameter With {
+                                .Order = newParams.Count + 1, ' The order needs to start at 1 not 0 so increment each by one
+                                .ParameterID = paramId,
+                                .ParameterType = parameterType
+                            }
+
+                            If parameterType = "NPC" Then
+                                ' Add NPC to the database if it doesn't exist
+                                Dim npc = db.NPCs.FirstOrDefault(Function(n) n.NPCId = paramId)
+                                param.NPC = npc
+                            End If
+
+                            ' Add the parameter to the new parameters list
+                            newParams.Add(param)
+                        End If
+                    Next
+
+                    ' Replace <br><br> with \n\n
+                    cleanedText = cleanedText.Replace("<br><br>", "\n\n")
+
+                    ' Save updated values
+                    tactic.Localisation.Value = cleanedText
+
+                    ' Replace old parameters
+                    db.TacticParameters.RemoveRange(tactic.TacticParameter)
+                    tactic.TacticParameter = newParams
+                End If
+            Next
+
+            db.SaveChanges()
+        End Using
+    End Sub
+
+    Public Sub GenerateAddonDatabase(maxExpansions As Integer, Optional expansionSuffix As String = "")
+        Log.Information("Generating addon database for expansions up to: {MaxExpansions} with expansion suffix {expansionSuffix}", maxExpansions, expansionSuffix)
         ' Connect to database
         Using db As New IATDbContext
             ' Get all expansions
@@ -924,120 +614,8 @@ Public Class frmIATDatabaseManager
             End Using
         End Using
 
-        'Generate HTML
-        'Dim Items As New List(Of String)
-        '                Dim ItemsID As New List(Of String)
-        '                Dim ItemType As New List(Of String)
-        '                Console.WriteLine(boss.Tactics)
-        '                If boss.Tactics.Contains("format(") Then
-        '                    Dim strArr() As String = boss.Tactics.Split(",")
-        '                    For Each item In strArr
-        '                        If item.Contains("IAT_") Then
-        '                            'NPC Found
-        '                            Dim npcID As String = item.Replace("""", "").Replace("IAT_", "").Trim()
-        '                            For Each npc In NPCDB
-        '                                If npc.Id = npcID Then
-        '                                    Items.Add(npc.Name)
-        '                                    ItemsID.Add(npc.Id)
-        '                                    ItemType.Add("NPC")
-        '                                End If
-        '                            Next
-        '                        ElseIf item.Contains("C_Spell.GetSpellLink") Then
-        '                            Dim spellID As String = item.Replace("C_Spell.GetSpellLink(", "").Replace(")", "").Trim()
-        '                            For Each spell In SpellDB
-        '                                If spell.id = spellID Then
-        '                                    Items.Add(spell.name)
-        '                                    ItemsID.Add(spell.id)
-        '                                    ItemType.Add("Spell")
-        '                                End If
-        '                            Next
-        '                        End If
-        '                    Next
-        '                End If
-        '            Next
-        '        Next
-        '    Next
-        'Next
-
-        'Backup Files
-        'If Not File.Exists("bossesDB.csv") And Not File.Exists("instancesDB.csv") And Not File.Exists("expansionsDB.csv") Then
-        '    For Each expansion In CentralDB
-        '        Using writer As StreamWriter = New StreamWriter("expansionsDB.csv", True)
-        '            writer.WriteLine(expansion.ExpansionGameId & "," & expansion.Name)
-        '        End Using
-        '        For Each instancetype In expansion.InstanceTypes
-        '            For Each instance In instancetype.Instances
-        '                Using writer As StreamWriter = New StreamWriter("instancesDB.csv", True)
-        '                    writer.WriteLine(instance.InstanceId & "," & instance.Name & "," & instance.InstanceNameID & "," & expansion.Name & "," & instancetype.Name & "," & instance.NameWrath & "," & instance.ClassicPhase & "," & instance.RetailOnly & "," & instance.ClassicOnly)
-        '                End Using
-        '                For Each boss In instance.Bosses
-        '                    Using writer As StreamWriter = New StreamWriter("bossesDB.csv", True)
-        '                        writer.WriteLine(boss.Order & ";" & boss.BossName & ";" & boss.BossNameID & ";" & boss.BossIDs & ";" & boss.AchievementID & ";" & boss.Players & ";" & boss.Tactics & ";" & boss.Enabled & ";" & boss.Track & ";" & boss.PartialTrack & ";" & boss.EncounterID & ";" & boss.DisplayInfoFrame & ";" & instance.Name & ";" & boss.ImgurLink & ";" & boss.Image & ";" & boss.BossNameWrath & ";" & boss.ClassicTactics & ";" & boss.ImgurLinkClassic & ";" & boss.EncounterIDWrath)
-        '                    End Using
-        '                Next
-        '            Next
-        '        Next
-        '    Next
-        'Else
-        '    MsgBox("Error: Cannot delete DB files")
-        'End If
-
-
-        'Generate Instances.lua
-
-        'Generate Localization.enUS.lua
-        'File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua", "Backup\Localization.enUS.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
-        'If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua") = True Then
-        '    File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua")
-        'End If
-        'Using writer As StreamWriter = New StreamWriter("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua", True)
-        '    writer.WriteLine("local _, core = ...")
-        '    writer.WriteLine("local baseLocale = {")
-        '    For Each locale In LocalisationDB
-        '        'writer.WriteLine(vbTab & "[""" & locale.Name & """] = """ & locale.Text & """,")
-        '    Next
-        '    writer.WriteLine("}")
-        '    writer.Write("core:RegisterLocale('enUS', baseLocale)")
-        'End Using
-
-        ''Generate NPCCache.lua
-        'File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua", "Backup\NPCCache.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
-        'If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua") = True Then
-        '    File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua")
-        'End If
-        'Using writer As StreamWriter = New StreamWriter("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua", True)
-        '    writer.WriteLine("local _, core = ...")
-        '    writer.WriteLine()
-        '    writer.WriteLine("core.NPCCache = {")
-        '    For Each npc In NPCCacheDB
-        '        writer.WriteLine(vbTab & "[" & npc.id & "] =" & npc.id & ", --" & npc.name)
-        '    Next
-        '    writer.Write("}")
-
-        '    writer.WriteLine()
-        '    writer.WriteLine("core.NPCCacheClassic = {")
-        '    For Each npc In NPCCacheClassicDB
-        '        writer.WriteLine(vbTab & "[" & npc.id & "] =" & npc.id & ", --" & npc.name)
-        '    Next
-        '    writer.Write("}")
-        'End Using
-
-        ''Generate ItemCache.lua
-        'File.Copy("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua", "Backup\ItemCache.lua" & DateTime.Now.ToString("yyyyMMddHHmmssfff") & ".csv")
-        'If File.Exists("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua") = True Then
-        '    File.Delete("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua")
-        'End If
-        'Using writer As StreamWriter = New StreamWriter("C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua", True)
-        '    writer.WriteLine("local _, core = ...")
-        '    writer.WriteLine()
-        '    writer.WriteLine("core.ItemCache = {")
-        '    For Each item In ItemCacheDB
-        '        writer.WriteLine(vbTab & "[" & item.ID & "] = " & item.ID & ", --" & item.Name)
-        '    Next
-        '    writer.Write("}")
-        'End Using
-
-        MsgBox("Save Successful")
+        ' Log that save was succesffull
+        Log.Information("Instances{expansionSuffix}.lua created", expansionSuffix)
     End Sub
 
     Private Async Sub btnUploadLocale_Click(sender As Object, e As EventArgs) Handles btnUploadLocale.Click
@@ -1076,7 +654,7 @@ Public Class frmIATDatabaseManager
 
         'Await Task.Delay(1000)
 
-        'save()
+        'GenerateAddonDatabase()
     End Sub
 
     Private Sub frmIATDatabaseManager_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
@@ -1092,11 +670,11 @@ Public Class frmIATDatabaseManager
                 If line.Contains("=") Then
                     Dim strArr = line.Split("=")
                     Dim NewSpell = New Spell
-                    NewSpell.name = strArr(1).Trim.Trim(",".ToCharArray).Trim("""".ToCharArray)
-                    NewSpell.id = strArr(0).Trim.Replace("[", "").Replace("]", "").Replace("""", "")
+                    NewSpell.Name = strArr(1).Trim.Trim(",".ToCharArray).Trim("""".ToCharArray)
+                    NewSpell.Id = strArr(0).Trim.Replace("[", "").Replace("]", "").Replace("""", "")
 
                     Using writer = New StreamWriter("SpellDB.csv", True)
-                        writer.WriteLine(NewSpell.name & ";" & NewSpell.id)
+                        writer.WriteLine(NewSpell.Name & ";" & NewSpell.Id)
                     End Using
                 End If
 
@@ -1104,141 +682,6 @@ Public Class frmIATDatabaseManager
             End While
         End Using
         MsgBox("Complete")
-    End Sub
-
-    Private Sub btnGenerateLocaleNoUpload_Click(sender As Object, e As EventArgs) Handles btnGenerateLocaleNoUpload.Click
-        'txtTacticsLocale.Text = ""
-        'txtTactics.Text = ""
-
-        'Dim NPCName = ""
-        'Dim InsideNPC = False
-        'Dim InsideSpell = False
-        'Dim SpellName = ""
-        'Dim FormatStarted = False
-        'Dim WebpageString = ""
-        'Dim StopString = False
-        'Dim NewLineFound = False
-        'For Each c As Char In txtNewTactics.Text
-        '    If c = "{" Then
-        '        'Start of NPC name
-        '        InsideNPC = True
-        '    ElseIf c = "}" Then
-        '        'End of NPC name
-        '        For Each NPC In NPCDB
-        '            If NPC.ID = NPCName Then
-        '                txtTacticsLocale.Text += "%s"
-        '                WebpageString += NPC.Name
-
-        '                'Add to cache if needed
-        '                Dim foundNPC = False
-        '                For Each npc2 As NPCCache In NPCCacheDB
-        '                    If npc2.ID = NPC.ID Then
-        '                        foundNPC = True
-        '                    End If
-        '                Next
-
-        '                If foundNPC = False Then
-        '                    Dim NewNPC = New NPCCache
-        '                    NewNPC.Name = NPC.Name
-        '                    NewNPC.ID = NPC.ID
-        '                    NPCCacheDB.add(NewNPC)
-        '                    Console.WriteLine("Added: " & NPC.Name)
-        '                End If
-
-        '                If FormatStarted = False Then
-        '                    FormatStarted = True
-        '                    txtTactics.Text = "format(L[""" & txtLocaleString.Text & """], ""IAT_" & NPC.ID & """"
-        '                    Exit For
-        '                Else
-        '                    txtTactics.Text += ", ""IAT_" & NPC.ID & """"
-        '                    Exit For
-        '                End If
-        '            End If
-        '        Next
-
-        '        InsideNPC = False
-        '        NPCName = ""
-        '        StopString = False
-        '    ElseIf c = "|" Then
-        '        StopString = True
-        '    ElseIf c = "[" Then
-        '        'Start of Spell name
-        '        InsideSpell = True
-        '    ElseIf c = "]" Then
-        '        'End of spell/item name
-        '        txtTacticsLocale.Text += "%s"
-
-        '        If SpellName.Contains("ITEM_") Then
-        '            Dim ItemID = SpellName.Replace("ITEM_", "")
-        '            WebpageString += "[" & GetItemName(ItemID) & "]"
-
-        '            If FormatStarted = False Then
-        '                FormatStarted = True
-        '                txtTactics.Text = "format(L[""" & txtLocaleString.Text & """], ""IAT_" & ItemID & """"
-        '                'Exit For
-        '            Else
-        '                txtTactics.Text += ", ""IAT_" & ItemID & """"
-        '                'Exit For
-        '            End If
-
-        '            'Add to cache if needed
-        '            Dim foundItem = False
-        '            For Each item2 As ItemCache In ItemCacheDB
-        '                If item2.ID = ItemID Then
-        '                    foundItem = True
-        '                End If
-        '            Next
-
-        '            If foundItem = False Then
-        '                Dim NewItem = New ItemCache
-        '                NewItem.Name = GetItemName(ItemID)
-        '                NewItem.ID = ItemID
-        '                ItemCacheDB.Add(NewItem)
-        '            End If
-        '        Else
-        '            WebpageString += "[" & GetSpellName(SpellName) & "]"
-
-        '            If FormatStarted = False Then
-        '                FormatStarted = True
-        '                txtTactics.Text = "format(L[""" & txtLocaleString.Text & """], C_Spell.GetSpellLink(" & SpellName & ")"
-        '                'Exit For
-        '            Else
-        '                txtTactics.Text += ", C_Spell.GetSpellLink(" & SpellName & ")"
-        '                'Exit For
-        '            End If
-        '        End If
-
-        '        InsideSpell = False
-        '        SpellName = ""
-        '        StopString = False
-        '    ElseIf InsideSpell Then
-        '        If StopString = False Then
-        '            SpellName += c
-        '        End If
-        '    ElseIf InsideNPC Then
-        '        If StopString = False Then
-        '            NPCName += c
-        '        End If
-        '    ElseIf c = "\" Then
-        '        NewLineFound = True
-        '    ElseIf NewLineFound Then
-        '        If c = "n" Then
-        '            txtTacticsLocale.Text += "\n"
-        '            WebpageString += vbNewLine
-        '            NewLineFound = False
-        '        End If
-        '    Else
-        '        txtTacticsLocale.Text += c
-        '        WebpageString += c
-        '    End If
-        'Next
-        'If FormatStarted Then
-        '    txtTactics.Text += ")"
-        'Else
-        '    txtTactics.Text = "L[""" & txtLocaleString.Text & """]"
-        'End If
-
-        'txtInGame.Text = WebpageString.Replace("%%", "%")
     End Sub
 
     Private Function GetItemName(ItemID)
@@ -1304,234 +747,113 @@ Public Class frmIATDatabaseManager
         CheckingSpellName = True
     End Function
 
-    Private Sub btnTestTranslationClassic_Click(sender As Object, e As EventArgs) Handles btnTestTranslationClassic.Click
-        'txtTacticsLocaleClassic.Text = ""
-        'txtClassicTactics.Text = ""
+    'Private Sub dgvExpansions_SelectionChanged(sender As Object, e As EventArgs)
+    '    Try
+    '        If IATContext IsNot Nothing Then
+    '            Dim expansion = CType(dgvExpansions.CurrentRow.DataBoundItem, Expansion)
 
-        'Dim NPCName = ""
-        'Dim InsideNPC = False
-        'Dim InsideSpell = False
-        'Dim SpellName = ""
-        'Dim FormatStarted = False
-        'Dim WebpageString = ""
-        'Dim StopString = False
-        'Dim NewLineFound = False
-        'For Each c As Char In txtNewTacticsClassic.Text
-        '    If c = "{" Then
-        '        'Start of NPC name
-        '        InsideNPC = True
-        '    ElseIf c = "}" Then
-        '        'End of NPC name
-        '        For Each NPC In NPCDB
-        '            If NPC.ID = NPCName Then
-        '                txtTacticsLocaleClassic.Text += "%s"
-        '                WebpageString += NPC.Name
+    '            If expansion IsNot Nothing Then
+    '                IATContext.Entry(expansion).Collection(Function(f) f.InstanceTypes).Load()
+    '            End If
+    '        End If
+    '    Catch ex As Exception
 
-        '                'Add to cache if needed
-        '                Dim foundNPC = False
-        '                For Each npc2 As NPCCache In NPCCacheClassicDB
-        '                    If npc2.ID = NPC.ID Then
-        '                        foundNPC = True
-        '                    End If
-        '                Next
+    '    End Try
+    'End Sub
 
-        '                If foundNPC = False Then
-        '                    Dim NewNPC = New NPCCache
-        '                    NewNPC.Name = NPC.Name
-        '                    NewNPC.ID = NPC.ID
-        '                    NPCCacheClassicDB.add(NewNPC)
-        '                    Console.WriteLine("Added: " & NPC.Name)
-        '                End If
+    'Private Sub dgvInstanceTypes_SelectionChanged(sender As Object, e As EventArgs)
+    '    Try
+    '        If IATContext IsNot Nothing And dgvInstanceTypes.CurrentRow IsNot Nothing Then
+    '            Dim instanceType = CType(dgvInstanceTypes.CurrentRow.DataBoundItem, InstanceType)
 
-        '                If FormatStarted = False Then
-        '                    FormatStarted = True
-        '                    txtClassicTactics.Text = "format(L[""" & txtLocaleStringClassic.Text & """], ""IAT_" & NPC.ID & """"
-        '                    Exit For
-        '                Else
-        '                    txtClassicTactics.Text += ", ""IAT_" & NPC.ID & """"
-        '                    Exit For
-        '                End If
-        '            End If
-        '        Next
+    '            If instanceType IsNot Nothing Then
+    '                IATContext.Entry(instanceType).Collection(Function(f) f.Instances).Load()
+    '            End If
+    '        End If
+    '    Catch ex As Exception
 
-        '        InsideNPC = False
-        '        NPCName = ""
-        '        StopString = False
-        '    ElseIf c = "|" Then
-        '        StopString = True
-        '    ElseIf c = "[" Then
-        '        'Start of Spell name
-        '        InsideSpell = True
-        '    ElseIf c = "]" Then
-        '        'End of spell/item name
-        '        txtTacticsLocaleClassic.Text += "%s"
+    '    End Try
+    'End Sub
 
-        '        If SpellName.Contains("ITEM_") Then
-        '            Dim ItemID = SpellName.Replace("ITEM_", "")
-        '            WebpageString += "[" & GetItemName(ItemID) & "]"
+    'Private Sub dgvInstances_SelectionChanged(sender As Object, e As EventArgs)
+    '    Try
+    '        If IATContext IsNot Nothing And dgvInstances.CurrentRow IsNot Nothing Then
+    '            Dim instance = CType(dgvInstances.CurrentRow.DataBoundItem, Instance)
 
-        '            If FormatStarted = False Then
-        '                FormatStarted = True
-        '                txtClassicTactics.Text = "format(L[""" & txtLocaleStringClassic.Text & """], ""IAT_" & ItemID & """"
-        '                'Exit For
-        '            Else
-        '                txtClassicTactics.Text += ", ""IAT_" & ItemID & """"
-        '                'Exit For
-        '            End If
+    '            If instance IsNot Nothing Then
+    '                IATContext.Entry(instance).Collection(Function(f) f.Bosses).Load()
+    '            End If
+    '        End If
+    '    Catch ex As Exception
 
-        '            'Add to cache if needed
-        '            Dim foundItem = False
-        '            For Each item2 As ItemCache In ItemCacheDB
-        '                If item2.ID = ItemID Then
-        '                    foundItem = True
-        '                End If
-        '            Next
+    '    End Try
+    'End Sub
 
-        '            If foundItem = False Then
-        '                Dim NewItem = New ItemCache
-        '                NewItem.Name = GetItemName(ItemID)
-        '                NewItem.ID = ItemID
-        '                ItemCacheDB.Add(NewItem)
-        '            End If
-        '        Else
-        '            WebpageString += "[" & GetSpellName(SpellName) & "]"
+    'Private Sub dgvBosses_CellContentClick(sender As Object, e As DataGridViewCellEventArgs)
+    '    Try
+    '        If IATContext IsNot Nothing And dgvBosses.CurrentRow IsNot Nothing Then
+    '            Dim boss = CType(dgvBosses.CurrentRow.DataBoundItem, Boss)
 
-        '            If FormatStarted = False Then
-        '                FormatStarted = True
-        '                txtClassicTactics.Text = "format(L[""" & txtLocaleStringClassic.Text & """], C_Spell.GetSpellLink(" & SpellName & ")"
-        '                'Exit For
-        '            Else
-        '                txtClassicTactics.Text += ", C_Spell.GetSpellLink(" & SpellName & ")"
-        '                'Exit For
-        '            End If
-        '        End If
+    '            If boss IsNot Nothing Then
+    '                IATContext.Entry(boss).Collection(Function(f) f.Tactics).Load()
+    '            End If
+    '        End If
+    '    Catch ex As Exception
 
-        '        InsideSpell = False
-        '        SpellName = ""
-        '        StopString = False
-        '    ElseIf InsideSpell Then
-        '        If StopString = False Then
-        '            SpellName += c
-        '        End If
-        '    ElseIf InsideNPC Then
-        '        If StopString = False Then
-        '            NPCName += c
-        '        End If
-        '    ElseIf c = "\" Then
-        '        NewLineFound = True
-        '    ElseIf NewLineFound Then
-        '        If c = "n" Then
-        '            txtTacticsLocaleClassic.Text += "\n"
-        '            WebpageString += vbNewLine
-        '            NewLineFound = False
-        '        End If
-        '    Else
-        '        txtTacticsLocaleClassic.Text += c
-        '        WebpageString += c
-        '    End If
-        'Next
-        'If FormatStarted Then
-        '    txtClassicTactics.Text += ")"
-        'Else
-        '    txtClassicTactics.Text = "L[""" & txtLocaleStringClassic.Text & """]"
-        'End If
+    '    End Try
+    'End Sub
 
-        'txtInGameClassic.Text = WebpageString.Replace("%%", "%")
-    End Sub
-
-    Private Async Sub btnUploadLocaleClassic_Click(sender As Object, e As EventArgs) Handles btnUploadLocaleClassic.Click
-        'LoadWebsite("https://www.curseforge.com/wow/addons/instance-achievement-tracker/localization/languages/92/phrases#0")
-
-        'Await Task.Delay(5000)
-
-        'Dim script = "document.querySelector('.button.create-phrase').click();"
-        'WebView2.ExecuteScriptAsync(script)
-        ''chromeBrowser.ExecuteScriptAsync(script)
-
-        'Await Task.Delay(1000)
-
-        ''Add Name
-        'script = "document.getElementById('field-phrase-name').value =""" & txtLocaleStringClassic.Text.Replace("""", """""") & """"
-        'WebView2.ExecuteScriptAsync(script)
-
-        'Await Task.Delay(1000)
-
-        ''Add Context
-        'Dim context = txtContext.Text.Replace("""", "&quot").Replace("\n", "\\n")
-        'script = "document.getElementById('field-phrase-context').value =""" & context & """"
-        'WebView2.ExecuteScriptAsync(script)
-        'Await Task.Delay(1000)
-        'script = "document.getElementById('field-phrase-context').value = document.getElementById('field-phrase-context').value.split('&quot').join('""')"
-        'WebView2.ExecuteScriptAsync(script)
-
-        'Await Task.Delay(1000)
-
-        ''Add String
-        'Dim tacticslocale = txtTacticsLocaleClassic.Text.Replace("""", "&quot").Replace("\n", "\\n")
-        'script = "document.getElementById('field-phrase-default-translation').value =""" & tacticslocale & """"
-        'WebView2.ExecuteScriptAsync(script)
-        'Await Task.Delay(1000)
-        'script = "document.getElementById('field-phrase-default-translation').value = document.getElementById('field-phrase-default-translation').value.split('&quot').join('""')"
-        'WebView2.ExecuteScriptAsync(script)
-
-        'Await Task.Delay(1000)
-
-        'save()
-    End Sub
-
-    Private Sub dgvExpansions_SelectionChanged(sender As Object, e As EventArgs) Handles dgvExpansions.SelectionChanged
-        Try
-            If IATContext IsNot Nothing Then
-                Dim expansion = CType(dgvExpansions.CurrentRow.DataBoundItem, Expansion)
-
-                If expansion IsNot Nothing Then
-                    IATContext.Entry(expansion).Collection(Function(f) f.InstanceTypes).Load()
-                End If
+    Private Async Sub btnAddNewTactic_Click(sender As Object, e As EventArgs) Handles btnAddNewTactic.Click
+        ' If we have a boss selected in the combobox
+        If cboBosses.SelectedItem IsNot Nothing Then
+            Dim selectedBoss = TryCast(cboBosses.SelectedItem, Boss)
+            If selectedBoss IsNot Nothing Then
+                ' Add new tab to tactics tabber
+                Dim newTab As New TabPage("New Tactic")
+                tcTactics.TabPages.Add(newTab)
+                ' Create a new WebView2 control for the new tab
+                Dim webView As New WebView2 With {
+                    .Dock = DockStyle.Fill
+                }
+                newTab.Controls.Add(webView)
+                ' Initialize WebView2 and navigate to a blank HTML page
+                Await webView.EnsureCoreWebView2Async
+                webView.NavigateToString("<html><body contenteditable='true'></body></html>")
+                ' Add a handler for the navigation starting event to handle links
+                AddHandler webView.CoreWebView2.NavigationStarting, Sub(sender2, e2)
+                                                                        If e2.Uri.StartsWith("npc:") Then
+                                                                            e2.Cancel = True
+                                                                            ' Split the href into parts: "npc:12345:pos:3"
+                                                                            Dim parts = e2.Uri.Substring("npc:".Length).Split(":"c)
+                                                                            Dim npcId = parts(0)
+                                                                            Dim positionInfo = If(parts.Length > 2, parts(2), Nothing)
+                                                                            Dim selector As New EntitySelector With {
+                                                                                .TypeToLoad = EntityType.NPC,
+                                                                                .SelectedItemIndex = positionInfo
+                                                                            }
+                                                                            selector.Show()
+                                                                        ElseIf e2.Uri.StartsWith("spell:") Then
+                                                                            e2.Cancel = True
+                                                                            ' Split the href into parts: "spell:12345:pos:3"
+                                                                            Dim parts = e2.Uri.Substring("spell:".Length).Split(":"c)
+                                                                            Dim spellId = parts(0)
+                                                                            Dim positionInfo = If(parts.Length > 2, parts(2), Nothing)
+                                                                            ' For example, assume positionInfo is the element ID suffix (e.g., 3)
+                                                                            lastClickedElementId = positionInfo
+                                                                            ' Open Spell Selector
+                                                                            Dim selector As New EntitySelector With {
+                                                                                .TypeToLoad = EntityType.Spell,
+                                                                                .SelectedItemIndex = positionInfo
+                                                                            }
+                                                                            selector.Show()
+                                                                        End If
+                                                                    End Sub
+                ' Set the new tab as the selected tab
+                tcTactics.SelectedTab = newTab
             End If
-        Catch ex As Exception
+        Else
+            MessageBox.Show("Please select a boss first.")
+        End If
 
-        End Try
-    End Sub
-
-    Private Sub dgvInstanceTypes_SelectionChanged(sender As Object, e As EventArgs) Handles dgvInstanceTypes.SelectionChanged
-        Try
-            If IATContext IsNot Nothing And dgvInstanceTypes.CurrentRow IsNot Nothing Then
-                Dim instanceType = CType(dgvInstanceTypes.CurrentRow.DataBoundItem, InstanceType)
-
-                If instanceType IsNot Nothing Then
-                    IATContext.Entry(instanceType).Collection(Function(f) f.Instances).Load()
-                End If
-            End If
-        Catch ex As Exception
-
-        End Try
-    End Sub
-
-    Private Sub dgvInstances_SelectionChanged(sender As Object, e As EventArgs) Handles dgvInstances.SelectionChanged
-        Try
-            If IATContext IsNot Nothing And dgvInstances.CurrentRow IsNot Nothing Then
-                Dim instance = CType(dgvInstances.CurrentRow.DataBoundItem, Instance)
-
-                If instance IsNot Nothing Then
-                    IATContext.Entry(instance).Collection(Function(f) f.Bosses).Load()
-                End If
-            End If
-        Catch ex As Exception
-
-        End Try
-    End Sub
-
-    Private Sub dgvBosses_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvBosses.CellContentClick
-        Try
-            If IATContext IsNot Nothing And dgvBosses.CurrentRow IsNot Nothing Then
-                Dim boss = CType(dgvBosses.CurrentRow.DataBoundItem, Boss)
-
-                If boss IsNot Nothing Then
-                    IATContext.Entry(boss).Collection(Function(f) f.Tactics).Load()
-                End If
-            End If
-        Catch ex As Exception
-
-        End Try
     End Sub
 End Class

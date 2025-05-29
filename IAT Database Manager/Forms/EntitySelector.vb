@@ -62,7 +62,18 @@ Public Class EntitySelector
             Dim idProp = SelectedEntity.GetType().GetProperties().First(Function(p) p.Name.EndsWith("Id"))
 
             Dim entityName As String = nameProp.GetValue(SelectedEntity).ToString().Replace("'", "\'")
-            Dim entityId As String = idProp.GetValue(SelectedEntity).ToString()
+            Dim entityId As String = Nothing
+
+            Select Case TypeToLoad.ToString().ToLower()
+                Case "npc"
+                    entityId = SelectedEntity.GetType().GetProperty("NPCId").GetValue(SelectedEntity).ToString()
+                Case "spell"
+                    entityId = SelectedEntity.GetType().GetProperty("SpellId").GetValue(SelectedEntity).ToString()
+                Case "item"
+                    entityId = SelectedEntity.GetType().GetProperty("ItemId").GetValue(SelectedEntity).ToString()
+                Case Else
+                    Throw New Exception("Unsupported entity type: " & TypeToLoad.ToString())
+            End Select
 
             Dim hrefPrefix As String = TypeToLoad.ToString().ToLower()
 

@@ -19,20 +19,4 @@ Public Class IATDbContext
         optionsBuilder.UseLazyLoadingProxies()
         optionsBuilder.UseSqlite("Data Source=IATDatabase.db")
     End Sub
-
-    'Protected Overrides Sub OnModelCreating(modelBuilder As ModelBuilder)
-    '    modelBuilder.Entity(Of Expansion)() _
-    '        .WithMany(Function(e) e.InstanceTypes) _
-    '        .HasForeignKey(Function(it) it.ExpansionGameId)
-
-    '    modelBuilder.Entity(Of Instance)() _
-    '        .HasOne(Function(i) i.InstanceType) _
-    '        .WithMany(Function(it) it.Instances) _
-    '        .HasForeignKey(Function(i) i.InstanceTypeID)
-
-    '    modelBuilder.Entity(Of InstanceType)() _
-    '        .HasOne(Function(it) it.Expansion) _
-    '        .WithMany(Function(e) e.InstanceTypes) _
-    '        .HasForeignKey(Function(it) it.ExpansionGameId)
-    'End Sub
 End Class
