@@ -281,8 +281,10 @@ Public Class frmIATDatabaseManager
         ' Save changes to the tactics
         SaveTactics()
 
-        ' Retail DB
 
+        ' Generate Instance.lua
+
+        ' Retail DB
         GenerateAddonDatabase(11)
         ' Wrath DB
         GenerateAddonDatabase(3, "Wrath")
@@ -290,6 +292,102 @@ Public Class frmIATDatabaseManager
         GenerateAddonDatabase(4, "Cataclysm")
         ' Mop DB
         GenerateAddonDatabase(5, "Pandaria")
+
+        ' Generatee Localisation.lua
+        GenerateLocalisationFiles()
+
+        ' Generate ItemCache.lua
+        GenerateItemCache()
+
+        ' Generate NPCCache.lua
+        GenerateNPCCacheFile()
+    End Sub
+
+    Public Sub GenerateNPCCacheFile()
+        Log.Information("Generating NPCCache.lua...")
+
+        Using db As New IATDbContext()
+            Dim npcs = db.NPCs.Where(Function(p) p.Cache = True).OrderBy(Function(n) n.NPCId).ToList()
+
+            Dim filePath = "C:\Users\ryanc\Dropbox\InstanceAchievementTracker\NPCCache.lua"
+
+            Using writer As New StreamWriter(filePath, False)
+                ' Header
+                writer.WriteLine("local _, core = ...")
+                writer.WriteLine()
+                writer.WriteLine("core.NPCCache = {")
+
+                ' Write each NPC in format: [12345] = 12345, --NPC Name
+                For Each npc In npcs
+                    Dim npcId = npc.NPCId
+                    Dim npcName = npc.Name.Replace("--", "-") ' Avoid breaking comments
+                    writer.WriteLine(vbTab & $"[{npcId}] ={npcId}, --{npcName}")
+                Next
+
+                writer.WriteLine("}")
+            End Using
+        End Using
+
+        Log.Information("NPCCache.lua generated successfully.")
+    End Sub
+
+    Public Sub GenerateItemCache()
+        Log.Information("Generating ItemCache.lua...")
+
+        Using db As New IATDbContext()
+            Dim items = db.Items.OrderBy(Function(i) i.ItemId).ToList()
+
+            Dim filePath = "C:\Users\ryanc\Dropbox\InstanceAchievementTracker\ItemCache.lua"
+
+            Using writer As New StreamWriter(filePath, False)
+                ' Header
+                writer.WriteLine("local _, core = ...")
+                writer.WriteLine()
+                writer.WriteLine("core.ItemCache = {")
+
+                ' Write each item in format: [12345] = 12345, --Item Name
+                For Each item In items
+                    Dim itemId = item.ItemId
+                    Dim itemName = item.Name.Replace("--", "-") ' Avoid breaking comments
+                    writer.WriteLine(vbTab & $"[{itemId}] = {itemId}, --{itemName}")
+                Next
+
+                writer.WriteLine("}")
+            End Using
+        End Using
+
+        Log.Information("ItemCache.lua generated successfully.")
+    End Sub
+
+    Public Sub GenerateLocalisationFiles()
+        Log.Information("Generating localisation file...")
+
+        Using db As New IATDbContext()
+            Dim localisations = db.Localisations.ToList()
+
+            ' Path to the localisation file
+            Dim filePath = "C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Localization.enUS.lua"
+
+            Using writer As New StreamWriter(filePath, False)
+                ' Header
+                writer.WriteLine("local _, core = ...")
+                writer.WriteLine("local baseLocale = {")
+
+                ' Write each localisation key-value pair
+                For Each locale In localisations
+                    Dim safeKey = locale.Key.Replace("""", "\""")
+                    Dim safeValue = locale.Value.Replace("""", "\""")
+                    writer.WriteLine(vbTab & $"[""{safeKey}""] = ""{safeValue}"",")
+                Next
+
+                ' Close the table
+                writer.WriteLine("}")
+                ' Register the locale
+                writer.WriteLine("core:RegisterLocale('enUS', baseLocale)")
+            End Using
+        End Using
+
+        Log.Information("Localisation file generated successfully.")
     End Sub
 
     Private Function Indent(level As Integer) As String
