@@ -301,6 +301,47 @@ Public Class frmIATDatabaseManager
 
         ' Generate NPCCache.lua
         GenerateNPCCacheFile()
+
+        ' Generate Translations for other languages
+        GenerateTranslations()
+    End Sub
+
+    Public Sub GenerateTranslations()
+        Log.Information("Generating all localisation files...")
+
+        Using db As New IATDbContext()
+            ' Get all translations, then group by LanguageCode (or similar property)
+            Dim translationsByLang = db.Translations.GroupBy(Function(t) t.LanguageCode).ToList()
+
+            Dim localisationDir = "C:\Users\ryanc\Dropbox\InstanceAchievementTracker\"
+
+            For Each localeGroup In translationsByLang
+                Dim languageCode = localeGroup.Key
+                Log.Information($"Generating localisation file Localization.{languageCode}.lua")
+                Dim filePath = Path.Combine(localisationDir, $"Localization.{languageCode}.lua")
+
+                Using writer As New StreamWriter(filePath, False)
+                    writer.WriteLine($"if(GetLocale() ~= '{languageCode}') then return end")
+                    writer.WriteLine()
+                    writer.WriteLine("local _, core = ...")
+                    writer.WriteLine("local baseLocale = {")
+
+                    ' Write all translations for this language, ordered by key
+                    For Each translation In localeGroup.OrderBy(Function(t) t.Id)
+                        Dim keySafe = translation.Localisation.Key.Replace("""", "\""") ' escape quotes
+                        Dim valSafe = translation.Value.Replace("""", "\""") ' escape quotes
+
+                        writer.WriteLine(vbTab & $"[""{keySafe}""] = ""{valSafe}"",")
+                    Next
+
+                    writer.WriteLine("}")
+                    writer.WriteLine()
+                    writer.WriteLine($"core:RegisterLocale('{languageCode}', baseLocale)")
+                End Using
+            Next
+        End Using
+
+        Log.Information("All localisation files generated successfully.")
     End Sub
 
     Public Sub GenerateNPCCacheFile()
