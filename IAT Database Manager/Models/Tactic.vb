@@ -18,5 +18,6 @@ Public Class Tactic
     Public Property LocalisationId As Integer
     ' Navigation Property
     Public Overridable Property Localisation As Localisation
+    Public Overridable Property Boss As Boss
     Public Overridable Property TacticParameter As New ObservableCollectionListSource(Of TacticParameter)()
 End Class

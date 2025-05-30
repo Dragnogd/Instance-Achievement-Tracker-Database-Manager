@@ -38,8 +38,13 @@ Partial Class frmIATDatabaseManager
         ExpansionBindingSource = New BindingSource(components)
         tlpContainer = New TableLayoutPanel()
         tlpContentRight = New TableLayoutPanel()
+        rtbLog = New RichTextBox()
         tlpContentLeft = New TableLayoutPanel()
         Panel2 = New Panel()
+        btnInsertItem = New Button()
+        btnInsertSpell = New Button()
+        btnInsertNPC = New Button()
+        chkEditTactics = New CheckBox()
         btnAddNewTactic = New Button()
         tcTactics = New TabControl()
         TabPage1 = New TabPage()
@@ -49,7 +54,6 @@ Partial Class frmIATDatabaseManager
         InstancesBindingSource = New BindingSource(components)
         TacticsBindingSource = New BindingSource(components)
         TacticParameterBindingSource = New BindingSource(components)
-        rtbLog = New RichTextBox()
         MenuStrip1.SuspendLayout()
         CType(ExpansionBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         tlpContainer.SuspendLayout()
@@ -190,6 +194,15 @@ Partial Class frmIATDatabaseManager
         tlpContentRight.Size = New Size(590, 497)
         tlpContentRight.TabIndex = 0
         ' 
+        ' rtbLog
+        ' 
+        rtbLog.Dock = DockStyle.Fill
+        rtbLog.Location = New Point(3, 3)
+        rtbLog.Name = "rtbLog"
+        rtbLog.Size = New Size(584, 491)
+        rtbLog.TabIndex = 0
+        rtbLog.Text = ""
+        ' 
         ' tlpContentLeft
         ' 
         tlpContentLeft.ColumnCount = 1
@@ -207,6 +220,10 @@ Partial Class frmIATDatabaseManager
         ' 
         ' Panel2
         ' 
+        Panel2.Controls.Add(btnInsertItem)
+        Panel2.Controls.Add(btnInsertSpell)
+        Panel2.Controls.Add(btnInsertNPC)
+        Panel2.Controls.Add(chkEditTactics)
         Panel2.Controls.Add(btnAddNewTactic)
         Panel2.Controls.Add(Label1)
         Panel2.Controls.Add(cboBosses)
@@ -219,10 +236,58 @@ Partial Class frmIATDatabaseManager
         Panel2.Size = New Size(881, 118)
         Panel2.TabIndex = 0
         ' 
+        ' btnInsertItem
+        ' 
+        btnInsertItem.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        btnInsertItem.Font = New Font("Microsoft Sans Serif", 8.25F)
+        btnInsertItem.Location = New Point(509, 89)
+        btnInsertItem.Margin = New Padding(4, 3, 4, 3)
+        btnInsertItem.Name = "btnInsertItem"
+        btnInsertItem.Size = New Size(130, 26)
+        btnInsertItem.TabIndex = 61
+        btnInsertItem.Text = "Insert Item"
+        btnInsertItem.UseVisualStyleBackColor = True
+        ' 
+        ' btnInsertSpell
+        ' 
+        btnInsertSpell.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        btnInsertSpell.Font = New Font("Microsoft Sans Serif", 8.25F)
+        btnInsertSpell.Location = New Point(371, 89)
+        btnInsertSpell.Margin = New Padding(4, 3, 4, 3)
+        btnInsertSpell.Name = "btnInsertSpell"
+        btnInsertSpell.Size = New Size(130, 26)
+        btnInsertSpell.TabIndex = 60
+        btnInsertSpell.Text = "Insert Spell"
+        btnInsertSpell.UseVisualStyleBackColor = True
+        ' 
+        ' btnInsertNPC
+        ' 
+        btnInsertNPC.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        btnInsertNPC.Font = New Font("Microsoft Sans Serif", 8.25F)
+        btnInsertNPC.Location = New Point(233, 89)
+        btnInsertNPC.Margin = New Padding(4, 3, 4, 3)
+        btnInsertNPC.Name = "btnInsertNPC"
+        btnInsertNPC.Size = New Size(130, 26)
+        btnInsertNPC.TabIndex = 59
+        btnInsertNPC.Text = "Insert NPC"
+        btnInsertNPC.UseVisualStyleBackColor = True
+        ' 
+        ' chkEditTactics
+        ' 
+        chkEditTactics.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        chkEditTactics.AutoSize = True
+        chkEditTactics.Location = New Point(141, 94)
+        chkEditTactics.Name = "chkEditTactics"
+        chkEditTactics.Size = New Size(85, 19)
+        chkEditTactics.TabIndex = 58
+        chkEditTactics.Text = "Edit Tactics"
+        chkEditTactics.UseVisualStyleBackColor = True
+        ' 
         ' btnAddNewTactic
         ' 
+        btnAddNewTactic.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         btnAddNewTactic.Font = New Font("Microsoft Sans Serif", 8.25F)
-        btnAddNewTactic.Location = New Point(447, 89)
+        btnAddNewTactic.Location = New Point(4, 89)
         btnAddNewTactic.Margin = New Padding(4, 3, 4, 3)
         btnAddNewTactic.Name = "btnAddNewTactic"
         btnAddNewTactic.Size = New Size(130, 26)
@@ -285,15 +350,6 @@ Partial Class frmIATDatabaseManager
         ' 
         TacticParameterBindingSource.DataMember = "TacticParameter"
         TacticParameterBindingSource.DataSource = TacticsBindingSource
-        ' 
-        ' rtbLog
-        ' 
-        rtbLog.Dock = DockStyle.Fill
-        rtbLog.Location = New Point(3, 3)
-        rtbLog.Name = "rtbLog"
-        rtbLog.Size = New Size(584, 491)
-        rtbLog.TabIndex = 0
-        rtbLog.Text = ""
         ' 
         ' frmIATDatabaseManager
         ' 
@@ -379,4 +435,8 @@ Partial Class frmIATDatabaseManager
     Friend WithEvents TabPage2 As TabPage
     Friend WithEvents btnAddNewTactic As Button
     Friend WithEvents rtbLog As RichTextBox
+    Friend WithEvents chkEditTactics As CheckBox
+    Friend WithEvents btnInsertNPC As Button
+    Friend WithEvents btnInsertItem As Button
+    Friend WithEvents btnInsertSpell As Button
 End Class

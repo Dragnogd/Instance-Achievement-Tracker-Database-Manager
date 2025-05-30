@@ -12,7 +12,7 @@ Public Class EntitySelector
     Private entityBindingSource As New BindingSource()
     Private allEntities As IList
     Public SelectedEntity As Object
-    Public SelectedItemIndex As Integer
+    Public SelectedItemIndex As Integer = Nothing
     Public TypeToLoad As EntityType
 
     Private Async Sub EntitySelector_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -54,48 +54,6 @@ Public Class EntitySelector
                   End Function).ToList()
 
         wvBrowser.Source = New Uri("https://www.wowhead.com/npcs/name:" & text)
-    End Sub
-
-    Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
-        If SelectedEntity IsNot Nothing Then
-            Dim nameProp = SelectedEntity.GetType().GetProperty("Name")
-            Dim idProp = SelectedEntity.GetType().GetProperties().First(Function(p) p.Name.EndsWith("Id"))
-
-            Dim entityName As String = nameProp.GetValue(SelectedEntity).ToString().Replace("'", "\'")
-            Dim entityId As String = Nothing
-
-            Select Case TypeToLoad.ToString().ToLower()
-                Case "npc"
-                    entityId = SelectedEntity.GetType().GetProperty("NPCId").GetValue(SelectedEntity).ToString()
-                Case "spell"
-                    entityId = SelectedEntity.GetType().GetProperty("SpellId").GetValue(SelectedEntity).ToString()
-                Case "item"
-                    entityId = SelectedEntity.GetType().GetProperty("ItemId").GetValue(SelectedEntity).ToString()
-                Case Else
-                    Throw New Exception("Unsupported entity type: " & TypeToLoad.ToString())
-            End Select
-
-            Dim hrefPrefix As String = TypeToLoad.ToString().ToLower()
-
-            Dim script As String =
-                $"var elem = document.getElementById('{SelectedItemIndex}');" &
-                $"if (elem) {{" &
-                    $"elem.innerText = '{entityName}';" &
-                    $"elem.setAttribute('href', '{hrefPrefix}:{entityId}:pos:{SelectedItemIndex}');" &
-                $"}}"
-
-            ' Accessing WebView2 on main form/tab
-            Dim tabControl = frmIATDatabaseManager.tcTactics
-            If tabControl IsNot Nothing Then
-                Dim currentTab = tabControl.SelectedTab
-                Dim wv = currentTab.Controls.OfType(Of Microsoft.Web.WebView2.WinForms.WebView2).FirstOrDefault()
-                If wv IsNot Nothing AndAlso wv.CoreWebView2 IsNot Nothing Then
-                    wv.CoreWebView2.ExecuteScriptAsync(script)
-                End If
-            End If
-        End If
-
-        Me.Close()
     End Sub
 
     Private Sub dgvNPCs_SelectionChanged(sender As Object, e As EventArgs) Handles dgvEntities.SelectionChanged
@@ -153,5 +111,69 @@ Public Class EntitySelector
                 LoadEntities()
             End If
         End Using
+    End Sub
+
+    Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
+        If SelectedEntity IsNot Nothing Then
+            Dim nameProp = SelectedEntity.GetType().GetProperty("Name")
+            Dim idProp = SelectedEntity.GetType().GetProperties().First(Function(p) p.Name.EndsWith("Id"))
+
+            Dim entityName As String = nameProp.GetValue(SelectedEntity).ToString().Replace("'", "\'")
+            Dim entityId As String = Nothing
+
+            Select Case TypeToLoad.ToString().ToLower()
+                Case "npc"
+                    entityId = SelectedEntity.GetType().GetProperty("NPCId").GetValue(SelectedEntity).ToString()
+                Case "spell"
+                    entityId = SelectedEntity.GetType().GetProperty("SpellId").GetValue(SelectedEntity).ToString()
+                Case "item"
+                    entityId = SelectedEntity.GetType().GetProperty("ItemId").GetValue(SelectedEntity).ToString()
+                Case Else
+                    Throw New Exception("Unsupported entity type: " & TypeToLoad.ToString())
+            End Select
+
+            Dim hrefPrefix As String = TypeToLoad.ToString().ToLower()
+
+            Dim script As String
+
+            If SelectedItemIndex = Nothing Then
+                ' Insert the entity at the cursor position
+                Dim uniqueId = DateTime.Now.Ticks.ToString()
+                Dim posIndex = uniqueId.Substring(uniqueId.Length - 5) ' just keep it short
+
+                script =
+                    $"var a = document.createElement('a');" &
+                    $"a.href = '{hrefPrefix}:{entityId}:pos:{posIndex}';" &
+                    $"a.id = '{posIndex}';" &
+                    $"a.innerText = '{entityName}';" &
+                    $"var sel = window.getSelection();" &
+                    $"if (sel.rangeCount > 0) {{" &
+                        $"var range = sel.getRangeAt(0);" &
+                        $"range.deleteContents();" &
+                        $"range.insertNode(a);" &
+                        $"range.collapse(false);" &
+                    $"}}"
+            Else
+                ' Update the selected entity
+                script =
+                    $"var elem = document.getElementById('{SelectedItemIndex}');" &
+                    $"if (elem) {{" &
+                        $"elem.innerText = '{entityName}';" &
+                        $"elem.setAttribute('href', '{hrefPrefix}:{entityId}:pos:{SelectedItemIndex}');" &
+                    $"}}"
+            End If
+
+            ' Accessing WebView2 on main form/tab
+            Dim tabControl = frmIATDatabaseManager.tcTactics
+            If tabControl IsNot Nothing Then
+                Dim currentTab = tabControl.SelectedTab
+                Dim wv = currentTab.Controls.OfType(Of Microsoft.Web.WebView2.WinForms.WebView2).FirstOrDefault()
+                If wv IsNot Nothing AndAlso wv.CoreWebView2 IsNot Nothing Then
+                    wv.CoreWebView2.ExecuteScriptAsync(script)
+                End If
+            End If
+        End If
+
+        Me.Close()
     End Sub
 End Class

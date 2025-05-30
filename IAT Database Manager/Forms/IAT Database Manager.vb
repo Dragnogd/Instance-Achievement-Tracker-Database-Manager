@@ -301,74 +301,115 @@ Public Class frmIATDatabaseManager
             For Each tab As TabPage In tcTactics.TabPages
                 ' Extract tactic ID from tab name (e.g. "tactics-150")
                 Dim idPart = tab.Text.Replace("Tactic-", "")
-                Dim tacticId As Integer
-                If Integer.TryParse(idPart, tacticId) Then
-                    ' Load tactic from DB with parameters and localisation
-                    Dim tactic = db.Tactics.FirstOrDefault(Function(t) t.Id = tacticId)
+                ' Load tactic from DB with parameters and localisation
+                Dim tactic As Tactic = Nothing
+                If idPart.Length > 0 Then
+                    tactic = db.Tactics.FirstOrDefault(Function(t) t.Id = idPart)
+                End If
 
-                    If tactic Is Nothing Then Continue For
+                ' If we are adding a new tactic
+                Dim newTactic As Boolean = False
+                If tactic Is Nothing Then
+                    tactic = New Tactic()
+                    db.Tactics.Add(tactic)
+                    newTactic = True
+                End If
 
-                    Dim webView = tab.Controls.OfType(Of WebView2).FirstOrDefault()
-                    If webView Is Nothing OrElse webView.CoreWebView2 Is Nothing Then Continue For
+                Dim webView = tab.Controls.OfType(Of WebView2).FirstOrDefault()
+                If webView Is Nothing OrElse webView.CoreWebView2 Is Nothing Then Continue For
 
-                    ' Get the edited HTML content from WebView
-                    Dim js = "document.querySelector('body > div').innerHTML"
-                    Dim htmlRaw = Await webView.CoreWebView2.ExecuteScriptAsync(js)
-                    Dim html = System.Text.RegularExpressions.Regex.Unescape(htmlRaw.Trim(""""c))
+                ' Get the edited HTML content from WebView
+                Dim js = "document.querySelector('body > div').innerHTML"
+                Dim htmlRaw = Await webView.CoreWebView2.ExecuteScriptAsync(js)
+                Dim html = System.Text.RegularExpressions.Regex.Unescape(htmlRaw.Trim(""""c))
 
-                    ' Decode back to original string with %s
-                    Dim cleanedText As String = html
-                    Dim newParams As New ObservableCollectionListSource(Of TacticParameter)
+                ' Decode back to original string with %s
+                Dim cleanedText As String = html
+                Dim newParams As New ObservableCollectionListSource(Of TacticParameter)
 
-                    ' Regex to match: <a href="npc:12345:pos:5" id="5">Name</a>
-                    Dim linkPattern As String = "<a[^>]+href=""(?<href>[^""]+)""[^>]*id=""(?<id>\d+)""[^>]*>(?<text>.*?)</a>"
-                    Dim matches = Regex.Matches(html, linkPattern)
+                ' Regex to match: <a href="npc:12345:pos:5" id="5">Name</a>
+                Dim linkPattern As String = "<a[^>]+href=""(?<href>[^""]+)""[^>]*id=""(?<id>\d+)""[^>]*>(?<text>.*?)</a>"
+                Dim matches = Regex.Matches(html, linkPattern)
 
-                    For Each match As Match In matches
-                        Dim href = match.Groups("href").Value
-                        Dim id = Integer.Parse(match.Groups("id").Value)
+                For Each match As Match In matches
+                    Dim href = match.Groups("href").Value
+                    Dim id = Integer.Parse(match.Groups("id").Value)
 
-                        Dim parts = href.Split(":"c)
-                        If parts.Length >= 3 Then
-                            Dim type = parts(0).ToLower() ' npc or spell
-                            Dim paramId = parts(1)
+                    Dim parts = href.Split(":"c)
+                    If parts.Length >= 3 Then
+                        Dim type = parts(0).ToLower() ' npc or spell
+                        Dim paramId = parts(1)
 
-                            ' Replace this <a> tag with a %s
-                            cleanedText = cleanedText.Replace(match.Value, "%s")
+                        ' Replace this <a> tag with a %s
+                        cleanedText = cleanedText.Replace(match.Value, "%s")
 
-                            Dim parameterType As String
+                        Dim parameterType As String
 
-                            Select Case type.ToLowerInvariant()
-                                Case "npc"
-                                    parameterType = "NPC"
-                                Case "spell"
-                                    parameterType = "Spell"
-                                Case "item"
-                                    parameterType = "Item"
-                                Case Else
-                                    Throw New ArgumentException($"Unsupported parameter type: {type}")
-                            End Select
+                        Select Case type.ToLowerInvariant()
+                            Case "npc"
+                                parameterType = "NPC"
+                            Case "spell"
+                                parameterType = "Spell"
+                            Case "item"
+                                parameterType = "Item"
+                            Case Else
+                                Throw New ArgumentException($"Unsupported parameter type: {type}")
+                        End Select
 
-                            Dim param As New TacticParameter With {
+                        Dim param As New TacticParameter With {
                                 .Order = newParams.Count + 1, ' The order needs to start at 1 not 0 so increment each by one
                                 .ParameterID = paramId,
                                 .ParameterType = parameterType
                             }
 
-                            If parameterType = "NPC" Then
-                                ' Add NPC to the database if it doesn't exist
-                                Dim npc = db.NPCs.FirstOrDefault(Function(n) n.NPCId = paramId)
-                                param.NPC = npc
-                            End If
-
-                            ' Add the parameter to the new parameters list
-                            newParams.Add(param)
+                        If parameterType = "NPC" Then
+                            ' Add NPC to the database if it doesn't exist
+                            Dim npc = db.NPCs.FirstOrDefault(Function(n) n.NPCId = paramId)
+                            param.NPC = npc
                         End If
-                    Next
 
-                    ' Replace <br><br> with \n\n
-                    cleanedText = cleanedText.Replace("<br><br>", "\n\n")
+                        ' Add the parameter to the new parameters list
+                        newParams.Add(param)
+                    End If
+                Next
 
+                ' Replace <br><br> with \n\n
+                cleanedText = cleanedText.Replace("<br><br>", "\n\n")
+
+                If newTactic Then
+                    ' Ask for Expansion ID
+                    Dim expansionId As Integer
+                    Do
+                        Dim input = InputBox("Enter expansion ID for new tactic:")
+                        If Integer.TryParse(input, expansionId) Then Exit Do
+                        MessageBox.Show("Please enter a valid integer for Expansion ID.")
+                    Loop
+
+                    tactic.ExpansionId = expansionId
+
+                    ' Get the current boss
+                    Dim selectedBoss As Boss = db.Bosses.Find(cboBosses.SelectedValue)
+
+                    ' Construct initial key
+                    Dim rawKey = $"{selectedBoss.Instance.Name}_{selectedBoss.BossName}_{TabIndex + 1}"
+
+                    ' Remove all non-alphanumeric characters
+                    Dim localeKey = Regex.Replace(rawKey, "[^a-zA-Z0-9_]", "")
+
+                    ' Assign localisation
+                    Dim localisation As New Localisation With {
+                            .Key = localeKey,
+                            .Value = cleanedText
+                        }
+                    tactic.Localisation = localisation
+                    db.Localisations.Add(localisation)
+
+                    ' Assign tactic parameters
+                    tactic.TacticParameter = newParams
+
+                    ' Assign boss
+                    tactic.Boss = selectedBoss
+                Else
                     ' Save updated values
                     tactic.Localisation.Value = cleanedText
 
@@ -809,7 +850,7 @@ Public Class frmIATDatabaseManager
             Dim selectedBoss = TryCast(cboBosses.SelectedItem, Boss)
             If selectedBoss IsNot Nothing Then
                 ' Add new tab to tactics tabber
-                Dim newTab As New TabPage("New Tactic")
+                Dim newTab As New TabPage("Tactic-")
                 tcTactics.TabPages.Add(newTab)
                 ' Create a new WebView2 control for the new tab
                 Dim webView As New WebView2 With {
@@ -818,7 +859,7 @@ Public Class frmIATDatabaseManager
                 newTab.Controls.Add(webView)
                 ' Initialize WebView2 and navigate to a blank HTML page
                 Await webView.EnsureCoreWebView2Async
-                webView.NavigateToString("<html><body contenteditable='true'></body></html>")
+                webView.NavigateToString("<html><body><div contenteditable='true'></div></body></html>")
                 ' Add a handler for the navigation starting event to handle links
                 AddHandler webView.CoreWebView2.NavigationStarting, Sub(sender2, e2)
                                                                         If e2.Uri.StartsWith("npc:") Then
@@ -855,5 +896,41 @@ Public Class frmIATDatabaseManager
             MessageBox.Show("Please select a boss first.")
         End If
 
+    End Sub
+
+    Private Sub chkEditTactics_CheckedChanged(sender As Object, e As EventArgs) Handles chkEditTactics.CheckedChanged
+        ' Get the selected tab's WebView2
+        Dim currentTab = tcTactics.SelectedTab
+        If currentTab Is Nothing Then Exit Sub
+
+        Dim webView = currentTab.Controls.OfType(Of Microsoft.Web.WebView2.WinForms.WebView2).FirstOrDefault()
+        If webView Is Nothing OrElse webView.CoreWebView2 Is Nothing Then Exit Sub
+
+        ' Toggle contenteditable on the div
+        Dim isEditable As Boolean = chkEditTactics.Checked
+        Dim js As String = $"document.querySelector('body > div').setAttribute('contenteditable', '{isEditable.ToString().ToLower()}');"
+
+        webView.CoreWebView2.ExecuteScriptAsync(js)
+    End Sub
+
+    Private Sub btnInsertNPC_Click(sender As Object, e As EventArgs) Handles btnInsertNPC.Click
+        Dim selector As New EntitySelector With {
+            .TypeToLoad = EntityType.NPC
+        }
+        selector.Show()
+    End Sub
+
+    Private Sub btnInsertSpell_Click(sender As Object, e As EventArgs) Handles btnInsertSpell.Click
+        Dim selector As New EntitySelector With {
+        .TypeToLoad = EntityType.Spell
+            }
+        selector.Show()
+    End Sub
+
+    Private Sub btnInsertItem_Click(sender As Object, e As EventArgs) Handles btnInsertItem.Click
+        Dim selector As New EntitySelector With {
+        .TypeToLoad = EntityType.Item
+            }
+        selector.Show()
     End Sub
 End Class
