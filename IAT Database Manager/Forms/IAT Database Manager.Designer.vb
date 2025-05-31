@@ -167,31 +167,31 @@ Partial Class frmIATDatabaseManager
         ' tlpContainer
         ' 
         tlpContainer.ColumnCount = 2
-        tlpContainer.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 60.0F))
-        tlpContainer.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40.0F))
+        tlpContainer.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
+        tlpContainer.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
         tlpContainer.Controls.Add(tlpContentRight, 1, 0)
         tlpContainer.Controls.Add(tlpContentLeft, 0, 0)
         tlpContainer.Dock = DockStyle.Fill
         tlpContainer.Location = New Point(0, 24)
         tlpContainer.Name = "tlpContainer"
         tlpContainer.RowCount = 1
-        tlpContainer.RowStyles.Add(New RowStyle(SizeType.Percent, 100.0F))
+        tlpContainer.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
         tlpContainer.Size = New Size(1489, 503)
         tlpContainer.TabIndex = 76
         ' 
         ' tlpContentRight
         ' 
         tlpContentRight.ColumnCount = 1
-        tlpContentRight.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0F))
+        tlpContentRight.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
         tlpContentRight.Controls.Add(rtbLog, 0, 0)
         tlpContentRight.Dock = DockStyle.Fill
-        tlpContentRight.Location = New Point(896, 3)
+        tlpContentRight.Location = New Point(747, 3)
         tlpContentRight.Name = "tlpContentRight"
         tlpContentRight.RowCount = 1
-        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 100.0F))
-        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
-        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
-        tlpContentRight.Size = New Size(590, 497)
+        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
+        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tlpContentRight.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tlpContentRight.Size = New Size(739, 497)
         tlpContentRight.TabIndex = 0
         ' 
         ' rtbLog
@@ -199,23 +199,23 @@ Partial Class frmIATDatabaseManager
         rtbLog.Dock = DockStyle.Fill
         rtbLog.Location = New Point(3, 3)
         rtbLog.Name = "rtbLog"
-        rtbLog.Size = New Size(584, 491)
+        rtbLog.Size = New Size(733, 491)
         rtbLog.TabIndex = 0
         rtbLog.Text = ""
         ' 
         ' tlpContentLeft
         ' 
         tlpContentLeft.ColumnCount = 1
-        tlpContentLeft.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0F))
+        tlpContentLeft.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
         tlpContentLeft.Controls.Add(Panel2, 0, 0)
         tlpContentLeft.Controls.Add(tcTactics, 0, 1)
         tlpContentLeft.Dock = DockStyle.Fill
         tlpContentLeft.Location = New Point(3, 3)
         tlpContentLeft.Name = "tlpContentLeft"
         tlpContentLeft.RowCount = 2
-        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0F))
-        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 75.0F))
-        tlpContentLeft.Size = New Size(887, 497)
+        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 25F))
+        tlpContentLeft.RowStyles.Add(New RowStyle(SizeType.Percent, 75F))
+        tlpContentLeft.Size = New Size(738, 497)
         tlpContentLeft.TabIndex = 1
         ' 
         ' Panel2
@@ -233,7 +233,7 @@ Partial Class frmIATDatabaseManager
         Panel2.Dock = DockStyle.Fill
         Panel2.Location = New Point(3, 3)
         Panel2.Name = "Panel2"
-        Panel2.Size = New Size(881, 118)
+        Panel2.Size = New Size(732, 118)
         Panel2.TabIndex = 0
         ' 
         ' btnInsertItem
@@ -303,7 +303,7 @@ Partial Class frmIATDatabaseManager
         tcTactics.Location = New Point(3, 127)
         tcTactics.Name = "tcTactics"
         tcTactics.SelectedIndex = 0
-        tcTactics.Size = New Size(881, 367)
+        tcTactics.Size = New Size(732, 367)
         tcTactics.TabIndex = 1
         ' 
         ' TabPage1
@@ -311,7 +311,7 @@ Partial Class frmIATDatabaseManager
         TabPage1.Location = New Point(4, 24)
         TabPage1.Name = "TabPage1"
         TabPage1.Padding = New Padding(3)
-        TabPage1.Size = New Size(873, 339)
+        TabPage1.Size = New Size(724, 339)
         TabPage1.TabIndex = 0
         TabPage1.Text = "TabPage1"
         TabPage1.UseVisualStyleBackColor = True
@@ -353,7 +353,7 @@ Partial Class frmIATDatabaseManager
         ' 
         ' frmIATDatabaseManager
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1489, 527)
         Controls.Add(tlpContainer)

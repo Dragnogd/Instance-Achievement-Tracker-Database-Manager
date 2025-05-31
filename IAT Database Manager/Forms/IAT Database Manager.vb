@@ -281,9 +281,6 @@ Public Class frmIATDatabaseManager
         ' Save changes to the tactics
         SaveTactics()
 
-
-        ' Generate Instance.lua
-
         ' Retail DB
         GenerateAddonDatabase(11)
         ' Wrath DB
@@ -302,8 +299,74 @@ Public Class frmIATDatabaseManager
         ' Generate NPCCache.lua
         GenerateNPCCacheFile()
 
+        ' Validate translations
+        ValidateTranslations()
+
         ' Generate Translations for other languages
         GenerateTranslations()
+    End Sub
+
+    Public Sub ValidateTranslations()
+        Log.Information("Validating all translations...")
+
+        Using db As New IATDbContext()
+            ' Load English localisation values
+
+            Dim translations = db.Translations.ToList()
+
+            For Each translation In translations
+                ' Check that we have a key in the localisation table
+                If translation.LocalisationId = 0 Then
+                    Log.Error($"Translation {translation.Id} does not have a valid LocalisationId.")
+                    translation.IsBroken = True
+                    Continue For
+                End If
+
+                ' Check that the number of %s placeholders match
+                Dim expectedPlaceholders = Regex.Matches(translation.Localisation.Value, "%s").Count
+                Dim actualPlaceholders = Regex.Matches(translation.Value, "%s").Count
+                If expectedPlaceholders <> actualPlaceholders Then
+                    Log.Error($"[{translation.LanguageCode}] Placeholder count mismatch for key '{translation.Localisation.Key}' (%s count {expectedPlaceholders} vs {actualPlaceholders}).")
+                    translation.IsBroken = True
+                    Continue For
+                End If
+
+                ' Check for improper newlines and normalize them to \n
+                Dim originalValue = translation.Value
+                Dim fixedValue = originalValue.Replace(vbCrLf, "\n").Replace(vbCr, "\n").Replace(vbLf, "\n")
+
+                If fixedValue <> originalValue Then
+                    Log.Warning($"[{translation.LanguageCode}] Normalizing newlines for key '{translation.Localisation.Key}'.")
+                    translation.Value = fixedValue
+                End If
+
+                ' Check that the number of literal % signs matches (i.e., %% in translation vs % not followed by 's' in English)
+                Dim englishLiteralPercents = Regex.Matches(translation.Localisation.Value, "%%").Count
+                Dim translatedEscapedPercents = Regex.Matches(translation.Value, "%%").Count
+
+                If englishLiteralPercents <> translatedEscapedPercents Then
+                    Log.Error($"[{translation.LanguageCode}] Escaped percent mismatch for key '{translation.Localisation.Key}' (Expected {englishLiteralPercents} escaped %% but found {translatedEscapedPercents}).")
+                    translation.IsBroken = True
+                    Continue For
+                End If
+
+                ' If localisation is used for a tactic, check the parameter count
+                Dim tactic = db.Tactics.FirstOrDefault(Function(t) t.LocalisationId = translation.LocalisationId)
+                If tactic IsNot Nothing Then
+                    Dim expectedParamCount = db.TacticParameters.Count(Function(tp) tp.TacticId = tactic.Id)
+                    Dim actualParamPlaceholders = Regex.Matches(translation.Value, "%s").Count
+
+                    If expectedParamCount <> actualParamPlaceholders Then
+                        Log.Error($"[{translation.LanguageCode}] Tactic param mismatch for key '{translation.Localisation.Key}' (expected {expectedParamCount} parameters, found {actualParamPlaceholders} %s).")
+                        translation.IsBroken = True
+                        Continue For
+                    End If
+                End If
+
+                ' Passed all checks for set broken as false
+                translation.IsBroken = False
+            Next
+        End Using
     End Sub
 
     Public Sub GenerateTranslations()
@@ -331,7 +394,11 @@ Public Class frmIATDatabaseManager
                         Dim keySafe = translation.Localisation.Key.Replace("""", "\""") ' escape quotes
                         Dim valSafe = translation.Value.Replace("""", "\""") ' escape quotes
 
-                        writer.WriteLine(vbTab & $"[""{keySafe}""] = ""{valSafe}"",")
+                        If translation.IsBroken Then
+                            writer.WriteLine(vbTab & $"--[""{keySafe}""] = ""{valSafe}"",")
+                        Else
+                            writer.WriteLine(vbTab & $"[""{keySafe}""] = ""{valSafe}"",")
+                        End If
                     Next
 
                     writer.WriteLine("}")

@@ -9,5 +9,6 @@
     Public Property ParameterType As String
 
     Public Property NPCId As Integer?
+    Public Property TacticId As Integer
     Public Overridable Property NPC As NPC
 End Class
