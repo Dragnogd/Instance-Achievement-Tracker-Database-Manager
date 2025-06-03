@@ -6,6 +6,8 @@ Public Class Localisation
     Public Property Key As String
     Public Property Value As String
 
+    Public Property UploadedToCurseForge As Boolean = False
+
     ' The translations for the localisation string in other languages
     Public Overridable Property Translations As New ObservableCollectionListSource(Of Translation)()
 End Class

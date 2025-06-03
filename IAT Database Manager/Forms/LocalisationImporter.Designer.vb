@@ -22,36 +22,36 @@ Partial Class LocalisationImporter
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.txtStatus = New System.Windows.Forms.TextBox()
-        Me.SuspendLayout()
-        '
-        'txtStatus
-        '
-        Me.txtStatus.BackColor = System.Drawing.Color.Black
-        Me.txtStatus.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.txtStatus.ForeColor = System.Drawing.Color.White
-        Me.txtStatus.Location = New System.Drawing.Point(-2, -4)
-        Me.txtStatus.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
-        Me.txtStatus.Multiline = True
-        Me.txtStatus.Name = "txtStatus"
-        Me.txtStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.txtStatus.Size = New System.Drawing.Size(1604, 875)
-        Me.txtStatus.TabIndex = 0
-        '
-        'LocalisationImporter
-        '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(12.0!, 25.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.Black
-        Me.ClientSize = New System.Drawing.Size(1600, 865)
-        Me.Controls.Add(Me.txtStatus)
-        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D
-        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
-        Me.Name = "LocalisationImporter"
-        Me.Text = "Localisation Importer"
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
+        txtStatus = New TextBox()
+        SuspendLayout()
+        ' 
+        ' txtStatus
+        ' 
+        txtStatus.BackColor = Color.Black
+        txtStatus.BorderStyle = BorderStyle.None
+        txtStatus.ForeColor = Color.White
+        txtStatus.Location = New Point(-2, -4)
+        txtStatus.Margin = New Padding(6)
+        txtStatus.Multiline = True
+        txtStatus.Name = "txtStatus"
+        txtStatus.ScrollBars = ScrollBars.Vertical
+        txtStatus.Size = New Size(1604, 875)
+        txtStatus.TabIndex = 0
+        ' 
+        ' LocalisationImporter
+        ' 
+        AutoScaleDimensions = New SizeF(12F, 25F)
+        AutoScaleMode = AutoScaleMode.Font
+        BackColor = Color.Black
+        ClientSize = New Size(1600, 865)
+        Controls.Add(txtStatus)
+        Font = New Font("Microsoft Sans Serif", 15.75F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        FormBorderStyle = FormBorderStyle.Fixed3D
+        Margin = New Padding(6)
+        Name = "LocalisationImporter"
+        Text = "Localisation Importer"
+        ResumeLayout(False)
+        PerformLayout()
 
     End Sub
 

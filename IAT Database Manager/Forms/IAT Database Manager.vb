@@ -33,6 +33,8 @@ Public Class frmIATDatabaseManager
     ' Add this at class level to remember the clicked link ID or text
     Private lastClickedElementId As String = ""
 
+    Public splash As SplashScreen1 = CType(My.Application.SplashScreen, SplashScreen1)
+
     Private Sub InitialiseDatabase()
         Using db As New IATDbContext
             db.Database.EnsureDeleted()
@@ -41,32 +43,26 @@ Public Class frmIATDatabaseManager
         End Using
     End Sub
 
-    Private Sub frmIATDatabaseManager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' Initialize Serilog logger
-        Log.Logger = New LoggerConfiguration() _
-            .WriteTo.RichTextBox(rtbLog) _
-            .CreateLogger()
-
-        ' Make sure SQLite Database is created
-        InitialiseDatabase()
-
-        Dim splash As SplashScreen1 = CType(My.Application.SplashScreen, SplashScreen1)
+    Private Sub InitialMigrationImport()
 
         ' Load Localisation
-        splash.UpdateProgress("Loading Localisation (0/13)", 1)
+        splash.UpdateProgress("Migrating Localisation", 1)
         ImportLocalisation()
 
         ' Import NPC Cache
+        splash.UpdateProgress("Migrating NPC Cache", 2)
         ImportNPCCache()
 
         ' Spell Cache
+        splash.UpdateProgress("Migrating Spell Cache", 3)
         ImportSpellIds()
 
         ' Item Cache
+        splash.UpdateProgress("Migrating Item Cache", 4)
         ImportItemCache()
 
         ' Load Translations
-        splash.UpdateProgress("Loading Translations (0/13)", 1)
+        splash.UpdateProgress("Migrating Translations", 5)
         Dim languageFiles As String() = {"Localization.frFR.lua", "Localization.deDE.lua", "Localization.esES.lua", "Localization.ruRU.lua", "Localization.esMX.lua", "Localization.zhCN.lua", "Localization.zhTW.lua", "Localization.ptBR.lua", "Localization.koKR.lua"}
         Dim languageCodes As String() = {"frFR", "deDE", "esES", "ruRU", "esMX", "zhCN", "zhTW", "ptBR", "koKR"}
         For i As Integer = 0 To languageFiles.Length - 1
@@ -76,21 +72,92 @@ Public Class frmIATDatabaseManager
             End If
         Next
 
-        splash.UpdateProgress("Loading Expansions (1/13)", 2)
+        splash.UpdateProgress("Migrating Expansions", 6)
         'Insert Expansions
         ImportExpansions()
 
-        splash.UpdateProgress("Loading Instance Types (2/13)", 3)
+        splash.UpdateProgress("Migrating Instance Types", 7)
         'Insert InstanceTypes
         ImportInstanceTypes()
 
-        splash.UpdateProgress("Loading Instances (3/13)", 4)
+        splash.UpdateProgress("Migrating Instances", 8)
         'Insert Instances
         ImportInstances()
 
-        splash.UpdateProgress("Loading Bosses (4/13)", 5)
+        splash.UpdateProgress("Migrating Bosses", 9)
         'Insert Bosses
         ImportBosses()
+    End Sub
+
+    Public Async Sub ImportLocalisationFromCurseforge()
+        Log.Information("Importing localisation from CurseForge...")
+
+        Dim curseforgeClient As New CurseForgeClient()
+        Dim localisationString As String = Await curseforgeClient.GetLocalizationAsync()
+
+        ' Regex to match ["key"] = "value", handling escaped quotes and multiline values
+        Dim pattern As String = "\[\s*""(.*?)""\s*\]\s*=\s*""((?:[^""\\]|\\.)*?)"",?"
+        Dim matches = Regex.Matches(localisationString, pattern, RegexOptions.Singleline)
+
+        Dim curseForgeKeys As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+
+        Using db As New IATDbContext()
+            ' Mark matching translations from CurseForge as uploaded
+            For Each match As Match In matches
+                Dim key As String = match.Groups(1).Value
+                Dim rawValue As String = match.Groups(2).Value
+
+                If rawValue.Length = 0 Then
+                    Continue For ' Skip entries with empty values
+                End If
+
+                curseForgeKeys.Add(key)
+
+                Dim existing = db.Localisations.FirstOrDefault(Function(l) l.Key = key)
+                If existing IsNot Nothing Then
+                    existing.UploadedToCurseForge = True
+                End If
+            Next
+
+            ' Mark entries not present on CurseForge
+            Log.Information("Checking for missing localisation keys not uploaded to CurseForge...")
+
+            Dim missingFromCurseForge = db.Localisations.
+            Where(Function(l) Not curseForgeKeys.Contains(l.Key)).
+            ToList()
+
+            If missingFromCurseForge.Any() Then
+                Log.Warning("The following localisation keys exist in the database but are missing from CurseForge:")
+                For Each item In missingFromCurseForge
+                    item.UploadedToCurseForge = False
+                    Log.Warning("Key: {Key}", item.Key)
+                Next
+            Else
+                Log.Information("No missing keys. All localisations are present in CurseForge.")
+            End If
+
+            db.SaveChanges()
+        End Using
+
+        Log.Information("Localisation import from CurseForge completed.")
+    End Sub
+
+    Private Sub frmIATDatabaseManager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Initialize Serilog logger
+        Log.Logger = New LoggerConfiguration() _
+            .WriteTo.RichTextBox(rtbLog) _
+            .CreateLogger()
+
+        ' Load Config
+        Settings.LoadConfig()
+
+        ' Make sure SQLite Database is created
+        InitialiseDatabase()
+
+        ' Initial Migration import
+        InitialMigrationImport()
+
+        ImportLocalisationFromCurseforge()
 
         ' Setup Data Grid Views
         IATContext = New IATDbContext()
@@ -366,6 +433,8 @@ Public Class frmIATDatabaseManager
                 ' Passed all checks for set broken as false
                 translation.IsBroken = False
             Next
+
+            db.SaveChanges()
         End Using
     End Sub
 
@@ -1138,5 +1207,13 @@ Public Class frmIATDatabaseManager
         .TypeToLoad = EntityType.Item
             }
         selector.Show()
+    End Sub
+
+    Private Sub SettingsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SettingsToolStripMenuItem.Click
+        Settings.Show()
+    End Sub
+
+    Private Sub LocalisationsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LocalisationsToolStripMenuItem.Click
+        LocalisationTable.Show()
     End Sub
 End Class

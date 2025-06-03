@@ -33,6 +33,7 @@ Partial Class frmIATDatabaseManager
         InstanceToolStripMenuItem = New ToolStripMenuItem()
         BossToolStripMenuItem = New ToolStripMenuItem()
         LocalisationManagerToolStripMenuItem = New ToolStripMenuItem()
+        SettingsToolStripMenuItem = New ToolStripMenuItem()
         btnGenerateLocalisation = New Button()
         btnUploadLocale = New Button()
         ExpansionBindingSource = New BindingSource(components)
@@ -54,6 +55,7 @@ Partial Class frmIATDatabaseManager
         InstancesBindingSource = New BindingSource(components)
         TacticsBindingSource = New BindingSource(components)
         TacticParameterBindingSource = New BindingSource(components)
+        LocalisationsToolStripMenuItem = New ToolStripMenuItem()
         MenuStrip1.SuspendLayout()
         CType(ExpansionBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         tlpContainer.SuspendLayout()
@@ -100,7 +102,7 @@ Partial Class frmIATDatabaseManager
         ' 
         ' MenuStrip1
         ' 
-        MenuStrip1.Items.AddRange(New ToolStripItem() {InsertToolStripMenuItem, LocalisationManagerToolStripMenuItem})
+        MenuStrip1.Items.AddRange(New ToolStripItem() {InsertToolStripMenuItem, LocalisationManagerToolStripMenuItem, SettingsToolStripMenuItem, LocalisationsToolStripMenuItem})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.Name = "MenuStrip1"
         MenuStrip1.Padding = New Padding(7, 2, 0, 2)
@@ -138,6 +140,12 @@ Partial Class frmIATDatabaseManager
         LocalisationManagerToolStripMenuItem.Name = "LocalisationManagerToolStripMenuItem"
         LocalisationManagerToolStripMenuItem.Size = New Size(123, 20)
         LocalisationManagerToolStripMenuItem.Text = "Update Localisation"
+        ' 
+        ' SettingsToolStripMenuItem
+        ' 
+        SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
+        SettingsToolStripMenuItem.Size = New Size(61, 20)
+        SettingsToolStripMenuItem.Text = "Settings"
         ' 
         ' btnGenerateLocalisation
         ' 
@@ -321,7 +329,7 @@ Partial Class frmIATDatabaseManager
         TabPage2.Location = New Point(4, 24)
         TabPage2.Name = "TabPage2"
         TabPage2.Padding = New Padding(3)
-        TabPage2.Size = New Size(873, 339)
+        TabPage2.Size = New Size(724, 339)
         TabPage2.TabIndex = 1
         TabPage2.Text = "TabPage2"
         TabPage2.UseVisualStyleBackColor = True
@@ -350,6 +358,12 @@ Partial Class frmIATDatabaseManager
         ' 
         TacticParameterBindingSource.DataMember = "TacticParameter"
         TacticParameterBindingSource.DataSource = TacticsBindingSource
+        ' 
+        ' LocalisationsToolStripMenuItem
+        ' 
+        LocalisationsToolStripMenuItem.Name = "LocalisationsToolStripMenuItem"
+        LocalisationsToolStripMenuItem.Size = New Size(87, 20)
+        LocalisationsToolStripMenuItem.Text = "Localisations"
         ' 
         ' frmIATDatabaseManager
         ' 
@@ -439,4 +453,6 @@ Partial Class frmIATDatabaseManager
     Friend WithEvents btnInsertNPC As Button
     Friend WithEvents btnInsertItem As Button
     Friend WithEvents btnInsertSpell As Button
+    Friend WithEvents SettingsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents LocalisationsToolStripMenuItem As ToolStripMenuItem
 End Class
