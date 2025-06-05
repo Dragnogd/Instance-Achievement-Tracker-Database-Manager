@@ -7,6 +7,8 @@
     Public Property Value As String
     ' If the translation is broken
     Public Property IsBroken As Boolean = False
+    ' If the translation has been uploaded to CurseForge
+    Public Property UploadedToCurseForge As Boolean = False
     ' Which localisation this links back to
     Public Property LocalisationId As Integer
     ' Navigation Property

@@ -89,7 +89,7 @@ Public Class frmIATDatabaseManager
         ImportBosses()
     End Sub
 
-    Public Async Sub ImportLocalisationFromCurseforge()
+    Public Async Function ImportLocalisationFromCurseforge() As Task
         Log.Information("Importing localisation from CurseForge...")
 
         Dim curseforgeClient As New CurseForgeClient()
@@ -140,9 +140,69 @@ Public Class frmIATDatabaseManager
         End Using
 
         Log.Information("Localisation import from CurseForge completed.")
-    End Sub
+    End Function
 
-    Private Sub frmIATDatabaseManager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Public Async Function ImportTranslationFromCurseforge(language As String) As Task
+        If language = "enUS" Then
+            Throw New ArgumentException("Use ImportBaseLocalisationFromCurseforge for enUS.")
+        End If
+
+        Log.Information("Importing translations for {Lang}...", language)
+
+        Dim curseforgeClient As New CurseForgeClient()
+        Dim localisationString As String = Await curseforgeClient.GetLocalizationAsync(language)
+
+        If String.IsNullOrWhiteSpace(localisationString) Then
+            Log.Warning("No data returned from CurseForge for {Lang}.", language)
+            Return
+        End If
+
+        Dim pattern As String = "\[\s*""(.*?)""\s*\]\s*=\s*""((?:[^""\\]|\\.)*?)"",?"
+        Dim matches = Regex.Matches(localisationString, pattern, RegexOptions.Singleline)
+
+        Using db As New IATDbContext()
+            For Each match As Match In matches
+                Dim key As String = match.Groups(1).Value
+                Dim rawValue As String = match.Groups(2).Value
+                If rawValue.Length = 0 Then Continue For
+
+                Dim value As String = rawValue.Replace("\\", "\")
+                Dim localisation = db.Localisations.FirstOrDefault(Function(l) l.Key = key)
+
+                If localisation Is Nothing Then
+                    Log.Warning("Skipping translation for unknown key '{Key}'", key)
+                    Continue For
+                End If
+
+                Dim existingTranslation = db.Translations.
+                    FirstOrDefault(Function(t) t.LocalisationId = localisation.Id AndAlso t.LanguageCode = language)
+
+                If existingTranslation Is Nothing Then
+                    Dim newTranslation As New Translation With {
+                        .LanguageCode = language,
+                        .Value = value,
+                        .LocalisationId = localisation.Id
+                    }
+
+                    If ValidateTranslation(db, newTranslation) Then
+                        db.Translations.Add(newTranslation)
+                        Log.Information("Added translation: {Lang}:{Key}", language, key)
+                    End If
+                ElseIf existingTranslation.Value <> value Then
+                    existingTranslation.Value = value
+                    If ValidateTranslation(db, existingTranslation) Then
+                        Log.Information("Updated translation: {Lang}:{Key}", language, key)
+                    End If
+                End If
+            Next
+
+            db.SaveChanges()
+        End Using
+
+        Log.Information("Translation import complete for {Lang}.", language)
+    End Function
+
+    Private Async Sub frmIATDatabaseManager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Initialize Serilog logger
         Log.Logger = New LoggerConfiguration() _
             .WriteTo.RichTextBox(rtbLog) _
@@ -157,7 +217,19 @@ Public Class frmIATDatabaseManager
         ' Initial Migration import
         InitialMigrationImport()
 
-        ImportLocalisationFromCurseforge()
+        ' Import localisation from CurseForge for enUS
+        Await ImportLocalisationFromCurseforge()
+
+        ' Import translations for other languages
+        Dim languages As String() = {"frFR", "deDE", "esES", "ruRU", "esMX", "zhCN", "zhTW", "ptBR", "koKR"}
+        For Each lang In languages
+            Try
+                Await ImportTranslationFromCurseforge(lang)
+            Catch ex As Exception
+                Log.Error(ex, "Failed to import translation for {Lang}", lang)
+            End Try
+        Next
+
 
         ' Setup Data Grid Views
         IATContext = New IATDbContext()
@@ -437,6 +509,63 @@ Public Class frmIATDatabaseManager
             db.SaveChanges()
         End Using
     End Sub
+
+    Public Function ValidateTranslation(db As IATDbContext, translation As Translation) As Boolean
+        ' Ensure translation is linked to a valid Localisation
+        If translation.Localisation Is Nothing Then
+            translation.Localisation = db.Localisations.FirstOrDefault(Function(l) l.Id = translation.LocalisationId)
+        End If
+
+        If translation.Localisation Is Nothing Then
+            Log.Error($"Translation {translation.Id} does not have a valid linked Localisation.")
+            translation.IsBroken = True
+            Return False
+        End If
+
+        Dim key As String = translation.Localisation.Key
+        Dim englishValue As String = translation.Localisation.Value
+        Dim translatedValue As String = translation.Value
+
+        ' Placeholder count match check (%s)
+        Dim expectedPlaceholders = Regex.Matches(englishValue, "%s").Count
+        Dim actualPlaceholders = Regex.Matches(translatedValue, "%s").Count
+        If expectedPlaceholders <> actualPlaceholders Then
+            Log.Error($"[{translation.LanguageCode}] Placeholder count mismatch for key '{key}' (%s count {expectedPlaceholders} vs {actualPlaceholders}).")
+            translation.IsBroken = True
+            Return False
+        End If
+
+        ' Normalize newline characters to \n
+        Dim fixedValue = translatedValue.Replace(vbCrLf, "\n").Replace(vbCr, "\n").Replace(vbLf, "\n")
+        If fixedValue <> translatedValue Then
+            Log.Warning($"[{translation.LanguageCode}] Normalizing newlines for key '{key}'.")
+            translation.Value = fixedValue
+        End If
+
+        ' Escaped percent signs (%%)
+        Dim englishLiteralPercents = Regex.Matches(englishValue, "%%").Count
+        Dim translatedEscapedPercents = Regex.Matches(translation.Value, "%%").Count
+        If englishLiteralPercents <> translatedEscapedPercents Then
+            Log.Error($"[{translation.LanguageCode}] Escaped percent mismatch for key '{key}' (Expected {englishLiteralPercents} escaped %% but found {translatedEscapedPercents}).")
+            translation.IsBroken = True
+            Return False
+        End If
+
+        ' Tactic parameter count check
+        Dim tactic = db.Tactics.FirstOrDefault(Function(t) t.LocalisationId = translation.LocalisationId)
+        If tactic IsNot Nothing Then
+            Dim expectedParamCount = db.TacticParameters.Count(Function(tp) tp.TacticId = tactic.Id)
+            If expectedParamCount <> actualPlaceholders Then
+                Log.Error($"[{translation.LanguageCode}] Tactic param mismatch for key '{key}' (expected {expectedParamCount} parameters, found {actualPlaceholders} %s).")
+                translation.IsBroken = True
+                Return False
+            End If
+        End If
+
+        ' Passed all checks
+        translation.IsBroken = False
+        Return True
+    End Function
 
     Public Sub GenerateTranslations()
         Log.Information("Generating all localisation files...")
