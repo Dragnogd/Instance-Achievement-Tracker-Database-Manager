@@ -3,6 +3,7 @@ Imports System.IO
 Imports System.Net.Http
 Imports System.Runtime.Intrinsics
 Imports System.Text.RegularExpressions
+Imports System.Threading
 Imports System.Windows.Controls
 Imports Imgur.API.Authentication
 Imports Imgur.API.Endpoints
@@ -21,9 +22,6 @@ Public Class frmIATDatabaseManager
     Public NPCTable = New DataTable
     Public BossesTable As DataTable = New DataTable
     Public SpellTable = New DataTable
-    Public NPCCacheDB = New List(Of NPCCache)
-    Public NPCCacheClassicDB = New List(Of NPCCache)
-    Public ItemCacheDB = New List(Of ItemCache)
     Public CurrentSite = Nothing
     Public PreviousSites As New List(Of String)
     Public CheckingSpellName = False
@@ -37,7 +35,7 @@ Public Class frmIATDatabaseManager
 
     Private Sub InitialiseDatabase()
         Using db As New IATDbContext
-            db.Database.EnsureDeleted()
+            'db.Database.EnsureDeleted()
             db.Database.EnsureCreated()
             Log.Information("Database initialised successfully")
         End Using
@@ -214,22 +212,8 @@ Public Class frmIATDatabaseManager
         ' Make sure SQLite Database is created
         InitialiseDatabase()
 
-        ' Initial Migration import
-        InitialMigrationImport()
-
-        ' Import localisation from CurseForge for enUS
-        Await ImportLocalisationFromCurseforge()
-
-        ' Import translations for other languages
-        Dim languages As String() = {"frFR", "deDE", "esES", "ruRU", "esMX", "zhCN", "zhTW", "ptBR", "koKR"}
-        For Each lang In languages
-            Try
-                Await ImportTranslationFromCurseforge(lang)
-            Catch ex As Exception
-                Log.Error(ex, "Failed to import translation for {Lang}", lang)
-            End Try
-        Next
-
+        'Initial Migration import
+        'InitialMigrationImport()
 
         ' Setup Data Grid Views
         IATContext = New IATDbContext()
@@ -244,7 +228,58 @@ Public Class frmIATDatabaseManager
             cboBosses.ValueMember = "Id"
         End Using
 
+        UpdateNPCCacheExpansionIDs()
     End Sub
+
+    Public Sub UpdateNPCCacheExpansionIDs()
+        ' Fetch all npcsid from npcdb
+        Dim npcIDs As List(Of Integer) = New List(Of Integer)()
+        Using db As New IATDbContext
+            'Select all NPC IDs from the database where expansionid is 0
+            npcIDs = db.NPCs.Where(Function(n) n.ExpansionId = 0).Select(Function(n) n.NPCId).ToList()
+        End Using
+
+        For Each npcID In npcIDs
+            ' Optional: Skip if expansion already stored in DB
+
+            Dim patchVersion = GetWowheadPatchForNPC(npcID)
+            Dim expansionID = PatchToExpansionID(patchVersion)
+
+            ' Store expansionID in your DB for this npcID
+            UpdateNPCExpansionInDB(npcID, expansionID)
+
+            Console.WriteLine($"NPC {npcID} stored expansion: {expansionID}")
+
+            ' Wait random time between 2 and 10 seconds
+            Dim randomWaitTime = New Random().Next(2000, 10000) ' Between 2 and 10 seconds
+            Thread.Sleep(randomWaitTime)
+        Next
+    End Sub
+
+    ' Implement this to update your DB with expansionID for the NPC
+    Private Sub UpdateNPCExpansionInDB(npcID As Integer, expansionID As String)
+        Using db As New IATDbContext
+            ' Select npcid and update patch added
+            Dim npc = db.NPCs.FirstOrDefault(Function(n) n.NPCId = npcID)
+            If npc IsNot Nothing Then
+                npc.ExpansionID = expansionID
+                db.SaveChanges()
+            Else
+                Log.Warning("NPC with ID {NpcId} not found in database.", npcID)
+            End If
+        End Using
+    End Sub
+
+    Public Function PatchToExpansionID(patch As String) As Integer
+        If String.IsNullOrEmpty(patch) OrElse patch = "Unknown" Then Return 0
+
+        Dim major As Integer
+        Dim parts = patch.Split("."c)
+        If Integer.TryParse(parts(0), major) Then
+            Return major
+        End If
+        Return 0
+    End Function
 
     Private Sub ExpansionToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExpansionToolStripMenuItem.Click
         InsertExpansion.Show()
@@ -502,6 +537,17 @@ Public Class frmIATDatabaseManager
                     End If
                 End If
 
+                ' Match all \x pairs that are not one of the valid escape sequences
+                Dim invalidEscapePattern As String = "\\[^n""\\%]"
+                Dim matches = Regex.Matches(translation.Value, invalidEscapePattern)
+
+                If matches.Count > 0 Then
+                    Dim invalidSequences = matches.Cast(Of Match).Select(Function(m) m.Value).Distinct()
+                    Log.Error($"[{translation.LanguageCode}] Invalid escape sequences {String.Join(", ", invalidSequences)} in key '{translation.Localisation.Key}'.")
+                    translation.IsBroken = True
+                    Continue For
+                End If
+
                 ' Passed all checks for set broken as false
                 translation.IsBroken = False
             Next
@@ -589,8 +635,8 @@ Public Class frmIATDatabaseManager
 
                     ' Write all translations for this language, ordered by key
                     For Each translation In localeGroup.OrderBy(Function(t) t.Id)
-                        Dim keySafe = translation.Localisation.Key.Replace("""", "\""") ' escape quotes
-                        Dim valSafe = translation.Value.Replace("""", "\""") ' escape quotes
+                        Dim keySafe = translation.Localisation.Key
+                        Dim valSafe = translation.Value
 
                         If translation.IsBroken Then
                             writer.WriteLine(vbTab & $"--[""{keySafe}""] = ""{valSafe}"",")
@@ -627,7 +673,7 @@ Public Class frmIATDatabaseManager
                 For Each npc In npcs
                     Dim npcId = npc.NPCId
                     Dim npcName = npc.Name.Replace("--", "-") ' Avoid breaking comments
-                    writer.WriteLine(vbTab & $"[{npcId}] ={npcId}, --{npcName}")
+                    writer.WriteLine(vbTab & $"[{npcId}] = {npc.ExpansionId}, --{npcName}")
                 Next
 
                 writer.WriteLine("}")
@@ -835,7 +881,7 @@ Public Class frmIATDatabaseManager
             Dim Expansions As List(Of Expansion) = db.Expansions.Where(Function(e) e.ExpansionGameId <= maxExpansions).ToList()
 
             ' Write new file
-            Using writer As StreamWriter = New StreamWriter($"C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances{expansionSuffix}.lua", True)
+            Using writer As StreamWriter = New StreamWriter($"C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances{expansionSuffix}.lua")
                 writer.WriteLine("--------------------------------------")
                 writer.WriteLine("-- Last Auto Generated: " & DateTime.Now & " using https://github.com/Dragnogd/Instance-Achievement-Tracker-Database-Manager")
                 writer.WriteLine("--------------------------------------")
@@ -1344,5 +1390,20 @@ Public Class frmIATDatabaseManager
 
     Private Sub LocalisationsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LocalisationsToolStripMenuItem.Click
         LocalisationTable.Show()
+    End Sub
+
+    Private Async Sub btnPullLocalisation_Click(sender As Object, e As EventArgs) Handles btnPullLocalisation.Click
+        'Import Localisation from CurseForge for enUS
+        Await ImportLocalisationFromCurseforge()
+
+        ' Import translations for other languages
+        Dim languages As String() = {"frFR", "deDE", "esES", "ruRU", "esMX", "zhCN", "zhTW", "ptBR", "koKR"}
+        For Each lang In languages
+            Try
+                Await ImportTranslationFromCurseforge(lang)
+            Catch ex As Exception
+                Log.Error(ex, "Failed to import translation for {Lang}", lang)
+            End Try
+        Next
     End Sub
 End Class

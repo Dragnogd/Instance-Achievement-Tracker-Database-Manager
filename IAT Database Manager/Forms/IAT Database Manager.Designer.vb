@@ -34,6 +34,7 @@ Partial Class frmIATDatabaseManager
         BossToolStripMenuItem = New ToolStripMenuItem()
         LocalisationManagerToolStripMenuItem = New ToolStripMenuItem()
         SettingsToolStripMenuItem = New ToolStripMenuItem()
+        LocalisationsToolStripMenuItem = New ToolStripMenuItem()
         btnGenerateLocalisation = New Button()
         btnUploadLocale = New Button()
         ExpansionBindingSource = New BindingSource(components)
@@ -42,6 +43,7 @@ Partial Class frmIATDatabaseManager
         rtbLog = New RichTextBox()
         tlpContentLeft = New TableLayoutPanel()
         Panel2 = New Panel()
+        btnPullLocalisation = New Button()
         btnInsertItem = New Button()
         btnInsertSpell = New Button()
         btnInsertNPC = New Button()
@@ -55,7 +57,6 @@ Partial Class frmIATDatabaseManager
         InstancesBindingSource = New BindingSource(components)
         TacticsBindingSource = New BindingSource(components)
         TacticParameterBindingSource = New BindingSource(components)
-        LocalisationsToolStripMenuItem = New ToolStripMenuItem()
         MenuStrip1.SuspendLayout()
         CType(ExpansionBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         tlpContainer.SuspendLayout()
@@ -147,6 +148,12 @@ Partial Class frmIATDatabaseManager
         SettingsToolStripMenuItem.Size = New Size(61, 20)
         SettingsToolStripMenuItem.Text = "Settings"
         ' 
+        ' LocalisationsToolStripMenuItem
+        ' 
+        LocalisationsToolStripMenuItem.Name = "LocalisationsToolStripMenuItem"
+        LocalisationsToolStripMenuItem.Size = New Size(87, 20)
+        LocalisationsToolStripMenuItem.Text = "Localisations"
+        ' 
         ' btnGenerateLocalisation
         ' 
         btnGenerateLocalisation.Location = New Point(148, 30)
@@ -228,6 +235,7 @@ Partial Class frmIATDatabaseManager
         ' 
         ' Panel2
         ' 
+        Panel2.Controls.Add(btnPullLocalisation)
         Panel2.Controls.Add(btnInsertItem)
         Panel2.Controls.Add(btnInsertSpell)
         Panel2.Controls.Add(btnInsertNPC)
@@ -243,6 +251,17 @@ Partial Class frmIATDatabaseManager
         Panel2.Name = "Panel2"
         Panel2.Size = New Size(732, 118)
         Panel2.TabIndex = 0
+        ' 
+        ' btnPullLocalisation
+        ' 
+        btnPullLocalisation.Font = New Font("Microsoft Sans Serif", 8.25F)
+        btnPullLocalisation.Location = New Point(529, 3)
+        btnPullLocalisation.Margin = New Padding(4, 3, 4, 3)
+        btnPullLocalisation.Name = "btnPullLocalisation"
+        btnPullLocalisation.Size = New Size(130, 26)
+        btnPullLocalisation.TabIndex = 62
+        btnPullLocalisation.Text = "Pull Localisation"
+        btnPullLocalisation.UseVisualStyleBackColor = True
         ' 
         ' btnInsertItem
         ' 
@@ -359,12 +378,6 @@ Partial Class frmIATDatabaseManager
         TacticParameterBindingSource.DataMember = "TacticParameter"
         TacticParameterBindingSource.DataSource = TacticsBindingSource
         ' 
-        ' LocalisationsToolStripMenuItem
-        ' 
-        LocalisationsToolStripMenuItem.Name = "LocalisationsToolStripMenuItem"
-        LocalisationsToolStripMenuItem.Size = New Size(87, 20)
-        LocalisationsToolStripMenuItem.Text = "Localisations"
-        ' 
         ' frmIATDatabaseManager
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -455,4 +468,5 @@ Partial Class frmIATDatabaseManager
     Friend WithEvents btnInsertSpell As Button
     Friend WithEvents SettingsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LocalisationsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents btnPullLocalisation As Button
 End Class
