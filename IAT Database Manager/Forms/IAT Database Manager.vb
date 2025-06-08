@@ -343,7 +343,7 @@ Public Class frmIATDatabaseManager
                     <head>
                     <style>body {{ font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; padding: 10px; }}</style>
                     </head>
-                    <body><div contenteditable=""false"">{tacticText}</div></body>
+                    <body><div contenteditable=""true"">{tacticText}</div></body>
                     </html>"
 
                     ' Create WebView2 control
@@ -393,6 +393,9 @@ Public Class frmIATDatabaseManager
                                                                         End Sub
                     ' Load HTML content into WebView2
                     webView.NavigateToString(html)
+
+                    ' Open the achievement in the browser on wowhead
+                    Browser.wvBrowser.Source = New Uri($"https://www.wowhead.com/achievement={selectedBoss.AchievementID}#comments")
                 Next
             End Using
         End If
@@ -772,6 +775,7 @@ Public Class frmIATDatabaseManager
                 Dim js = "document.querySelector('body > div').innerHTML"
                 Dim htmlRaw = Await webView.CoreWebView2.ExecuteScriptAsync(js)
                 Dim html = System.Text.RegularExpressions.Regex.Unescape(htmlRaw.Trim(""""c))
+                html = html.Replace("&nbsp;", " ")
 
                 ' Decode back to original string with %s
                 Dim cleanedText As String = html
@@ -912,6 +916,7 @@ Public Class frmIATDatabaseManager
                     ' Loop through each instance type
                     For Each instancetype In expansion.InstanceTypes
 
+
                         ' Seperate instance types with a new line apart from raids as raids appear first in the table
                         If instancetype.Name <> "Raids" Then
                             writer.WriteLine()
@@ -920,9 +925,22 @@ Public Class frmIATDatabaseManager
                         ' Write instance type name
                         writer.WriteLine($"{Indent(2)}{instancetype.Name} = {{")
 
-                        ' Loop through each instance
-                        For Each instance In instancetype.Instances
+                        ' Generate a list of compatible instances
+                        ' Find all instances with expansion id that does exceed the max expansion id
+                        Dim compatibleInstances = db.Instances.Where(Function(i) i.ExpansionId <= maxExpansions AndAlso i.InstanceTypeId = instancetype.Id)
 
+                        ' Find highest expansion id from filtered results
+                        Dim maxPairs = compatibleInstances _
+                            .GroupBy(Function(i) i.InstanceNameID) _
+                            .Select(Function(g) New With {
+                                .InstanceNameID = g.Key,
+                                .MaxExpansionId = g.Max(Function(i) i.ExpansionId)
+                        })
+
+                        Dim finalInstances = compatibleInstances.Where(Function(i) maxPairs.Any(Function(p) p.InstanceNameID = i.InstanceNameID AndAlso p.MaxExpansionId = i.ExpansionId))
+
+                        ' Loop through each instance
+                        For Each instance In finalInstances
                             ' Seperate instances with a new line
                             If firstInstance = False Then
                                 firstInstance = True
@@ -1368,6 +1386,9 @@ Public Class frmIATDatabaseManager
             .TypeToLoad = EntityType.NPC
         }
         selector.Show()
+
+        ' Make the search box the default focus
+        selector.txtSearch.Select()
     End Sub
 
     Private Sub btnInsertSpell_Click(sender As Object, e As EventArgs) Handles btnInsertSpell.Click
@@ -1375,6 +1396,9 @@ Public Class frmIATDatabaseManager
         .TypeToLoad = EntityType.Spell
             }
         selector.Show()
+
+        ' Make the search box the default focus
+        selector.txtSearch.Select()
     End Sub
 
     Private Sub btnInsertItem_Click(sender As Object, e As EventArgs) Handles btnInsertItem.Click
@@ -1405,5 +1429,9 @@ Public Class frmIATDatabaseManager
                 Log.Error(ex, "Failed to import translation for {Lang}", lang)
             End Try
         Next
+    End Sub
+
+    Private Sub BrowserToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BrowserToolStripMenuItem.Click
+        Browser.Show()
     End Sub
 End Class

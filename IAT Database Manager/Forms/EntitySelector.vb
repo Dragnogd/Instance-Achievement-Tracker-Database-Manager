@@ -176,4 +176,12 @@ Public Class EntitySelector
 
         Me.Close()
     End Sub
+
+    Private Sub txtSearch_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearch.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            btnSave.PerformClick()
+            e.Handled = True
+            e.SuppressKeyPress = True
+        End If
+    End Sub
 End Class

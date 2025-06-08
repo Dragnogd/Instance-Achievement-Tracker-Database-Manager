@@ -35,6 +35,7 @@ Partial Class frmIATDatabaseManager
         LocalisationManagerToolStripMenuItem = New ToolStripMenuItem()
         SettingsToolStripMenuItem = New ToolStripMenuItem()
         LocalisationsToolStripMenuItem = New ToolStripMenuItem()
+        BrowserToolStripMenuItem = New ToolStripMenuItem()
         btnGenerateLocalisation = New Button()
         btnUploadLocale = New Button()
         ExpansionBindingSource = New BindingSource(components)
@@ -103,7 +104,7 @@ Partial Class frmIATDatabaseManager
         ' 
         ' MenuStrip1
         ' 
-        MenuStrip1.Items.AddRange(New ToolStripItem() {InsertToolStripMenuItem, LocalisationManagerToolStripMenuItem, SettingsToolStripMenuItem, LocalisationsToolStripMenuItem})
+        MenuStrip1.Items.AddRange(New ToolStripItem() {InsertToolStripMenuItem, LocalisationManagerToolStripMenuItem, SettingsToolStripMenuItem, LocalisationsToolStripMenuItem, BrowserToolStripMenuItem})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.Name = "MenuStrip1"
         MenuStrip1.Padding = New Padding(7, 2, 0, 2)
@@ -153,6 +154,12 @@ Partial Class frmIATDatabaseManager
         LocalisationsToolStripMenuItem.Name = "LocalisationsToolStripMenuItem"
         LocalisationsToolStripMenuItem.Size = New Size(87, 20)
         LocalisationsToolStripMenuItem.Text = "Localisations"
+        ' 
+        ' BrowserToolStripMenuItem
+        ' 
+        BrowserToolStripMenuItem.Name = "BrowserToolStripMenuItem"
+        BrowserToolStripMenuItem.Size = New Size(61, 20)
+        BrowserToolStripMenuItem.Text = "Browser"
         ' 
         ' btnGenerateLocalisation
         ' 
@@ -303,6 +310,8 @@ Partial Class frmIATDatabaseManager
         ' 
         chkEditTactics.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         chkEditTactics.AutoSize = True
+        chkEditTactics.Checked = True
+        chkEditTactics.CheckState = CheckState.Checked
         chkEditTactics.Location = New Point(141, 94)
         chkEditTactics.Name = "chkEditTactics"
         chkEditTactics.Size = New Size(85, 19)
@@ -469,4 +478,5 @@ Partial Class frmIATDatabaseManager
     Friend WithEvents SettingsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LocalisationsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents btnPullLocalisation As Button
+    Friend WithEvents BrowserToolStripMenuItem As ToolStripMenuItem
 End Class
