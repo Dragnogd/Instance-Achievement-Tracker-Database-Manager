@@ -952,18 +952,6 @@ Public Class frmIATDatabaseManager
                                     writer.WriteLine($"{Indent(4)}nameLocalised = L[""{instance.NameWrath}""],")
                                 End If
 
-                                ' Classic only variables
-                                If expansion.ExpansionGameId = 3 Or expansion.ExpansionGameId = 4 Then
-
-                                    ' Write which classic phase we are in for classic wow instances
-                                    If instance.ClassicPhase IsNot Nothing Then
-                                        writer.WriteLine($"{Indent(4)}classicPhase = {instance.ClassicPhase},")
-                                    Else
-                                        ' Default to phase 1 if not set
-                                        writer.WriteLine($"{Indent(4)}classicPhase = 1,")
-                                    End If
-                                End If
-
                                 ' Loop through each boss in the instance
                                 For Each boss In instance.Bosses
 
