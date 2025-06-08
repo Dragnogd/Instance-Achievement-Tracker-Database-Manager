@@ -925,188 +925,165 @@ Public Class frmIATDatabaseManager
                         ' Write instance type name
                         writer.WriteLine($"{Indent(2)}{instancetype.Name} = {{")
 
-                        ' Generate a list of compatible instances
-                        ' Find all instances with expansion id that does exceed the max expansion id
-                        Dim compatibleInstances = db.Instances.Where(Function(i) i.ExpansionId <= maxExpansions AndAlso i.InstanceTypeId = instancetype.Id)
-
-                        ' Find highest expansion id from filtered results
-                        Dim maxPairs = compatibleInstances _
-                            .GroupBy(Function(i) i.InstanceNameID) _
-                            .Select(Function(g) New With {
-                                .InstanceNameID = g.Key,
-                                .MaxExpansionId = g.Max(Function(i) i.ExpansionId)
-                        })
-
-                        Dim finalInstances = compatibleInstances.Where(Function(i) maxPairs.Any(Function(p) p.InstanceNameID = i.InstanceNameID AndAlso p.MaxExpansionId = i.ExpansionId))
-
                         ' Loop through each instance
-                        For Each instance In finalInstances
-                            ' Seperate instances with a new line
-                            If firstInstance = False Then
-                                firstInstance = True
-                            Else
-                                writer.WriteLine()
-                            End If
-
-                            ' Write instance name
-                            If instance.LegacySize > 0 Then
-                                ' Include legacy size as part of id
-                                writer.WriteLine($"{Indent(3)}[{instance.InstanceId}.{instance.LegacySize}] = {{ --{instance.Name}")
-                            Else
-                                writer.WriteLine($"{Indent(3)}[{instance.InstanceId}] = {{ --{instance.Name}")
-                            End If
-
-                            ' Write instance ID
-                            writer.WriteLine($"{Indent(4)}name = {instance.InstanceNameID},")
-
-                            ' Write wrath instance name if it exists
-                            If instance.NameWrath IsNot Nothing AndAlso instance.NameWrath.Length > 1 Then
-                                writer.WriteLine($"{Indent(4)}nameLocalised = L[""{instance.NameWrath}""],")
-                            End If
-
-                            ' Classic only variables
-                            If expansion.ExpansionGameId = 3 Or expansion.ExpansionGameId = 4 Then
-
-                                ' Write which classic phase we are in for classic wow instances
-                                If instance.ClassicPhase IsNot Nothing Then
-                                    writer.WriteLine($"{Indent(4)}classicPhase = {instance.ClassicPhase},")
+                        For Each instance In instancetype.Instances
+                            ' Check if instance is compatible with ExpansionAddedIn and ExpansionRemovedIn
+                            If instance.ExpansionAddedIn <= maxExpansions And (instance.ExpansionRemovedIn = 0 Or instance.ExpansionRemovedIn > maxExpansions) Then
+                                ' Seperate instances with a new line
+                                If firstInstance = False Then
+                                    firstInstance = True
                                 Else
-                                    ' Default to phase 1 if not set
-                                    writer.WriteLine($"{Indent(4)}classicPhase = 1,")
+                                    writer.WriteLine()
                                 End If
 
-                                ' Write if instance is retail only
-                                If instance.RetailOnly Then
-                                    writer.WriteLine($"{Indent(4)}retailOnly = {instance.RetailOnly.ToString.ToLower()},")
-                                End If
-
-                                ' Write if instance is classic only
-                                If instance.ClassicOnly Then
-                                    writer.WriteLine($"{Indent(4)}classicOnly = {instance.ClassicOnly.ToString.ToLower()},")
-                                End If
-                            End If
-
-                            ' Loop through each boss in the instance
-                            For Each boss In instance.Bosses
-
-                                ' Write boss order
-                                writer.WriteLine($"{Indent(4)}boss{boss.Order} = {{")
-
-                                ' Write boss name id
-                                If boss.BossNameID > 0 Then
-                                    ' We have id for boss
-                                    writer.WriteLine($"{Indent(5)}name = {boss.BossNameID}, --{boss.BossName}")
+                                ' Write instance name
+                                If instance.LegacySize > 0 Then
+                                    ' Include legacy size as part of id
+                                    writer.WriteLine($"{Indent(3)}[{instance.InstanceId}.{instance.LegacySize}] = {{ --{instance.Name}")
                                 Else
-                                    ' No id so use localised string
-                                    writer.WriteLine($"{Indent(5)}name = L[""{boss.BossNameLocale}""], --{boss.BossName}")
+                                    writer.WriteLine($"{Indent(3)}[{instance.InstanceId}] = {{ --{instance.Name}")
                                 End If
 
-                                ' Write boss id's
-                                writer.WriteLine($"{Indent(5)}bossIDs = {boss.BossIDs},")
+                                ' Write instance ID
+                                writer.WriteLine($"{Indent(4)}name = {instance.InstanceNameID},")
 
-                                ' Write achievement id
-                                writer.WriteLine($"{Indent(5)}achievement = {boss.AchievementID},")
+                                ' Write wrath instance name if it exists
+                                If instance.NameWrath IsNot Nothing AndAlso instance.NameWrath.Length > 1 Then
+                                    writer.WriteLine($"{Indent(4)}nameLocalised = L[""{instance.NameWrath}""],")
+                                End If
 
-                                ' Write players
-                                writer.WriteLine($"{Indent(5)}players = {{}},")
+                                ' Classic only variables
+                                If expansion.ExpansionGameId = 3 Or expansion.ExpansionGameId = 4 Then
 
-                                ' Write tactics
-                                If boss.Tactics.Count > 0 Then
-                                    ' Write tactics header
-                                    writer.WriteLine($"{Indent(5)}tactics = {{")
+                                    ' Write which classic phase we are in for classic wow instances
+                                    If instance.ClassicPhase IsNot Nothing Then
+                                        writer.WriteLine($"{Indent(4)}classicPhase = {instance.ClassicPhase},")
+                                    Else
+                                        ' Default to phase 1 if not set
+                                        writer.WriteLine($"{Indent(4)}classicPhase = 1,")
+                                    End If
+                                End If
 
-                                    ' Group tactics by their ExpansionId
-                                    Dim groupedTactics = boss.Tactics.Where(Function(t) t.ExpansionId <= maxExpansions) _
-                                                                     .GroupBy(Function(t) t.ExpansionId) _
-                                                                     .OrderBy(Function(s) s.Key)
+                                ' Loop through each boss in the instance
+                                For Each boss In instance.Bosses
 
-                                    ' Loop through each expansion group
-                                    For Each group In groupedTactics
-                                        ' Write expansion id header
-                                        writer.WriteLine($"{Indent(6)}[{group.Key}] = {{")
+                                    ' Write boss order
+                                    writer.WriteLine($"{Indent(4)}boss{boss.Order} = {{")
 
-                                        ' Loop through each tactic in the expansion group
-                                        For Each tactic In group
+                                    ' Write boss name id
+                                    If boss.BossNameID > 0 Then
+                                        ' We have id for boss
+                                        writer.WriteLine($"{Indent(5)}name = {boss.BossNameID}, --{boss.BossName}")
+                                    Else
+                                        ' No id so use localised string
+                                        writer.WriteLine($"{Indent(5)}name = L[""{boss.BossNameLocale}""], --{boss.BossName}")
+                                    End If
 
-                                            ' Get the tactic parameters and sort by Order
-                                            Dim parameters As List(Of TacticParameter) = tactic.TacticParameter.OrderBy(Function(p) p.Order).ToList()
-                                            Dim parameterList As New List(Of String)
-                                            For Each param In parameters
-                                                Select Case param.ParameterType
-                                                    Case "Spell"
-                                                        parameterList.Add($"C_Spell.GetSpellLink({param.ParameterID})")
-                                                    Case "NPC"
-                                                        parameterList.Add($"""IAT_{param.ParameterID}""")
-                                                End Select
+                                    ' Write boss id's
+                                    writer.WriteLine($"{Indent(5)}bossIDs = {boss.BossIDs},")
+
+                                    ' Write achievement id
+                                    writer.WriteLine($"{Indent(5)}achievement = {boss.AchievementID},")
+
+                                    ' Write players
+                                    writer.WriteLine($"{Indent(5)}players = {{}},")
+
+                                    ' Write tactics
+                                    If boss.Tactics.Count > 0 Then
+                                        ' Write tactics header
+                                        writer.WriteLine($"{Indent(5)}tactics = {{")
+
+                                        ' Group tactics by their ExpansionId
+                                        Dim groupedTactics = boss.Tactics.Where(Function(t) t.ExpansionId <= maxExpansions) _
+                                                                         .GroupBy(Function(t) t.ExpansionId) _
+                                                                         .OrderBy(Function(s) s.Key)
+
+                                        ' Loop through each expansion group
+                                        For Each group In groupedTactics
+                                            ' Write expansion id header
+                                            writer.WriteLine($"{Indent(6)}[{group.Key}] = {{")
+
+                                            ' Loop through each tactic in the expansion group
+                                            For Each tactic In group
+
+                                                ' Get the tactic parameters and sort by Order
+                                                Dim parameters As List(Of TacticParameter) = tactic.TacticParameter.OrderBy(Function(p) p.Order).ToList()
+                                                Dim parameterList As New List(Of String)
+                                                For Each param In parameters
+                                                    Select Case param.ParameterType
+                                                        Case "Spell"
+                                                            parameterList.Add($"C_Spell.GetSpellLink({param.ParameterID})")
+                                                        Case "NPC"
+                                                            parameterList.Add($"""IAT_{param.ParameterID}""")
+                                                    End Select
+                                                Next
+
+                                                ' Join the parameter list in a comma seperated string
+                                                Dim parameterString = String.Join(", ", parameterList)
+
+                                                ' If we have parameters then write format string
+                                                ' Otherwise just write locale string
+                                                If parameterList.Count > 0 Then
+                                                    writer.WriteLine($"{Indent(7)}{{ tactic = format(L[""{tactic.Localisation.Key}""], {parameterString}) }},")
+                                                Else
+                                                    writer.WriteLine($"{Indent(7)}{{ tactic = L[""{tactic.Localisation.Key}""] }},")
+                                                End If
                                             Next
 
-                                            ' Join the parameter list in a comma seperated string
-                                            Dim parameterString = String.Join(", ", parameterList)
-
-                                            ' If we have parameters then write format string
-                                            ' Otherwise just write locale string
-                                            If parameterList.Count > 0 Then
-                                                writer.WriteLine($"{Indent(7)}{{ tactic = format(L[""{tactic.Localisation.Key}""], {parameterString}) }},")
-                                            Else
-                                                writer.WriteLine($"{Indent(7)}{{ tactic = L[""{tactic.Localisation.Key}""] }},")
-                                            End If
+                                            ' Close expansion group
+                                            writer.WriteLine($"{Indent(6)}}},")
                                         Next
 
-                                        ' Close expansion group
-                                        writer.WriteLine($"{Indent(6)}}},")
-                                    Next
+                                        ' Close tactics
+                                        writer.WriteLine($"{Indent(5)}}},")
+                                    Else
+                                        ' Write the tactics localisation string
+                                        writer.WriteLine($"{Indent(5)}tactics = L[""{boss.Tactics}""],")
+                                    End If
 
-                                    ' Close tactics
-                                    writer.WriteLine($"{Indent(5)}}},")
-                                Else
-                                    ' Write the tactics localisation string
-                                    writer.WriteLine($"{Indent(5)}tactics = L[""{boss.Tactics}""],")
-                                End If
+                                    ' Write enabled state
+                                    writer.WriteLine($"{Indent(5)}enabled = {boss.Enabled.ToString.ToLower()},")
 
-                                ' Write enabled state
-                                writer.WriteLine($"{Indent(5)}enabled = {boss.Enabled.ToString.ToLower()},")
+                                    ' Write tracking function
+                                    writer.WriteLine($"{Indent(5)}track = {boss.Track},")
 
-                                ' Write tracking function
-                                writer.WriteLine($"{Indent(5)}track = {boss.Track},")
+                                    writer.WriteLine($"{Indent(5)}partial = {boss.PartialTrack.ToString.ToLower()},")
 
-                                writer.WriteLine($"{Indent(5)}partial = {boss.PartialTrack.ToString.ToLower()},")
+                                    If boss.EncounterID > 0 Then
+                                        writer.WriteLine($"{Indent(5)}encounterID = {boss.EncounterID},")
+                                    End If
 
-                                If boss.EncounterID > 0 Then
-                                    writer.WriteLine($"{Indent(5)}encounterID = {boss.EncounterID},")
-                                End If
+                                    If boss.DisplayInfoFrame = "true" Then
+                                        writer.WriteLine($"{Indent(5)}displayInfoFrame = {boss.DisplayInfoFrame.ToString.ToLower()},")
+                                    End If
 
-                                'If expansion.ExpansionGameId = 3 And boss.EncounterIDWrath > 0 Then
-                                '    writer.WriteLine($"{Indent(5)}encounterIDWrath = " & boss.EncounterIDWrath & ",")
-                                'End If
+                                    If boss.BossNameLocale.Length > 1 Then
+                                        writer.WriteLine($"{Indent(5)}nameWrath = L[""{boss.BossNameLocale}""],")
+                                    End If
 
-                                If boss.DisplayInfoFrame = "true" Then
-                                    writer.WriteLine($"{Indent(5)}displayInfoFrame = {boss.DisplayInfoFrame.ToString.ToLower()},")
-                                End If
+                                    ' Close the boss table
+                                    writer.WriteLine($"{Indent(4)}}},")
 
-                                If boss.BossNameLocale.Length > 1 Then
-                                    writer.WriteLine($"{Indent(5)}nameWrath = L[""{boss.BossNameLocale}""],")
-                                End If
+                                    'Check if localisation is new
+                                    'Dim localeFound = False
+                                    'For Each locale In LocalisationDB
+                                    '    If boss.Tactics.Contains(locale.Name) Then
+                                    '        localeFound = True
+                                    '    End If
+                                    'Next
+                                    'If localeFound = False Then
+                                    '    Dim newLocale As New Localisation
+                                    '    newLocale.Name = boss.Tactics.Replace("L[""", "").Replace("""]", "")
+                                    '    newLocale.Text = ""
+                                    '    LocalisationDB.Add(newLocale)
+                                    'End If
+                                Next
 
-                                ' Close the boss table
-                                writer.WriteLine($"{Indent(4)}}},")
-
-                                'Check if localisation is new
-                                'Dim localeFound = False
-                                'For Each locale In LocalisationDB
-                                '    If boss.Tactics.Contains(locale.Name) Then
-                                '        localeFound = True
-                                '    End If
-                                'Next
-                                'If localeFound = False Then
-                                '    Dim newLocale As New Localisation
-                                '    newLocale.Name = boss.Tactics.Replace("L[""", "").Replace("""]", "")
-                                '    newLocale.Text = ""
-                                '    LocalisationDB.Add(newLocale)
-                                'End If
-                            Next
-
-                            ' Close the instance table
-                            writer.WriteLine($"{Indent(3)}}},")
+                                ' Close the instance table
+                                writer.WriteLine($"{Indent(3)}}},")
+                            Else
+                                Log.Information("Skipping instance {InstanceName} (ID: {InstanceId}) for expansion {ExpansionId} due to compatibility with max expansions ({MaxExpansions})", instance.Name, instance.InstanceId, instance.ExpansionAddedIn, maxExpansions)
+                            End If
                         Next
 
                         ' Close the instance type table

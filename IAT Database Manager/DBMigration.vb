@@ -99,12 +99,6 @@ Module DBMigration
                     If strArr.Length > 6 AndAlso Not String.IsNullOrWhiteSpace(strArr(6)) Then
                         newInstance.ClassicPhase = strArr(6)
                     End If
-                    If strArr.Length > 7 AndAlso Not String.IsNullOrWhiteSpace(strArr(7)) Then
-                        newInstance.RetailOnly = strArr(7)
-                    End If
-                    If strArr.Length > 8 AndAlso Not String.IsNullOrWhiteSpace(strArr(8)) Then
-                        newInstance.ClassicOnly = strArr(8)
-                    End If
 
                     ' Now link by foreign key:
                     Dim expansionName As String = strArr(3)
