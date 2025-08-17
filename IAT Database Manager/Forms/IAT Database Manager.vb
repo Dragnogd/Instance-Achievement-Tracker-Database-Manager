@@ -944,12 +944,15 @@ Public Class frmIATDatabaseManager
                                     writer.WriteLine($"{Indent(3)}[{instance.InstanceId}] = {{ --{instance.Name}")
                                 End If
 
-                                ' Write instance ID
-                                writer.WriteLine($"{Indent(4)}name = {instance.InstanceNameID},")
-
-                                ' Write wrath instance name if it exists
-                                If instance.NameWrath IsNot Nothing AndAlso instance.NameWrath.Length > 1 Then
-                                    writer.WriteLine($"{Indent(4)}nameLocalised = L[""{instance.NameWrath}""],")
+                                ' Write wrath instance name if it exists and we are in wrath or cata or just raids for Mists
+                                If instance.NameWrath IsNot Nothing AndAlso instance.NameWrath.Length > 1 AndAlso maxExpansions < 5 Then
+                                    writer.WriteLine($"{Indent(4)}name = L[""{instance.NameWrath}""],")
+                                Else
+                                    If maxExpansions = 5 And instancetype.Name = "Raids" And instance.NameWrath IsNot Nothing AndAlso instance.NameWrath.Length > 1 Then
+                                        writer.WriteLine($"{Indent(4)}name = L[""{instance.NameWrath}""],")
+                                    Else
+                                        writer.WriteLine($"{Indent(4)}name = {instance.InstanceNameID},")
+                                    End If
                                 End If
 
                                 ' Loop through each boss in the instance
@@ -960,8 +963,19 @@ Public Class frmIATDatabaseManager
 
                                     ' Write boss name id
                                     If boss.BossNameID > 0 Then
-                                        ' We have id for boss
-                                        writer.WriteLine($"{Indent(5)}name = {boss.BossNameID}, --{boss.BossName}")
+                                        ' If we are on wrath, cata or mop (raids) then use the localised name
+                                        ' Otherwise use the id as it is a retail boss
+                                        If maxExpansions <= 5 Then
+                                            If instance.ExpansionAddedIn = 3 Then
+                                                writer.WriteLine($"{Indent(5)}name = L[""{boss.BossNameLocale}""], --{boss.BossName}")
+                                            Else
+                                                ' We have id for boss
+                                                writer.WriteLine($"{Indent(5)}name = {boss.BossNameID}, --{boss.BossName}")
+                                            End If
+                                        Else
+                                            ' We have id for boss
+                                            writer.WriteLine($"{Indent(5)}name = {boss.BossNameID}, --{boss.BossName}")
+                                        End If
                                     Else
                                         ' No id so use localised string
                                         writer.WriteLine($"{Indent(5)}name = L[""{boss.BossNameLocale}""], --{boss.BossName}")
@@ -1352,6 +1366,9 @@ Public Class frmIATDatabaseManager
         }
         selector.Show()
 
+        ' Set wowhead to correct search page
+        selector.wvBrowser.Source = New Uri("https://www.wowhead.com/npcs")
+
         ' Make the search box the default focus
         selector.txtSearch.Select()
     End Sub
@@ -1362,6 +1379,9 @@ Public Class frmIATDatabaseManager
             }
         selector.Show()
 
+        ' Set wowhead to correct search page
+        selector.wvBrowser.Source = New Uri("https://www.wowhead.com/spells")
+
         ' Make the search box the default focus
         selector.txtSearch.Select()
     End Sub
@@ -1371,6 +1391,12 @@ Public Class frmIATDatabaseManager
         .TypeToLoad = EntityType.Item
             }
         selector.Show()
+
+        ' Set wowhead to correct search page
+        selector.wvBrowser.Source = New Uri("https://www.wowhead.com/items")
+
+        ' Make the search box the default focus
+        selector.txtSearch.Select()
     End Sub
 
     Private Sub SettingsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SettingsToolStripMenuItem.Click
