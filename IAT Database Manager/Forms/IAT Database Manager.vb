@@ -459,7 +459,7 @@ Public Class frmIATDatabaseManager
         SaveTactics()
 
         ' Retail DB
-        GenerateAddonDatabase(11)
+        GenerateAddonDatabase(12)
         ' Wrath DB
         GenerateAddonDatabase(3, "Wrath")
         ' Cataclysm DB
@@ -828,7 +828,11 @@ Public Class frmIATDatabaseManager
                 Next
 
                 ' Replace <br><br> with \n\n
-                cleanedText = cleanedText.Replace("<br><br>", "\n\n")
+                cleanedText = cleanedText.Replace("<br>", "\n\n")
+
+                ' Remove left over <div>
+                cleanedText = cleanedText.Replace("<div>", "")
+                cleanedText = cleanedText.Replace("</div>", "")
 
                 If newTactic Then
                     ' Ask for Expansion ID
