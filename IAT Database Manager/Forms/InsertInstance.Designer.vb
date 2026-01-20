@@ -22,166 +22,204 @@ Partial Class InsertInstance
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container()
-        Me.txtStatus = New System.Windows.Forms.TextBox()
-        Me.btnAddInstance = New System.Windows.Forms.Button()
-        Me.Label17 = New System.Windows.Forms.Label()
-        Me.txtInstanceName = New System.Windows.Forms.TextBox()
-        Me.lblInstanceName = New System.Windows.Forms.Label()
-        Me.txtInstanceNameID = New System.Windows.Forms.TextBox()
-        Me.lblInstanceNameID = New System.Windows.Forms.Label()
-        Me.Label14 = New System.Windows.Forms.Label()
-        Me.txtInstanceID = New System.Windows.Forms.TextBox()
-        Me.cboExpansions = New System.Windows.Forms.ComboBox()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.cboInstanceTypes = New System.Windows.Forms.ComboBox()
-        Me.txtLuaImport = New System.Windows.Forms.TextBox()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
-        Me.SuspendLayout()
-        '
-        'txtStatus
-        '
-        Me.txtStatus.Location = New System.Drawing.Point(12, 183)
-        Me.txtStatus.Name = "txtStatus"
-        Me.txtStatus.Size = New System.Drawing.Size(322, 20)
-        Me.txtStatus.TabIndex = 11
-        '
-        'btnAddInstance
-        '
-        Me.btnAddInstance.Location = New System.Drawing.Point(12, 140)
-        Me.btnAddInstance.Name = "btnAddInstance"
-        Me.btnAddInstance.Size = New System.Drawing.Size(322, 37)
-        Me.btnAddInstance.TabIndex = 10
-        Me.btnAddInstance.Text = "Add Instance"
-        Me.btnAddInstance.UseVisualStyleBackColor = True
-        '
-        'Label17
-        '
-        Me.Label17.AutoSize = True
-        Me.Label17.Location = New System.Drawing.Point(11, 90)
-        Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(75, 13)
-        Me.Label17.TabIndex = 44
-        Me.Label17.Text = "Instance Type"
-        '
-        'txtInstanceName
-        '
-        Me.txtInstanceName.Location = New System.Drawing.Point(111, 61)
-        Me.txtInstanceName.Name = "txtInstanceName"
-        Me.txtInstanceName.Size = New System.Drawing.Size(223, 20)
-        Me.txtInstanceName.TabIndex = 43
-        '
-        'lblInstanceName
-        '
-        Me.lblInstanceName.AutoSize = True
-        Me.lblInstanceName.Location = New System.Drawing.Point(11, 64)
-        Me.lblInstanceName.Name = "lblInstanceName"
-        Me.lblInstanceName.Size = New System.Drawing.Size(79, 13)
-        Me.lblInstanceName.TabIndex = 42
-        Me.lblInstanceName.Text = "Instance Name"
-        '
-        'txtInstanceNameID
-        '
-        Me.txtInstanceNameID.Location = New System.Drawing.Point(111, 35)
-        Me.txtInstanceNameID.Name = "txtInstanceNameID"
-        Me.txtInstanceNameID.Size = New System.Drawing.Size(223, 20)
-        Me.txtInstanceNameID.TabIndex = 41
-        '
-        'lblInstanceNameID
-        '
-        Me.lblInstanceNameID.AutoSize = True
-        Me.lblInstanceNameID.Location = New System.Drawing.Point(11, 38)
-        Me.lblInstanceNameID.Name = "lblInstanceNameID"
-        Me.lblInstanceNameID.Size = New System.Drawing.Size(93, 13)
-        Me.lblInstanceNameID.TabIndex = 40
-        Me.lblInstanceNameID.Text = "Instance Name ID"
-        '
-        'Label14
-        '
-        Me.Label14.AutoSize = True
-        Me.Label14.Location = New System.Drawing.Point(12, 9)
-        Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(62, 13)
-        Me.Label14.TabIndex = 38
-        Me.Label14.Text = "Instance ID"
-        '
-        'txtInstanceID
-        '
-        Me.txtInstanceID.Location = New System.Drawing.Point(111, 9)
-        Me.txtInstanceID.Name = "txtInstanceID"
-        Me.txtInstanceID.Size = New System.Drawing.Size(223, 20)
-        Me.txtInstanceID.TabIndex = 39
-        '
-        'cboExpansions
-        '
-        Me.cboExpansions.FormattingEnabled = True
-        Me.cboExpansions.Location = New System.Drawing.Point(111, 113)
-        Me.cboExpansions.Name = "cboExpansions"
-        Me.cboExpansions.Size = New System.Drawing.Size(223, 21)
-        Me.cboExpansions.TabIndex = 46
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 113)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(56, 13)
-        Me.Label1.TabIndex = 47
-        Me.Label1.Text = "Expansion"
-        '
-        'cboInstanceTypes
-        '
-        Me.cboInstanceTypes.FormattingEnabled = True
-        Me.cboInstanceTypes.Items.AddRange(New Object() {"Raids", "Dungeons", "Scenarios", "Delves"})
-        Me.cboInstanceTypes.Location = New System.Drawing.Point(111, 87)
-        Me.cboInstanceTypes.Name = "cboInstanceTypes"
-        Me.cboInstanceTypes.Size = New System.Drawing.Size(223, 21)
-        Me.cboInstanceTypes.TabIndex = 48
-        '
-        'txtLuaImport
-        '
-        Me.txtLuaImport.Location = New System.Drawing.Point(340, 38)
-        Me.txtLuaImport.Multiline = True
-        Me.txtLuaImport.Name = "txtLuaImport"
-        Me.txtLuaImport.Size = New System.Drawing.Size(241, 165)
-        Me.txtLuaImport.TabIndex = 49
-        '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(340, 22)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(87, 13)
-        Me.Label2.TabIndex = 50
-        Me.Label2.Text = "Lua Table Import"
-        '
-        'Timer1
-        '
-        '
-        'InsertInstance
-        '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(591, 214)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.txtLuaImport)
-        Me.Controls.Add(Me.cboInstanceTypes)
-        Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.cboExpansions)
-        Me.Controls.Add(Me.Label17)
-        Me.Controls.Add(Me.txtInstanceName)
-        Me.Controls.Add(Me.lblInstanceName)
-        Me.Controls.Add(Me.txtInstanceNameID)
-        Me.Controls.Add(Me.lblInstanceNameID)
-        Me.Controls.Add(Me.Label14)
-        Me.Controls.Add(Me.txtInstanceID)
-        Me.Controls.Add(Me.txtStatus)
-        Me.Controls.Add(Me.btnAddInstance)
-        Me.Name = "InsertInstance"
-        Me.Text = "InsertInstance"
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
+        components = New ComponentModel.Container()
+        txtStatus = New TextBox()
+        btnAddInstance = New Button()
+        Label17 = New Label()
+        txtInstanceName = New TextBox()
+        lblInstanceName = New Label()
+        txtInstanceNameID = New TextBox()
+        lblInstanceNameID = New Label()
+        Label14 = New Label()
+        txtInstanceID = New TextBox()
+        cboExpansions = New ComboBox()
+        Label1 = New Label()
+        cboInstanceTypes = New ComboBox()
+        txtLuaImport = New TextBox()
+        Label2 = New Label()
+        Timer1 = New Timer(components)
+        cboWagoInstances = New ComboBox()
+        Label3 = New Label()
+        SuspendLayout()
+        ' 
+        ' txtStatus
+        ' 
+        txtStatus.Location = New Point(14, 211)
+        txtStatus.Margin = New Padding(4, 3, 4, 3)
+        txtStatus.Name = "txtStatus"
+        txtStatus.Size = New Size(375, 23)
+        txtStatus.TabIndex = 11
+        ' 
+        ' btnAddInstance
+        ' 
+        btnAddInstance.Location = New Point(14, 162)
+        btnAddInstance.Margin = New Padding(4, 3, 4, 3)
+        btnAddInstance.Name = "btnAddInstance"
+        btnAddInstance.Size = New Size(376, 43)
+        btnAddInstance.TabIndex = 10
+        btnAddInstance.Text = "Add Instance"
+        btnAddInstance.UseVisualStyleBackColor = True
+        ' 
+        ' Label17
+        ' 
+        Label17.AutoSize = True
+        Label17.Location = New Point(13, 104)
+        Label17.Margin = New Padding(4, 0, 4, 0)
+        Label17.Name = "Label17"
+        Label17.Size = New Size(79, 15)
+        Label17.TabIndex = 44
+        Label17.Text = "Instance Type"
+        ' 
+        ' txtInstanceName
+        ' 
+        txtInstanceName.Location = New Point(130, 70)
+        txtInstanceName.Margin = New Padding(4, 3, 4, 3)
+        txtInstanceName.Name = "txtInstanceName"
+        txtInstanceName.Size = New Size(259, 23)
+        txtInstanceName.TabIndex = 43
+        ' 
+        ' lblInstanceName
+        ' 
+        lblInstanceName.AutoSize = True
+        lblInstanceName.Location = New Point(13, 74)
+        lblInstanceName.Margin = New Padding(4, 0, 4, 0)
+        lblInstanceName.Name = "lblInstanceName"
+        lblInstanceName.Size = New Size(86, 15)
+        lblInstanceName.TabIndex = 42
+        lblInstanceName.Text = "Instance Name"
+        ' 
+        ' txtInstanceNameID
+        ' 
+        txtInstanceNameID.Location = New Point(130, 40)
+        txtInstanceNameID.Margin = New Padding(4, 3, 4, 3)
+        txtInstanceNameID.Name = "txtInstanceNameID"
+        txtInstanceNameID.Size = New Size(259, 23)
+        txtInstanceNameID.TabIndex = 41
+        ' 
+        ' lblInstanceNameID
+        ' 
+        lblInstanceNameID.AutoSize = True
+        lblInstanceNameID.Location = New Point(13, 44)
+        lblInstanceNameID.Margin = New Padding(4, 0, 4, 0)
+        lblInstanceNameID.Name = "lblInstanceNameID"
+        lblInstanceNameID.Size = New Size(100, 15)
+        lblInstanceNameID.TabIndex = 40
+        lblInstanceNameID.Text = "Instance Name ID"
+        ' 
+        ' Label14
+        ' 
+        Label14.AutoSize = True
+        Label14.Location = New Point(14, 10)
+        Label14.Margin = New Padding(4, 0, 4, 0)
+        Label14.Name = "Label14"
+        Label14.Size = New Size(65, 15)
+        Label14.TabIndex = 38
+        Label14.Text = "Instance ID"
+        ' 
+        ' txtInstanceID
+        ' 
+        txtInstanceID.Location = New Point(130, 10)
+        txtInstanceID.Margin = New Padding(4, 3, 4, 3)
+        txtInstanceID.Name = "txtInstanceID"
+        txtInstanceID.Size = New Size(259, 23)
+        txtInstanceID.TabIndex = 39
+        ' 
+        ' cboExpansions
+        ' 
+        cboExpansions.FormattingEnabled = True
+        cboExpansions.Location = New Point(130, 130)
+        cboExpansions.Margin = New Padding(4, 3, 4, 3)
+        cboExpansions.Name = "cboExpansions"
+        cboExpansions.Size = New Size(259, 23)
+        cboExpansions.TabIndex = 46
+        ' 
+        ' Label1
+        ' 
+        Label1.AutoSize = True
+        Label1.Location = New Point(14, 130)
+        Label1.Margin = New Padding(4, 0, 4, 0)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(60, 15)
+        Label1.TabIndex = 47
+        Label1.Text = "Expansion"
+        ' 
+        ' cboInstanceTypes
+        ' 
+        cboInstanceTypes.FormattingEnabled = True
+        cboInstanceTypes.Items.AddRange(New Object() {"Raids", "Dungeons", "Scenarios", "Delves"})
+        cboInstanceTypes.Location = New Point(130, 100)
+        cboInstanceTypes.Margin = New Padding(4, 3, 4, 3)
+        cboInstanceTypes.Name = "cboInstanceTypes"
+        cboInstanceTypes.Size = New Size(259, 23)
+        cboInstanceTypes.TabIndex = 48
+        ' 
+        ' txtLuaImport
+        ' 
+        txtLuaImport.Location = New Point(397, 78)
+        txtLuaImport.Margin = New Padding(4, 3, 4, 3)
+        txtLuaImport.Multiline = True
+        txtLuaImport.Name = "txtLuaImport"
+        txtLuaImport.Size = New Size(280, 155)
+        txtLuaImport.TabIndex = 49
+        ' 
+        ' Label2
+        ' 
+        Label2.AutoSize = True
+        Label2.Location = New Point(397, 60)
+        Label2.Margin = New Padding(4, 0, 4, 0)
+        Label2.Name = "Label2"
+        Label2.Size = New Size(96, 15)
+        Label2.TabIndex = 50
+        Label2.Text = "Lua Table Import"
+        ' 
+        ' Timer1
+        ' 
+        ' 
+        ' cboWagoInstances
+        ' 
+        cboWagoInstances.FormattingEnabled = True
+        cboWagoInstances.Location = New Point(397, 29)
+        cboWagoInstances.Margin = New Padding(4, 3, 4, 3)
+        cboWagoInstances.Name = "cboWagoInstances"
+        cboWagoInstances.Size = New Size(280, 23)
+        cboWagoInstances.TabIndex = 51
+        ' 
+        ' Label3
+        ' 
+        Label3.AutoSize = True
+        Label3.Location = New Point(397, 10)
+        Label3.Margin = New Padding(4, 0, 4, 0)
+        Label3.Name = "Label3"
+        Label3.Size = New Size(131, 15)
+        Label3.TabIndex = 52
+        Label3.Text = "Select Instance (Wago)"
+        ' 
+        ' InsertInstance
+        ' 
+        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleMode = AutoScaleMode.Font
+        ClientSize = New Size(693, 238)
+        Controls.Add(Label3)
+        Controls.Add(cboWagoInstances)
+        Controls.Add(Label2)
+        Controls.Add(txtLuaImport)
+        Controls.Add(cboInstanceTypes)
+        Controls.Add(Label1)
+        Controls.Add(cboExpansions)
+        Controls.Add(Label17)
+        Controls.Add(txtInstanceName)
+        Controls.Add(lblInstanceName)
+        Controls.Add(txtInstanceNameID)
+        Controls.Add(lblInstanceNameID)
+        Controls.Add(Label14)
+        Controls.Add(txtInstanceID)
+        Controls.Add(txtStatus)
+        Controls.Add(btnAddInstance)
+        Margin = New Padding(4, 3, 4, 3)
+        Name = "InsertInstance"
+        Text = "InsertInstance"
+        ResumeLayout(False)
+        PerformLayout()
 
     End Sub
 
@@ -200,4 +238,6 @@ Partial Class InsertInstance
     Friend WithEvents txtLuaImport As TextBox
     Friend WithEvents Label2 As Label
     Friend WithEvents Timer1 As Timer
+    Friend WithEvents cboWagoInstances As ComboBox
+    Friend WithEvents Label3 As Label
 End Class

@@ -55,6 +55,10 @@ Partial Class InsertBoss
         Me.Label1 = New System.Windows.Forms.Label()
         Me.cboSelectInstance = New System.Windows.Forms.ComboBox()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
+        Me.cboSelectBoss = New System.Windows.Forms.ComboBox()
+        Me.Label14 = New System.Windows.Forms.Label()
+        Me.cboSelectAchievement = New System.Windows.Forms.ComboBox()
+        Me.Label15 = New System.Windows.Forms.Label()
         Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -344,11 +348,49 @@ Partial Class InsertBoss
         '
         Me.Timer1.Interval = 1000
         '
+        'cboSelectBoss
+        '
+        Me.cboSelectBoss.FormattingEnabled = True
+        Me.cboSelectBoss.Location = New System.Drawing.Point(325, 25)
+        Me.cboSelectBoss.Name = "cboSelectBoss"
+        Me.cboSelectBoss.Size = New System.Drawing.Size(241, 21)
+        Me.cboSelectBoss.TabIndex = 56
+        '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.Location = New System.Drawing.Point(325, 9)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(104, 13)
+        Me.Label14.TabIndex = 57
+        Me.Label14.Text = "Select Boss (Wago)"
+        '
+        'cboSelectAchievement
+        '
+        Me.cboSelectAchievement.FormattingEnabled = True
+        Me.cboSelectAchievement.Location = New System.Drawing.Point(325, 68)
+        Me.cboSelectAchievement.Name = "cboSelectAchievement"
+        Me.cboSelectAchievement.Size = New System.Drawing.Size(241, 21)
+        Me.cboSelectAchievement.TabIndex = 58
+        '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.Location = New System.Drawing.Point(325, 52)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(152, 13)
+        Me.Label15.TabIndex = 59
+        Me.Label15.Text = "Select Achievement (Wago)"
+        '
         'InsertBoss
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(573, 446)
+        Me.Controls.Add(Me.Label15)
+        Me.Controls.Add(Me.cboSelectAchievement)
+        Me.Controls.Add(Me.Label14)
+        Me.Controls.Add(Me.cboSelectBoss)
         Me.Controls.Add(Me.cboSelectInstance)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.Label2)
@@ -397,4 +439,8 @@ Partial Class InsertBoss
     Friend WithEvents Label4 As Label
     Friend WithEvents txtNameID As TextBox
     Friend WithEvents Timer1 As Timer
+    Friend WithEvents cboSelectBoss As ComboBox
+    Friend WithEvents Label14 As Label
+    Friend WithEvents cboSelectAchievement As ComboBox
+    Friend WithEvents Label15 As Label
 End Class
