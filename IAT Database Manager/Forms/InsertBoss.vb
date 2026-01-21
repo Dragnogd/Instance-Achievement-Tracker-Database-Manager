@@ -193,22 +193,57 @@ Public Class InsertBoss
                 Dim bossData = kvp.Value
                 If bossData("Name") = selectedBoss AndAlso bossData("JournalInstanceID") = currentInstanceNameID Then
                     Dim orderIndex As Integer = Integer.Parse(bossData("OrderIndex"))
+                    Dim bossNameID As Integer = Integer.Parse(bossData("ID"))
 
-                    txtIndex.Text = "boss" & orderIndex
-                    txtBossName.Text = bossData("Name")
-                    txtNameID.Text = bossData("ID")
-                    txtBossIDs.Text = "{}"
-                    txtPlayers.Text = "{}"
-                    txtEnabled.Text = "false"
-                    txtTrack.Text = "nil"
-                    txtTactics.Text = FormatTactics(cboSelectInstance.SelectedItem.ToString(), bossData("Name"))
-                    txtPartial.Text = ""
-                    txtEncounterID.Text = bossData("DungeonEncounterID")
-                    txtInfoFrame.Text = "false"
+                    ' First, check if this boss already exists in the database
+                    Dim existingBoss As Boss = Nothing
+                    Using db As New IATDbContext()
+                        Dim selectedInstanceName As String = cboSelectInstance.SelectedItem?.ToString()
+                        If Not String.IsNullOrEmpty(selectedInstanceName) Then
+                            Dim instance = db.Instances.FirstOrDefault(Function(i) i.Name = selectedInstanceName)
+                            If instance IsNot Nothing Then
+                                existingBoss = db.Bosses.FirstOrDefault(Function(b) b.BossNameID = bossNameID AndAlso b.InstanceId = instance.Id)
+                            End If
+                        End If
+                    End Using
 
-                    LastBoss = orderIndex
+                    ' If boss exists, load existing data, otherwise use wago defaults
+                    If existingBoss IsNot Nothing Then
+                        ' Load existing data
+                        txtIndex.Text = "boss" & existingBoss.Order
+                        txtBossName.Text = If(String.IsNullOrWhiteSpace(existingBoss.BossName), bossData("Name"), existingBoss.BossName)
+                        txtNameID.Text = If(existingBoss.BossNameID = 0, bossData("ID"), existingBoss.BossNameID.ToString())
+                        txtBossIDs.Text = If(String.IsNullOrWhiteSpace(existingBoss.BossIDs), "{}", existingBoss.BossIDs)
+                        txtPlayers.Text = "{}"
+                        txtEnabled.Text = existingBoss.Enabled.ToString().ToLower()
+                        txtTrack.Text = If(String.IsNullOrWhiteSpace(existingBoss.Track), "nil", existingBoss.Track)
+                        txtTactics.Text = FormatTactics(cboSelectInstance.SelectedItem.ToString(), bossData("Name"))
+                        txtPartial.Text = If(existingBoss.PartialTrack, "true", "")
+                        txtEncounterID.Text = If(existingBoss.EncounterID = 0, bossData("DungeonEncounterID"), existingBoss.EncounterID.ToString())
+                        txtInfoFrame.Text = existingBoss.DisplayInfoFrame.ToString().ToLower()
+                        txtAchievement.Text = If(existingBoss.AchievementID = 0, "", existingBoss.AchievementID.ToString())
+                        
+                        LastBoss = existingBoss.Order
+                        txtStatus.Text = "Loaded existing boss: " & selectedBoss
+                    Else
+                        ' Use wago defaults for new boss
+                        txtIndex.Text = "boss" & orderIndex + 1
+                        txtBossName.Text = bossData("Name")
+                        txtNameID.Text = bossData("ID")
+                        txtBossIDs.Text = "{}"
+                        txtPlayers.Text = "{}"
+                        txtEnabled.Text = "false"
+                        txtTrack.Text = "nil"
+                        txtTactics.Text = FormatTactics(cboSelectInstance.SelectedItem.ToString(), bossData("Name"))
+                        txtPartial.Text = ""
+                        txtEncounterID.Text = bossData("DungeonEncounterID")
+                        txtInfoFrame.Text = "false"
+                        txtAchievement.Text = ""
 
-                    txtStatus.Text = "Selected: " & selectedBoss
+                        LastBoss = orderIndex
+                        txtStatus.Text = "New boss selected: " & selectedBoss
+                    End If
+
                     Exit For
                 End If
             Next
@@ -328,37 +363,121 @@ Public Class InsertBoss
         Try
             Using db As New IATDbContext()
                 Dim selectedInstanceName As String = cboSelectInstance.SelectedItem?.ToString()
-
+                
                 If String.IsNullOrEmpty(selectedInstanceName) Then
                     txtStatus.Text = "Error: Please select an instance"
                     Return
                 End If
 
                 Dim instance = db.Instances.FirstOrDefault(Function(i) i.Name = selectedInstanceName)
-
+                
                 If instance Is Nothing Then
                     txtStatus.Text = "Error: Instance not found in database"
                     Return
                 End If
 
-                Dim newBoss As New Boss With {
-                    .Order = Integer.Parse(txtIndex.Text.Replace("boss", "")),
-                    .BossName = txtBossName.Text,
-                    .BossNameID = Integer.Parse(txtNameID.Text),
-                    .BossIDs = txtBossIDs.Text,
-                    .AchievementID = If(String.IsNullOrWhiteSpace(txtAchievement.Text), 0, Integer.Parse(txtAchievement.Text)),
-                    .Enabled = Boolean.Parse(txtEnabled.Text),
-                    .Track = txtTrack.Text,
-                    .PartialTrack = Not String.IsNullOrWhiteSpace(txtPartial.Text),
-                    .EncounterID = If(String.IsNullOrWhiteSpace(txtEncounterID.Text), 0, Integer.Parse(txtEncounterID.Text)),
-                    .DisplayInfoFrame = Boolean.Parse(txtInfoFrame.Text),
-                    .Instance = instance
-                }
+                Dim bossNameID As Integer = Integer.Parse(txtNameID.Text)
+                
+                ' Check if boss already exists in the database
+                Dim existingBoss = db.Bosses.FirstOrDefault(Function(b) b.BossNameID = bossNameID AndAlso b.InstanceId = instance.Id)
 
-                db.Bosses.Add(newBoss)
-                db.SaveChanges()
+                If existingBoss IsNot Nothing Then
+                    ' Update existing boss
+                    existingBoss.Order = Integer.Parse(txtIndex.Text.Replace("boss", ""))
+                    existingBoss.BossName = txtBossName.Text
+                    existingBoss.BossNameID = bossNameID
+                    existingBoss.BossIDs = txtBossIDs.Text
+                    existingBoss.AchievementID = If(String.IsNullOrWhiteSpace(txtAchievement.Text), 0, Integer.Parse(txtAchievement.Text))
+                    existingBoss.Enabled = Boolean.Parse(txtEnabled.Text)
+                    existingBoss.Track = txtTrack.Text
+                    existingBoss.PartialTrack = Not String.IsNullOrWhiteSpace(txtPartial.Text)
+                    existingBoss.EncounterID = If(String.IsNullOrWhiteSpace(txtEncounterID.Text), 0, Integer.Parse(txtEncounterID.Text))
+                    existingBoss.DisplayInfoFrame = Boolean.Parse(txtInfoFrame.Text)
 
-                txtStatus.Text = "Added to database: " & txtBossName.Text
+                    ' Check if boss has a tactic, if not and tactics text is provided, create one
+                    If existingBoss.Tactics.Count = 0 AndAlso Not String.IsNullOrWhiteSpace(txtTactics.Text) AndAlso txtTactics.Text <> """""" Then
+                        ' Get expansion ID from the instance's InstanceType
+                        Dim expansionId As Integer = instance.InstanceType.Expansion.ExpansionGameId
+
+                        ' Construct localisation key
+                        Dim rawKey = $"{instance.Name}_{existingBoss.BossName}_1"
+                        Dim localeKey = Regex.Replace(rawKey, "[^a-zA-Z0-9_]", "")
+
+                        ' Check if localisation already exists
+                        Dim localisation = db.Localisations.FirstOrDefault(Function(l) l.Key = localeKey)
+                        If localisation Is Nothing Then
+                            localisation = New Localisation With {
+                                .Key = localeKey,
+                                .Value = ""
+                            }
+                            db.Localisations.Add(localisation)
+                        End If
+
+                        ' Create tactic
+                        Dim tactic As New Tactic With {
+                            .ExpansionId = expansionId,
+                            .Localisation = localisation,
+                            .Boss = existingBoss
+                        }
+                        existingBoss.Tactics.Add(tactic)
+                        
+                        txtStatus.Text = "Updated boss: " & txtBossName.Text & " and added tactic for expansion " & expansionId
+                    Else
+                        txtStatus.Text = "Updated boss: " & txtBossName.Text
+                    End If
+
+                    db.SaveChanges()
+                Else
+                    ' Create new boss
+                    Dim newBoss As New Boss With {
+                        .Order = Integer.Parse(txtIndex.Text.Replace("boss", "")),
+                        .BossName = txtBossName.Text,
+                        .BossNameID = bossNameID,
+                        .BossIDs = txtBossIDs.Text,
+                        .AchievementID = If(String.IsNullOrWhiteSpace(txtAchievement.Text), 0, Integer.Parse(txtAchievement.Text)),
+                        .Enabled = Boolean.Parse(txtEnabled.Text),
+                        .Track = txtTrack.Text,
+                        .PartialTrack = Not String.IsNullOrWhiteSpace(txtPartial.Text),
+                        .EncounterID = If(String.IsNullOrWhiteSpace(txtEncounterID.Text), 0, Integer.Parse(txtEncounterID.Text)),
+                        .DisplayInfoFrame = Boolean.Parse(txtInfoFrame.Text),
+                        .Instance = instance
+                    }
+
+                    ' Create a tactic if tactics text is provided
+                    If Not String.IsNullOrWhiteSpace(txtTactics.Text) AndAlso txtTactics.Text <> """""" Then
+                        ' Get expansion ID from the instance's InstanceType
+                        Dim expansionId As Integer = instance.InstanceType.Expansion.ExpansionGameId
+
+                        ' Construct localisation key
+                        Dim rawKey = $"{instance.Name}_{newBoss.BossName}_1"
+                        Dim localeKey = Regex.Replace(rawKey, "[^a-zA-Z0-9_]", "")
+
+                        ' Check if localisation already exists
+                        Dim localisation = db.Localisations.FirstOrDefault(Function(l) l.Key = localeKey)
+                        If localisation Is Nothing Then
+                            localisation = New Localisation With {
+                                .Key = localeKey,
+                                .Value = ""
+                            }
+                            db.Localisations.Add(localisation)
+                        End If
+
+                        ' Create tactic
+                        Dim tactic As New Tactic With {
+                            .ExpansionId = expansionId,
+                            .Localisation = localisation,
+                            .Boss = newBoss
+                        }
+                        newBoss.Tactics.Add(tactic)
+
+                        txtStatus.Text = "Added new boss: " & txtBossName.Text & " with tactic for expansion " & expansionId
+                    Else
+                        txtStatus.Text = "Added new boss: " & txtBossName.Text & " (no tactic)"
+                    End If
+
+                    db.Bosses.Add(newBoss)
+                    db.SaveChanges()
+                End If
 
                 txtBossName.Text = ""
                 txtAchievement.Text = ""
