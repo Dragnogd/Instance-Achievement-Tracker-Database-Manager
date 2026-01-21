@@ -885,8 +885,8 @@ Public Class frmIATDatabaseManager
         Log.Information("Generating addon database for expansions up to: {MaxExpansions} with expansion suffix {expansionSuffix}", maxExpansions, expansionSuffix)
         ' Connect to database
         Using db As New IATDbContext
-            ' Get all expansions
-            Dim Expansions As List(Of Expansion) = db.Expansions.Where(Function(e) e.ExpansionGameId <= maxExpansions).ToList()
+            ' Get all expansions sorted by ExpansionGameId descending (highest first)
+            Dim Expansions As List(Of Expansion) = db.Expansions.Where(Function(e) e.ExpansionGameId <= maxExpansions).OrderByDescending(Function(e) e.ExpansionGameId).ToList()
 
             ' Write new file
             Using writer As StreamWriter = New StreamWriter($"C:\Users\ryanc\Dropbox\InstanceAchievementTracker\Instances{expansionSuffix}.lua")
