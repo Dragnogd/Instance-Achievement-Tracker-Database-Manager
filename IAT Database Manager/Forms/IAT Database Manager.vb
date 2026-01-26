@@ -827,8 +827,11 @@ Public Class frmIATDatabaseManager
                     End If
                 Next
 
-                ' Replace <br><br> with \n\n
-                cleanedText = cleanedText.Replace("<br>", "\n\n")
+                ' Replace <br> with \n
+                cleanedText = cleanedText.Replace("<br>", "\n")
+
+                ' Clean up any excess newlines (more than 2 consecutive) to fix existing damage
+                cleanedText = Regex.Replace(cleanedText, "\n{3,}", "\n\n")
 
                 ' Remove left over <div>
                 cleanedText = cleanedText.Replace("<div>", "")
@@ -1065,6 +1068,10 @@ Public Class frmIATDatabaseManager
 
                                     If boss.BossNameLocale.Length > 1 Then
                                         writer.WriteLine($"{Indent(5)}nameWrath = L[""{boss.BossNameLocale}""],")
+                                    End If
+
+                                    If boss.NotTrackableDueToRestrictions Then
+                                        writer.WriteLine($"{Indent(5)}notTrackableDueToRestrictions = true,")
                                     End If
 
                                     ' Close the boss table
@@ -1428,5 +1435,15 @@ Public Class frmIATDatabaseManager
 
     Private Sub BrowserToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BrowserToolStripMenuItem.Click
         Browser.Show()
+    End Sub
+
+    Private Sub btnEditBoss_Click(sender As Object, e As EventArgs) Handles btnEditBoss.Click
+        Dim selectedBoss As Boss = TryCast(cboBosses.SelectedItem, Boss)
+        If selectedBoss IsNot Nothing Then
+            InsertBoss.LoadBossForEdit(selectedBoss.Id)
+            InsertBoss.Show()
+        Else
+            MessageBox.Show("Please select a boss to edit.", "No Boss Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        End If
     End Sub
 End Class

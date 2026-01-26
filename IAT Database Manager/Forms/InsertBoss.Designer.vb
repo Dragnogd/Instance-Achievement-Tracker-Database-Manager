@@ -22,388 +22,438 @@ Partial Class InsertBoss
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container()
-        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.Label4 = New System.Windows.Forms.Label()
-        Me.txtNameID = New System.Windows.Forms.TextBox()
-        Me.Label3 = New System.Windows.Forms.Label()
-        Me.txtIndex = New System.Windows.Forms.TextBox()
-        Me.txtTactics = New System.Windows.Forms.TextBox()
-        Me.Label21 = New System.Windows.Forms.Label()
-        Me.Label5 = New System.Windows.Forms.Label()
-        Me.Label13 = New System.Windows.Forms.Label()
-        Me.Label6 = New System.Windows.Forms.Label()
-        Me.Label12 = New System.Windows.Forms.Label()
-        Me.txtBossName = New System.Windows.Forms.TextBox()
-        Me.Label11 = New System.Windows.Forms.Label()
-        Me.txtBossIDs = New System.Windows.Forms.TextBox()
-        Me.Label10 = New System.Windows.Forms.Label()
-        Me.txtAchievement = New System.Windows.Forms.TextBox()
-        Me.Label9 = New System.Windows.Forms.Label()
-        Me.txtPlayers = New System.Windows.Forms.TextBox()
-        Me.Label8 = New System.Windows.Forms.Label()
-        Me.txtEnabled = New System.Windows.Forms.TextBox()
-        Me.Label7 = New System.Windows.Forms.Label()
-        Me.txtTrack = New System.Windows.Forms.TextBox()
-        Me.txtPartial = New System.Windows.Forms.TextBox()
-        Me.txtInfoFrame = New System.Windows.Forms.TextBox()
-        Me.txtEncounterID = New System.Windows.Forms.TextBox()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.txtLuaImport = New System.Windows.Forms.TextBox()
-        Me.txtStatus = New System.Windows.Forms.TextBox()
-        Me.btnAddInstance = New System.Windows.Forms.Button()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.cboSelectInstance = New System.Windows.Forms.ComboBox()
-        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
-        Me.cboSelectBoss = New System.Windows.Forms.ComboBox()
-        Me.Label14 = New System.Windows.Forms.Label()
-        Me.cboSelectAchievement = New System.Windows.Forms.ComboBox()
-        Me.Label15 = New System.Windows.Forms.Label()
-        Me.GroupBox1.SuspendLayout()
-        Me.SuspendLayout()
-        '
-        'GroupBox1
-        '
-        Me.GroupBox1.Controls.Add(Me.Label4)
-        Me.GroupBox1.Controls.Add(Me.txtNameID)
-        Me.GroupBox1.Controls.Add(Me.Label3)
-        Me.GroupBox1.Controls.Add(Me.txtIndex)
-        Me.GroupBox1.Controls.Add(Me.txtTactics)
-        Me.GroupBox1.Controls.Add(Me.Label21)
-        Me.GroupBox1.Controls.Add(Me.Label5)
-        Me.GroupBox1.Controls.Add(Me.Label13)
-        Me.GroupBox1.Controls.Add(Me.Label6)
-        Me.GroupBox1.Controls.Add(Me.Label12)
-        Me.GroupBox1.Controls.Add(Me.txtBossName)
-        Me.GroupBox1.Controls.Add(Me.Label11)
-        Me.GroupBox1.Controls.Add(Me.txtBossIDs)
-        Me.GroupBox1.Controls.Add(Me.Label10)
-        Me.GroupBox1.Controls.Add(Me.txtAchievement)
-        Me.GroupBox1.Controls.Add(Me.Label9)
-        Me.GroupBox1.Controls.Add(Me.txtPlayers)
-        Me.GroupBox1.Controls.Add(Me.Label8)
-        Me.GroupBox1.Controls.Add(Me.txtEnabled)
-        Me.GroupBox1.Controls.Add(Me.Label7)
-        Me.GroupBox1.Controls.Add(Me.txtTrack)
-        Me.GroupBox1.Controls.Add(Me.txtPartial)
-        Me.GroupBox1.Controls.Add(Me.txtInfoFrame)
-        Me.GroupBox1.Controls.Add(Me.txtEncounterID)
-        Me.GroupBox1.Location = New System.Drawing.Point(12, 12)
-        Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(307, 335)
-        Me.GroupBox1.TabIndex = 31
-        Me.GroupBox1.TabStop = False
-        Me.GroupBox1.Text = "Boss Specific"
-        '
-        'Label4
-        '
-        Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(7, 74)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(49, 13)
-        Me.Label4.TabIndex = 34
-        Me.Label4.Text = "Name ID"
-        '
-        'txtNameID
-        '
-        Me.txtNameID.Location = New System.Drawing.Point(77, 71)
-        Me.txtNameID.Name = "txtNameID"
-        Me.txtNameID.Size = New System.Drawing.Size(223, 20)
-        Me.txtNameID.TabIndex = 35
-        '
-        'Label3
-        '
-        Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(6, 22)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(33, 13)
-        Me.Label3.TabIndex = 32
-        Me.Label3.Text = "Index"
-        '
-        'txtIndex
-        '
-        Me.txtIndex.Location = New System.Drawing.Point(77, 19)
-        Me.txtIndex.Name = "txtIndex"
-        Me.txtIndex.Size = New System.Drawing.Size(223, 20)
-        Me.txtIndex.TabIndex = 33
-        Me.txtIndex.Text = "boss1"
-        '
-        'txtTactics
-        '
-        Me.txtTactics.Location = New System.Drawing.Point(78, 177)
-        Me.txtTactics.Name = "txtTactics"
-        Me.txtTactics.Size = New System.Drawing.Size(223, 20)
-        Me.txtTactics.TabIndex = 30
-        Me.txtTactics.Text = """"""
-        '
-        'Label21
-        '
-        Me.Label21.AutoSize = True
-        Me.Label21.Location = New System.Drawing.Point(7, 187)
-        Me.Label21.Name = "Label21"
-        Me.Label21.Size = New System.Drawing.Size(42, 13)
-        Me.Label21.TabIndex = 31
-        Me.Label21.Text = "Tactics"
-        '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(7, 48)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(35, 13)
-        Me.Label5.TabIndex = 11
-        Me.Label5.Text = "Name"
-        '
-        'Label13
-        '
-        Me.Label13.AutoSize = True
-        Me.Label13.Location = New System.Drawing.Point(7, 313)
-        Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(54, 13)
-        Me.Label13.TabIndex = 29
-        Me.Label13.Text = "InfoFrame"
-        '
-        'Label6
-        '
-        Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(7, 107)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(51, 13)
-        Me.Label6.TabIndex = 12
-        Me.Label6.Text = "Boss ID's"
-        '
-        'Label12
-        '
-        Me.Label12.AutoSize = True
-        Me.Label12.Location = New System.Drawing.Point(6, 291)
-        Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(70, 13)
-        Me.Label12.TabIndex = 28
-        Me.Label12.Text = "Encounter ID"
-        '
-        'txtBossName
-        '
-        Me.txtBossName.Location = New System.Drawing.Point(77, 45)
-        Me.txtBossName.Name = "txtBossName"
-        Me.txtBossName.Size = New System.Drawing.Size(223, 20)
-        Me.txtBossName.TabIndex = 13
-        '
-        'Label11
-        '
-        Me.Label11.AutoSize = True
-        Me.Label11.Location = New System.Drawing.Point(7, 261)
-        Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(36, 13)
-        Me.Label11.TabIndex = 27
-        Me.Label11.Text = "Partial"
-        '
-        'txtBossIDs
-        '
-        Me.txtBossIDs.Location = New System.Drawing.Point(78, 99)
-        Me.txtBossIDs.Name = "txtBossIDs"
-        Me.txtBossIDs.Size = New System.Drawing.Size(223, 20)
-        Me.txtBossIDs.TabIndex = 14
-        Me.txtBossIDs.Text = "{}"
-        '
-        'Label10
-        '
-        Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(7, 235)
-        Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(35, 13)
-        Me.Label10.TabIndex = 26
-        Me.Label10.Text = "Track"
-        '
-        'txtAchievement
-        '
-        Me.txtAchievement.Location = New System.Drawing.Point(78, 125)
-        Me.txtAchievement.Name = "txtAchievement"
-        Me.txtAchievement.Size = New System.Drawing.Size(223, 20)
-        Me.txtAchievement.TabIndex = 15
-        '
-        'Label9
-        '
-        Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(7, 213)
-        Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(46, 13)
-        Me.Label9.TabIndex = 25
-        Me.Label9.Text = "Enabled"
-        '
-        'txtPlayers
-        '
-        Me.txtPlayers.Location = New System.Drawing.Point(78, 151)
-        Me.txtPlayers.Name = "txtPlayers"
-        Me.txtPlayers.Size = New System.Drawing.Size(223, 20)
-        Me.txtPlayers.TabIndex = 16
-        Me.txtPlayers.Text = "{}"
-        '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(7, 161)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(41, 13)
-        Me.Label8.TabIndex = 24
-        Me.Label8.Text = "Players"
-        '
-        'txtEnabled
-        '
-        Me.txtEnabled.Location = New System.Drawing.Point(78, 203)
-        Me.txtEnabled.Name = "txtEnabled"
-        Me.txtEnabled.Size = New System.Drawing.Size(223, 20)
-        Me.txtEnabled.TabIndex = 17
-        Me.txtEnabled.Text = "false"
-        '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(7, 135)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(69, 13)
-        Me.Label7.TabIndex = 23
-        Me.Label7.Text = "Achievement"
-        '
-        'txtTrack
-        '
-        Me.txtTrack.Location = New System.Drawing.Point(78, 229)
-        Me.txtTrack.Name = "txtTrack"
-        Me.txtTrack.Size = New System.Drawing.Size(223, 20)
-        Me.txtTrack.TabIndex = 18
-        Me.txtTrack.Text = "nil"
-        '
-        'txtPartial
-        '
-        Me.txtPartial.Location = New System.Drawing.Point(78, 255)
-        Me.txtPartial.Name = "txtPartial"
-        Me.txtPartial.Size = New System.Drawing.Size(223, 20)
-        Me.txtPartial.TabIndex = 19
-        '
-        'txtInfoFrame
-        '
-        Me.txtInfoFrame.Location = New System.Drawing.Point(78, 307)
-        Me.txtInfoFrame.Name = "txtInfoFrame"
-        Me.txtInfoFrame.Size = New System.Drawing.Size(223, 20)
-        Me.txtInfoFrame.TabIndex = 21
-        Me.txtInfoFrame.Text = "false"
-        '
-        'txtEncounterID
-        '
-        Me.txtEncounterID.Location = New System.Drawing.Point(78, 281)
-        Me.txtEncounterID.Name = "txtEncounterID"
-        Me.txtEncounterID.Size = New System.Drawing.Size(223, 20)
-        Me.txtEncounterID.TabIndex = 20
-        '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(325, 9)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(87, 13)
-        Me.Label2.TabIndex = 54
-        Me.Label2.Text = "Lua Table Import"
-        '
-        'txtLuaImport
-        '
-        Me.txtLuaImport.Location = New System.Drawing.Point(325, 31)
-        Me.txtLuaImport.Multiline = True
-        Me.txtLuaImport.Name = "txtLuaImport"
-        Me.txtLuaImport.Size = New System.Drawing.Size(241, 407)
-        Me.txtLuaImport.TabIndex = 53
-        '
-        'txtStatus
-        '
-        Me.txtStatus.Location = New System.Drawing.Point(15, 418)
-        Me.txtStatus.Name = "txtStatus"
-        Me.txtStatus.Size = New System.Drawing.Size(307, 20)
-        Me.txtStatus.TabIndex = 52
-        '
-        'btnAddInstance
-        '
-        Me.btnAddInstance.Location = New System.Drawing.Point(12, 374)
-        Me.btnAddInstance.Name = "btnAddInstance"
-        Me.btnAddInstance.Size = New System.Drawing.Size(307, 37)
-        Me.btnAddInstance.TabIndex = 51
-        Me.btnAddInstance.Text = "Add Boss"
-        Me.btnAddInstance.UseVisualStyleBackColor = True
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 350)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(81, 13)
-        Me.Label1.TabIndex = 33
-        Me.Label1.Text = "Select Instance"
-        '
-        'cboSelectInstance
-        '
-        Me.cboSelectInstance.FormattingEnabled = True
-        Me.cboSelectInstance.Location = New System.Drawing.Point(95, 347)
-        Me.cboSelectInstance.Name = "cboSelectInstance"
-        Me.cboSelectInstance.Size = New System.Drawing.Size(221, 21)
-        Me.cboSelectInstance.TabIndex = 55
-        '
-        'Timer1
-        '
-        Me.Timer1.Interval = 1000
-        '
-        'cboSelectBoss
-        '
-        Me.cboSelectBoss.FormattingEnabled = True
-        Me.cboSelectBoss.Location = New System.Drawing.Point(325, 25)
-        Me.cboSelectBoss.Name = "cboSelectBoss"
-        Me.cboSelectBoss.Size = New System.Drawing.Size(241, 21)
-        Me.cboSelectBoss.TabIndex = 56
-        '
-        'Label14
-        '
-        Me.Label14.AutoSize = True
-        Me.Label14.Location = New System.Drawing.Point(325, 9)
-        Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(104, 13)
-        Me.Label14.TabIndex = 57
-        Me.Label14.Text = "Select Boss (Wago)"
-        '
-        'cboSelectAchievement
-        '
-        Me.cboSelectAchievement.FormattingEnabled = True
-        Me.cboSelectAchievement.Location = New System.Drawing.Point(325, 68)
-        Me.cboSelectAchievement.Name = "cboSelectAchievement"
-        Me.cboSelectAchievement.Size = New System.Drawing.Size(241, 21)
-        Me.cboSelectAchievement.TabIndex = 58
-        '
-        'Label15
-        '
-        Me.Label15.AutoSize = True
-        Me.Label15.Location = New System.Drawing.Point(325, 52)
-        Me.Label15.Name = "Label15"
-        Me.Label15.Size = New System.Drawing.Size(152, 13)
-        Me.Label15.TabIndex = 59
-        Me.Label15.Text = "Select Achievement (Wago)"
-        '
-        'InsertBoss
-        '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(573, 446)
-        Me.Controls.Add(Me.Label15)
-        Me.Controls.Add(Me.cboSelectAchievement)
-        Me.Controls.Add(Me.Label14)
-        Me.Controls.Add(Me.cboSelectBoss)
-        Me.Controls.Add(Me.cboSelectInstance)
-        Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.txtLuaImport)
-        Me.Controls.Add(Me.txtStatus)
-        Me.Controls.Add(Me.btnAddInstance)
-        Me.Controls.Add(Me.GroupBox1)
-        Me.Name = "InsertBoss"
-        Me.Text = "InsertBoss"
-        Me.GroupBox1.ResumeLayout(False)
-        Me.GroupBox1.PerformLayout()
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
+        components = New ComponentModel.Container()
+        GroupBox1 = New GroupBox()
+        chkRestrictions = New CheckBox()
+        Label17 = New Label()
+        Label4 = New Label()
+        txtNameID = New TextBox()
+        Label3 = New Label()
+        txtIndex = New TextBox()
+        txtTactics = New TextBox()
+        Label21 = New Label()
+        Label5 = New Label()
+        Label13 = New Label()
+        Label6 = New Label()
+        Label12 = New Label()
+        txtBossName = New TextBox()
+        Label11 = New Label()
+        txtBossIDs = New TextBox()
+        Label10 = New Label()
+        txtAchievement = New TextBox()
+        Label9 = New Label()
+        txtPlayers = New TextBox()
+        Label8 = New Label()
+        txtEnabled = New TextBox()
+        Label7 = New Label()
+        txtTrack = New TextBox()
+        txtPartial = New TextBox()
+        txtInfoFrame = New TextBox()
+        txtEncounterID = New TextBox()
+        Label2 = New Label()
+        txtStatus = New TextBox()
+        btnAddInstance = New Button()
+        Label1 = New Label()
+        cboSelectInstance = New ComboBox()
+        Timer1 = New Timer(components)
+        cboSelectBoss = New ComboBox()
+        Label14 = New Label()
+        cboSelectAchievement = New ComboBox()
+        Label15 = New Label()
+        GroupBox1.SuspendLayout()
+        SuspendLayout()
+        ' 
+        ' GroupBox1
+        ' 
+        GroupBox1.Controls.Add(chkRestrictions)
+        GroupBox1.Controls.Add(Label17)
+        GroupBox1.Controls.Add(Label4)
+        GroupBox1.Controls.Add(txtNameID)
+        GroupBox1.Controls.Add(Label3)
+        GroupBox1.Controls.Add(txtIndex)
+        GroupBox1.Controls.Add(txtTactics)
+        GroupBox1.Controls.Add(Label21)
+        GroupBox1.Controls.Add(Label5)
+        GroupBox1.Controls.Add(Label13)
+        GroupBox1.Controls.Add(Label6)
+        GroupBox1.Controls.Add(Label12)
+        GroupBox1.Controls.Add(txtBossName)
+        GroupBox1.Controls.Add(Label11)
+        GroupBox1.Controls.Add(txtBossIDs)
+        GroupBox1.Controls.Add(Label10)
+        GroupBox1.Controls.Add(txtAchievement)
+        GroupBox1.Controls.Add(Label9)
+        GroupBox1.Controls.Add(txtPlayers)
+        GroupBox1.Controls.Add(Label8)
+        GroupBox1.Controls.Add(txtEnabled)
+        GroupBox1.Controls.Add(Label7)
+        GroupBox1.Controls.Add(txtTrack)
+        GroupBox1.Controls.Add(txtPartial)
+        GroupBox1.Controls.Add(txtInfoFrame)
+        GroupBox1.Controls.Add(txtEncounterID)
+        GroupBox1.Location = New Point(323, 9)
+        GroupBox1.Margin = New Padding(4, 3, 4, 3)
+        GroupBox1.Name = "GroupBox1"
+        GroupBox1.Padding = New Padding(4, 3, 4, 3)
+        GroupBox1.Size = New Size(358, 450)
+        GroupBox1.TabIndex = 31
+        GroupBox1.TabStop = False
+        GroupBox1.Text = "Boss Specific"
+        ' 
+        ' chkRestrictions
+        ' 
+        chkRestrictions.AutoSize = True
+        chkRestrictions.Location = New Point(115, 393)
+        chkRestrictions.Name = "chkRestrictions"
+        chkRestrictions.Size = New Size(120, 19)
+        chkRestrictions.TabIndex = 37
+        chkRestrictions.Text = "12.0.0 Restrictions"
+        chkRestrictions.UseVisualStyleBackColor = True
+        ' 
+        ' Label17
+        ' 
+        Label17.AutoSize = True
+        Label17.Location = New Point(8, 393)
+        Label17.Margin = New Padding(4, 0, 4, 0)
+        Label17.Name = "Label17"
+        Label17.Size = New Size(80, 15)
+        Label17.TabIndex = 36
+        Label17.Text = "Not Trackable"
+        ' 
+        ' Label4
+        ' 
+        Label4.AutoSize = True
+        Label4.Location = New Point(8, 85)
+        Label4.Margin = New Padding(4, 0, 4, 0)
+        Label4.Name = "Label4"
+        Label4.Size = New Size(53, 15)
+        Label4.TabIndex = 34
+        Label4.Text = "Name ID"
+        ' 
+        ' txtNameID
+        ' 
+        txtNameID.Location = New Point(90, 82)
+        txtNameID.Margin = New Padding(4, 3, 4, 3)
+        txtNameID.Name = "txtNameID"
+        txtNameID.Size = New Size(259, 23)
+        txtNameID.TabIndex = 35
+        ' 
+        ' Label3
+        ' 
+        Label3.AutoSize = True
+        Label3.Location = New Point(7, 25)
+        Label3.Margin = New Padding(4, 0, 4, 0)
+        Label3.Name = "Label3"
+        Label3.Size = New Size(35, 15)
+        Label3.TabIndex = 32
+        Label3.Text = "Index"
+        ' 
+        ' txtIndex
+        ' 
+        txtIndex.Location = New Point(90, 22)
+        txtIndex.Margin = New Padding(4, 3, 4, 3)
+        txtIndex.Name = "txtIndex"
+        txtIndex.Size = New Size(259, 23)
+        txtIndex.TabIndex = 33
+        txtIndex.Text = "boss1"
+        ' 
+        ' txtTactics
+        ' 
+        txtTactics.Location = New Point(91, 204)
+        txtTactics.Margin = New Padding(4, 3, 4, 3)
+        txtTactics.Name = "txtTactics"
+        txtTactics.Size = New Size(259, 23)
+        txtTactics.TabIndex = 30
+        txtTactics.Text = """"""
+        ' 
+        ' Label21
+        ' 
+        Label21.AutoSize = True
+        Label21.Location = New Point(8, 216)
+        Label21.Margin = New Padding(4, 0, 4, 0)
+        Label21.Name = "Label21"
+        Label21.Size = New Size(43, 15)
+        Label21.TabIndex = 31
+        Label21.Text = "Tactics"
+        ' 
+        ' Label5
+        ' 
+        Label5.AutoSize = True
+        Label5.Location = New Point(8, 55)
+        Label5.Margin = New Padding(4, 0, 4, 0)
+        Label5.Name = "Label5"
+        Label5.Size = New Size(39, 15)
+        Label5.TabIndex = 11
+        Label5.Text = "Name"
+        ' 
+        ' Label13
+        ' 
+        Label13.AutoSize = True
+        Label13.Location = New Point(8, 361)
+        Label13.Margin = New Padding(4, 0, 4, 0)
+        Label13.Name = "Label13"
+        Label13.Size = New Size(61, 15)
+        Label13.TabIndex = 29
+        Label13.Text = "InfoFrame"
+        ' 
+        ' Label6
+        ' 
+        Label6.AutoSize = True
+        Label6.Location = New Point(8, 123)
+        Label6.Margin = New Padding(4, 0, 4, 0)
+        Label6.Name = "Label6"
+        Label6.Size = New Size(53, 15)
+        Label6.TabIndex = 12
+        Label6.Text = "Boss ID's"
+        ' 
+        ' Label12
+        ' 
+        Label12.AutoSize = True
+        Label12.Location = New Point(7, 336)
+        Label12.Margin = New Padding(4, 0, 4, 0)
+        Label12.Name = "Label12"
+        Label12.Size = New Size(75, 15)
+        Label12.TabIndex = 28
+        Label12.Text = "Encounter ID"
+        ' 
+        ' txtBossName
+        ' 
+        txtBossName.Location = New Point(90, 52)
+        txtBossName.Margin = New Padding(4, 3, 4, 3)
+        txtBossName.Name = "txtBossName"
+        txtBossName.Size = New Size(259, 23)
+        txtBossName.TabIndex = 13
+        ' 
+        ' Label11
+        ' 
+        Label11.AutoSize = True
+        Label11.Location = New Point(8, 301)
+        Label11.Margin = New Padding(4, 0, 4, 0)
+        Label11.Name = "Label11"
+        Label11.Size = New Size(40, 15)
+        Label11.TabIndex = 27
+        Label11.Text = "Partial"
+        ' 
+        ' txtBossIDs
+        ' 
+        txtBossIDs.Location = New Point(91, 114)
+        txtBossIDs.Margin = New Padding(4, 3, 4, 3)
+        txtBossIDs.Name = "txtBossIDs"
+        txtBossIDs.Size = New Size(259, 23)
+        txtBossIDs.TabIndex = 14
+        txtBossIDs.Text = "{}"
+        ' 
+        ' Label10
+        ' 
+        Label10.AutoSize = True
+        Label10.Location = New Point(8, 271)
+        Label10.Margin = New Padding(4, 0, 4, 0)
+        Label10.Name = "Label10"
+        Label10.Size = New Size(35, 15)
+        Label10.TabIndex = 26
+        Label10.Text = "Track"
+        ' 
+        ' txtAchievement
+        ' 
+        txtAchievement.Location = New Point(91, 144)
+        txtAchievement.Margin = New Padding(4, 3, 4, 3)
+        txtAchievement.Name = "txtAchievement"
+        txtAchievement.Size = New Size(259, 23)
+        txtAchievement.TabIndex = 15
+        ' 
+        ' Label9
+        ' 
+        Label9.AutoSize = True
+        Label9.Location = New Point(8, 246)
+        Label9.Margin = New Padding(4, 0, 4, 0)
+        Label9.Name = "Label9"
+        Label9.Size = New Size(49, 15)
+        Label9.TabIndex = 25
+        Label9.Text = "Enabled"
+        ' 
+        ' txtPlayers
+        ' 
+        txtPlayers.Location = New Point(91, 174)
+        txtPlayers.Margin = New Padding(4, 3, 4, 3)
+        txtPlayers.Name = "txtPlayers"
+        txtPlayers.Size = New Size(259, 23)
+        txtPlayers.TabIndex = 16
+        txtPlayers.Text = "{}"
+        ' 
+        ' Label8
+        ' 
+        Label8.AutoSize = True
+        Label8.Location = New Point(8, 186)
+        Label8.Margin = New Padding(4, 0, 4, 0)
+        Label8.Name = "Label8"
+        Label8.Size = New Size(44, 15)
+        Label8.TabIndex = 24
+        Label8.Text = "Players"
+        ' 
+        ' txtEnabled
+        ' 
+        txtEnabled.Location = New Point(91, 234)
+        txtEnabled.Margin = New Padding(4, 3, 4, 3)
+        txtEnabled.Name = "txtEnabled"
+        txtEnabled.Size = New Size(259, 23)
+        txtEnabled.TabIndex = 17
+        txtEnabled.Text = "false"
+        ' 
+        ' Label7
+        ' 
+        Label7.AutoSize = True
+        Label7.Location = New Point(8, 156)
+        Label7.Margin = New Padding(4, 0, 4, 0)
+        Label7.Name = "Label7"
+        Label7.Size = New Size(77, 15)
+        Label7.TabIndex = 23
+        Label7.Text = "Achievement"
+        ' 
+        ' txtTrack
+        ' 
+        txtTrack.Location = New Point(91, 264)
+        txtTrack.Margin = New Padding(4, 3, 4, 3)
+        txtTrack.Name = "txtTrack"
+        txtTrack.Size = New Size(259, 23)
+        txtTrack.TabIndex = 18
+        txtTrack.Text = "nil"
+        ' 
+        ' txtPartial
+        ' 
+        txtPartial.Location = New Point(91, 294)
+        txtPartial.Margin = New Padding(4, 3, 4, 3)
+        txtPartial.Name = "txtPartial"
+        txtPartial.Size = New Size(259, 23)
+        txtPartial.TabIndex = 19
+        ' 
+        ' txtInfoFrame
+        ' 
+        txtInfoFrame.Location = New Point(91, 354)
+        txtInfoFrame.Margin = New Padding(4, 3, 4, 3)
+        txtInfoFrame.Name = "txtInfoFrame"
+        txtInfoFrame.Size = New Size(259, 23)
+        txtInfoFrame.TabIndex = 21
+        txtInfoFrame.Text = "false"
+        ' 
+        ' txtEncounterID
+        ' 
+        txtEncounterID.Location = New Point(91, 324)
+        txtEncounterID.Margin = New Padding(4, 3, 4, 3)
+        txtEncounterID.Name = "txtEncounterID"
+        txtEncounterID.Size = New Size(259, 23)
+        txtEncounterID.TabIndex = 20
+        ' 
+        ' Label2
+        ' 
+        Label2.AutoSize = True
+        Label2.Location = New Point(18, 70)
+        Label2.Margin = New Padding(4, 0, 4, 0)
+        Label2.Name = "Label2"
+        Label2.Size = New Size(96, 15)
+        Label2.TabIndex = 54
+        Label2.Text = "Lua Table Import"
+        ' 
+        ' txtStatus
+        ' 
+        txtStatus.Location = New Point(18, 222)
+        txtStatus.Margin = New Padding(4, 3, 4, 3)
+        txtStatus.Name = "txtStatus"
+        txtStatus.Size = New Size(280, 23)
+        txtStatus.TabIndex = 52
+        ' 
+        ' btnAddInstance
+        ' 
+        btnAddInstance.Location = New Point(17, 172)
+        btnAddInstance.Margin = New Padding(4, 3, 4, 3)
+        btnAddInstance.Name = "btnAddInstance"
+        btnAddInstance.Size = New Size(281, 43)
+        btnAddInstance.TabIndex = 51
+        btnAddInstance.Text = "Add Boss"
+        btnAddInstance.UseVisualStyleBackColor = True
+        ' 
+        ' Label1
+        ' 
+        Label1.AutoSize = True
+        Label1.Location = New Point(18, 16)
+        Label1.Margin = New Padding(4, 0, 4, 0)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(85, 15)
+        Label1.TabIndex = 33
+        Label1.Text = "Select Instance"
+        ' 
+        ' cboSelectInstance
+        ' 
+        cboSelectInstance.FormattingEnabled = True
+        cboSelectInstance.Location = New Point(18, 34)
+        cboSelectInstance.Margin = New Padding(4, 3, 4, 3)
+        cboSelectInstance.Name = "cboSelectInstance"
+        cboSelectInstance.Size = New Size(257, 23)
+        cboSelectInstance.TabIndex = 55
+        ' 
+        ' Timer1
+        ' 
+        Timer1.Interval = 1000
+        ' 
+        ' cboSelectBoss
+        ' 
+        cboSelectBoss.FormattingEnabled = True
+        cboSelectBoss.Location = New Point(18, 89)
+        cboSelectBoss.Margin = New Padding(4, 3, 4, 3)
+        cboSelectBoss.Name = "cboSelectBoss"
+        cboSelectBoss.Size = New Size(280, 23)
+        cboSelectBoss.TabIndex = 56
+        ' 
+        ' Label14
+        ' 
+        Label14.AutoSize = True
+        Label14.Location = New Point(18, 70)
+        Label14.Margin = New Padding(4, 0, 4, 0)
+        Label14.Name = "Label14"
+        Label14.Size = New Size(107, 15)
+        Label14.TabIndex = 57
+        Label14.Text = "Select Boss (Wago)"
+        ' 
+        ' cboSelectAchievement
+        ' 
+        cboSelectAchievement.FormattingEnabled = True
+        cboSelectAchievement.Location = New Point(18, 138)
+        cboSelectAchievement.Margin = New Padding(4, 3, 4, 3)
+        cboSelectAchievement.Name = "cboSelectAchievement"
+        cboSelectAchievement.Size = New Size(280, 23)
+        cboSelectAchievement.TabIndex = 58
+        ' 
+        ' Label15
+        ' 
+        Label15.AutoSize = True
+        Label15.Location = New Point(18, 120)
+        Label15.Margin = New Padding(4, 0, 4, 0)
+        Label15.Name = "Label15"
+        Label15.Size = New Size(153, 15)
+        Label15.TabIndex = 59
+        Label15.Text = "Select Achievement (Wago)"
+        ' 
+        ' InsertBoss
+        ' 
+        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleMode = AutoScaleMode.Font
+        ClientSize = New Size(694, 474)
+        Controls.Add(Label15)
+        Controls.Add(cboSelectAchievement)
+        Controls.Add(Label14)
+        Controls.Add(cboSelectBoss)
+        Controls.Add(cboSelectInstance)
+        Controls.Add(Label1)
+        Controls.Add(Label2)
+        Controls.Add(txtStatus)
+        Controls.Add(btnAddInstance)
+        Controls.Add(GroupBox1)
+        Margin = New Padding(4, 3, 4, 3)
+        Name = "InsertBoss"
+        Text = "InsertBoss"
+        GroupBox1.ResumeLayout(False)
+        GroupBox1.PerformLayout()
+        ResumeLayout(False)
+        PerformLayout()
 
     End Sub
 
@@ -443,4 +493,6 @@ Partial Class InsertBoss
     Friend WithEvents Label14 As Label
     Friend WithEvents cboSelectAchievement As ComboBox
     Friend WithEvents Label15 As Label
+    Friend WithEvents Label17 As Label
+    Friend WithEvents chkRestrictions As CheckBox
 End Class

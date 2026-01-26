@@ -38,6 +38,7 @@ Partial Class frmIATDatabaseManager
         BrowserToolStripMenuItem = New ToolStripMenuItem()
         btnGenerateLocalisation = New Button()
         btnUploadLocale = New Button()
+        btnEditBoss = New Button()
         ExpansionBindingSource = New BindingSource(components)
         tlpContainer = New TableLayoutPanel()
         tlpContentRight = New TableLayoutPanel()
@@ -252,6 +253,7 @@ Partial Class frmIATDatabaseManager
         Panel2.Controls.Add(cboBosses)
         Panel2.Controls.Add(btnUploadLocale)
         Panel2.Controls.Add(btnGenerateLocalisation)
+        Panel2.Controls.Add(btnEditBoss)
         Panel2.Controls.Add(btnInsertTactic)
         Panel2.Dock = DockStyle.Fill
         Panel2.Location = New Point(3, 3)
@@ -479,4 +481,5 @@ Partial Class frmIATDatabaseManager
     Friend WithEvents LocalisationsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents btnPullLocalisation As Button
     Friend WithEvents BrowserToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents btnEditBoss As Button
 End Class

@@ -9,8 +9,10 @@ Public Class InsertBoss
     Private wagoAchievementData As New Dictionary(Of String, Dictionary(Of String, String))
     Private currentInstanceNameID As String = ""
     Private currentInstanceID As Integer = 0
+    Private isEditMode As Boolean = False
+    Private editingBossId As Integer = 0
 
-    Private Sub txtLuaImport_TextChanged(sender As Object, e As EventArgs) Handles txtLuaImport.TextChanged
+    Private Sub txtLuaImport_TextChanged(sender As Object, e As EventArgs)
 
     End Sub
 
@@ -30,6 +32,43 @@ Public Class InsertBoss
 
         LoadWagoBossData()
         LoadWagoAchievementData()
+        UpdateButtonText()
+    End Sub
+
+    Private Sub UpdateButtonText()
+        btnAddInstance.Text = If(isEditMode, "Update Boss", "Add Boss")
+    End Sub
+
+    Public Sub LoadBossForEdit(bossId As Integer)
+        isEditMode = True
+        editingBossId = bossId
+        UpdateButtonText()
+
+        Using db As New IATDbContext()
+            Dim boss = db.Bosses.Find(bossId)
+            If boss IsNot Nothing Then
+                ' Set instance first
+                cboSelectInstance.SelectedItem = boss.Instance.Name
+
+                ' Load boss data
+                txtIndex.Text = "boss" & boss.Order
+                txtBossName.Text = boss.BossName
+                txtNameID.Text = boss.BossNameID.ToString()
+                txtBossIDs.Text = boss.BossIDs
+                txtPlayers.Text = "{}"
+                txtEnabled.Text = boss.Enabled.ToString().ToLower()
+                txtTrack.Text = boss.Track
+                txtTactics.Text = """"""
+                txtPartial.Text = If(boss.PartialTrack, "true", "")
+                txtEncounterID.Text = If(boss.EncounterID = 0, "", boss.EncounterID.ToString())
+                txtInfoFrame.Text = boss.DisplayInfoFrame.ToString().ToLower()
+                txtAchievement.Text = If(boss.AchievementID = 0, "", boss.AchievementID.ToString())
+                chkRestrictions.Checked = boss.NotTrackableDueToRestrictions
+
+                LastBoss = boss.Order
+                txtStatus.Text = "Loaded boss for editing: " & boss.BossName
+            End If
+        End Using
     End Sub
 
     Private Sub LoadWagoAchievementData()
@@ -210,6 +249,10 @@ Public Class InsertBoss
                     ' If boss exists, load existing data, otherwise use wago defaults
                     If existingBoss IsNot Nothing Then
                         ' Load existing data
+                        isEditMode = True
+                        editingBossId = existingBoss.Id
+                        UpdateButtonText()
+
                         txtIndex.Text = "boss" & existingBoss.Order
                         txtBossName.Text = If(String.IsNullOrWhiteSpace(existingBoss.BossName), bossData("Name"), existingBoss.BossName)
                         txtNameID.Text = If(existingBoss.BossNameID = 0, bossData("ID"), existingBoss.BossNameID.ToString())
@@ -222,11 +265,16 @@ Public Class InsertBoss
                         txtEncounterID.Text = If(existingBoss.EncounterID = 0, bossData("DungeonEncounterID"), existingBoss.EncounterID.ToString())
                         txtInfoFrame.Text = existingBoss.DisplayInfoFrame.ToString().ToLower()
                         txtAchievement.Text = If(existingBoss.AchievementID = 0, "", existingBoss.AchievementID.ToString())
-                        
+                        chkRestrictions.Checked = existingBoss.NotTrackableDueToRestrictions
+
                         LastBoss = existingBoss.Order
                         txtStatus.Text = "Loaded existing boss: " & selectedBoss
                     Else
                         ' Use wago defaults for new boss
+                        isEditMode = False
+                        editingBossId = 0
+                        UpdateButtonText()
+
                         txtIndex.Text = "boss" & orderIndex + 1
                         txtBossName.Text = bossData("Name")
                         txtNameID.Text = bossData("ID")
@@ -239,6 +287,7 @@ Public Class InsertBoss
                         txtEncounterID.Text = bossData("DungeonEncounterID")
                         txtInfoFrame.Text = "false"
                         txtAchievement.Text = ""
+                        chkRestrictions.Checked = False
 
                         LastBoss = orderIndex
                         txtStatus.Text = "New boss selected: " & selectedBoss
@@ -363,21 +412,21 @@ Public Class InsertBoss
         Try
             Using db As New IATDbContext()
                 Dim selectedInstanceName As String = cboSelectInstance.SelectedItem?.ToString()
-                
+
                 If String.IsNullOrEmpty(selectedInstanceName) Then
                     txtStatus.Text = "Error: Please select an instance"
                     Return
                 End If
 
                 Dim instance = db.Instances.FirstOrDefault(Function(i) i.Name = selectedInstanceName)
-                
+
                 If instance Is Nothing Then
                     txtStatus.Text = "Error: Instance not found in database"
                     Return
                 End If
 
                 Dim bossNameID As Integer = Integer.Parse(txtNameID.Text)
-                
+
                 ' Check if boss already exists in the database
                 Dim existingBoss = db.Bosses.FirstOrDefault(Function(b) b.BossNameID = bossNameID AndAlso b.InstanceId = instance.Id)
 
@@ -393,6 +442,7 @@ Public Class InsertBoss
                     existingBoss.PartialTrack = Not String.IsNullOrWhiteSpace(txtPartial.Text)
                     existingBoss.EncounterID = If(String.IsNullOrWhiteSpace(txtEncounterID.Text), 0, Integer.Parse(txtEncounterID.Text))
                     existingBoss.DisplayInfoFrame = Boolean.Parse(txtInfoFrame.Text)
+                    existingBoss.NotTrackableDueToRestrictions = chkRestrictions.Checked
 
                     ' Check if boss has a tactic, if not and tactics text is provided, create one
                     If existingBoss.Tactics.Count = 0 AndAlso Not String.IsNullOrWhiteSpace(txtTactics.Text) AndAlso txtTactics.Text <> """""" Then
@@ -420,7 +470,7 @@ Public Class InsertBoss
                             .Boss = existingBoss
                         }
                         existingBoss.Tactics.Add(tactic)
-                        
+
                         txtStatus.Text = "Updated boss: " & txtBossName.Text & " and added tactic for expansion " & expansionId
                     Else
                         txtStatus.Text = "Updated boss: " & txtBossName.Text
@@ -440,6 +490,7 @@ Public Class InsertBoss
                         .PartialTrack = Not String.IsNullOrWhiteSpace(txtPartial.Text),
                         .EncounterID = If(String.IsNullOrWhiteSpace(txtEncounterID.Text), 0, Integer.Parse(txtEncounterID.Text)),
                         .DisplayInfoFrame = Boolean.Parse(txtInfoFrame.Text),
+                        .NotTrackableDueToRestrictions = chkRestrictions.Checked,
                         .Instance = instance
                     }
 

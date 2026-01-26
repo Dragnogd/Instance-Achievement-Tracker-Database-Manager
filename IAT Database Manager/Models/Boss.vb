@@ -30,6 +30,8 @@ Public Class Boss
     Public Property EncounterID2 As Integer
     ' Whether to display the InfoFrame
     Public Property DisplayInfoFrame As Boolean
+    ' Whether boss is not trackable due to combat restrictions (12.0.0+)
+    Public Property NotTrackableDueToRestrictions As Boolean
 
     ' Foreign Keys
     Public Property InstanceId As Integer
