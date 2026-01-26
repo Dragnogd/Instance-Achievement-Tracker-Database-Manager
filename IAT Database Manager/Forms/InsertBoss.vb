@@ -47,10 +47,50 @@ Public Class InsertBoss
         Using db As New IATDbContext()
             Dim boss = db.Bosses.Find(bossId)
             If boss IsNot Nothing Then
-                ' Set instance first
-                cboSelectInstance.SelectedItem = boss.Instance.Name
+                ' Temporarily disable event handlers to prevent interference
+                RemoveHandler cboSelectInstance.SelectedIndexChanged, AddressOf cboSelectInstance_SelectedIndexChanged
+                RemoveHandler cboSelectBoss.SelectedIndexChanged, AddressOf cboSelectBoss_SelectedIndexChanged
+                RemoveHandler cboSelectAchievement.SelectedIndexChanged, AddressOf cboSelectAchievement_SelectedIndexChanged
 
-                ' Load boss data
+                ' Step 1: Select the instance
+                For i As Integer = 0 To cboSelectInstance.Items.Count - 1
+                    If cboSelectInstance.Items(i).ToString() = boss.Instance.Name Then
+                        cboSelectInstance.SelectedIndex = i
+                        Exit For
+                    End If
+                Next
+
+                ' Manually trigger the instance load to populate boss and achievement dropdowns
+                currentInstanceNameID = boss.Instance.InstanceNameID.ToString()
+                currentInstanceID = boss.Instance.InstanceId
+                LoadBossesForInstance(currentInstanceNameID)
+                LoadAchievementsForInstance(currentInstanceID)
+
+                ' Step 2: Try to select the boss in the Wago dropdown
+                For i As Integer = 0 To cboSelectBoss.Items.Count - 1
+                    If cboSelectBoss.Items(i).ToString() = boss.BossName Then
+                        cboSelectBoss.SelectedIndex = i
+                        Exit For
+                    End If
+                Next
+
+                ' Step 3: Try to select the achievement in the Wago dropdown
+                If boss.AchievementID > 0 Then
+                    For Each kvp In wagoAchievementData
+                        Dim achievementData = kvp.Value
+                        If achievementData("ID") = boss.AchievementID.ToString() AndAlso achievementData("InstanceID") = currentInstanceID.ToString() Then
+                            For i As Integer = 0 To cboSelectAchievement.Items.Count - 1
+                                If cboSelectAchievement.Items(i).ToString() = achievementData("Title") Then
+                                    cboSelectAchievement.SelectedIndex = i
+                                    Exit For
+                                End If
+                            Next
+                            Exit For
+                        End If
+                    Next
+                End If
+
+                ' Step 4: Manually populate ALL form fields from the database boss data
                 txtIndex.Text = "boss" & boss.Order
                 txtBossName.Text = boss.BossName
                 txtNameID.Text = boss.BossNameID.ToString()
@@ -67,6 +107,11 @@ Public Class InsertBoss
 
                 LastBoss = boss.Order
                 txtStatus.Text = "Loaded boss for editing: " & boss.BossName
+
+                ' Re-enable event handlers
+                AddHandler cboSelectInstance.SelectedIndexChanged, AddressOf cboSelectInstance_SelectedIndexChanged
+                AddHandler cboSelectBoss.SelectedIndexChanged, AddressOf cboSelectBoss_SelectedIndexChanged
+                AddHandler cboSelectAchievement.SelectedIndexChanged, AddressOf cboSelectAchievement_SelectedIndexChanged
             End If
         End Using
     End Sub

@@ -1066,12 +1066,12 @@ Public Class frmIATDatabaseManager
                                         writer.WriteLine($"{Indent(5)}displayInfoFrame = {boss.DisplayInfoFrame.ToString.ToLower()},")
                                     End If
 
-                                    If boss.BossNameLocale.Length > 1 Then
+                                    If boss.BossNameLocale IsNot Nothing AndAlso boss.BossNameLocale.Length > 1 Then
                                         writer.WriteLine($"{Indent(5)}nameWrath = L[""{boss.BossNameLocale}""],")
                                     End If
 
                                     If boss.NotTrackableDueToRestrictions Then
-                                        writer.WriteLine($"{Indent(5)}notTrackableDueToRestrictions = true,")
+                                        writer.WriteLine($"{Indent(5)}Restrictions = true,")
                                     End If
 
                                     ' Close the boss table

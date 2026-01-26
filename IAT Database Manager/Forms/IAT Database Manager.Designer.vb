@@ -183,6 +183,17 @@ Partial Class frmIATDatabaseManager
         btnUploadLocale.Text = "Upload Locale"
         btnUploadLocale.UseVisualStyleBackColor = True
         ' 
+        ' btnEditBoss
+        ' 
+        btnEditBoss.Font = New Font("Microsoft Sans Serif", 8.25F)
+        btnEditBoss.Location = New Point(391, 32)
+        btnEditBoss.Margin = New Padding(4, 3, 4, 3)
+        btnEditBoss.Name = "btnEditBoss"
+        btnEditBoss.Size = New Size(130, 26)
+        btnEditBoss.TabIndex = 63
+        btnEditBoss.Text = "Edit Boss"
+        btnEditBoss.UseVisualStyleBackColor = True
+        ' 
         ' ExpansionBindingSource
         ' 
         ExpansionBindingSource.DataSource = GetType(Expansion)
