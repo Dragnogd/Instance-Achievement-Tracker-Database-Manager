@@ -1071,7 +1071,7 @@ Public Class frmIATDatabaseManager
                                     End If
 
                                     If boss.NotTrackableDueToRestrictions Then
-                                        writer.WriteLine($"{Indent(5)}Restrictions = true,")
+                                        writer.WriteLine($"{Indent(5)}restrictions = true,")
                                     End If
 
                                     ' Close the boss table
