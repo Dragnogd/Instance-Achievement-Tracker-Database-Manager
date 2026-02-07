@@ -11,6 +11,7 @@ Public Class InsertBoss
     Private currentInstanceID As Integer = 0
     Private isEditMode As Boolean = False
     Private editingBossId As Integer = 0
+    Private isLoadingBoss As Boolean = False
 
     Private Sub txtLuaImport_TextChanged(sender As Object, e As EventArgs)
 
@@ -40,48 +41,60 @@ Public Class InsertBoss
     End Sub
 
     Public Sub LoadBossForEdit(bossId As Integer)
-        isEditMode = True
-        editingBossId = bossId
-        UpdateButtonText()
+        isLoadingBoss = True
 
         Using db As New IATDbContext()
             Dim boss = db.Bosses.Find(bossId)
             If boss IsNot Nothing Then
-                ' Temporarily disable event handlers to prevent interference
-                RemoveHandler cboSelectInstance.SelectedIndexChanged, AddressOf cboSelectInstance_SelectedIndexChanged
-                RemoveHandler cboSelectBoss.SelectedIndexChanged, AddressOf cboSelectBoss_SelectedIndexChanged
-                RemoveHandler cboSelectAchievement.SelectedIndexChanged, AddressOf cboSelectAchievement_SelectedIndexChanged
+                ' Ensure instances are loaded in the combo box
+                If cboSelectInstance.Items.Count = 0 Then
+                    For Each instance In db.Instances.OrderBy(Function(i) i.Name).ToList()
+                        cboSelectInstance.Items.Add(instance.Name)
+                    Next
+                End If
 
-                ' Step 1: Select the instance
+                ' Ensure Wago data is loaded
+                If wagoBossData.Count = 0 Then
+                    LoadWagoBossData()
+                End If
+                If wagoAchievementData.Count = 0 Then
+                    LoadWagoAchievementData()
+                End If
+
+                ' Step 1: Select the instance in the dropdown (this will trigger cboSelectInstance_SelectedIndexChanged)
                 For i As Integer = 0 To cboSelectInstance.Items.Count - 1
                     If cboSelectInstance.Items(i).ToString() = boss.Instance.Name Then
                         cboSelectInstance.SelectedIndex = i
+                        Application.DoEvents() ' Allow UI to process the event
                         Exit For
                     End If
                 Next
 
-                ' Manually trigger the instance load to populate boss and achievement dropdowns
-                currentInstanceNameID = boss.Instance.InstanceNameID.ToString()
-                currentInstanceID = boss.Instance.InstanceId
-                LoadBossesForInstance(currentInstanceNameID)
-                LoadAchievementsForInstance(currentInstanceID)
-
-                ' Step 2: Try to select the boss in the Wago dropdown
+                ' Step 2: Select the boss in the dropdown (this will trigger cboSelectBoss_SelectedIndexChanged)
+                ' which will automatically populate all form fields
                 For i As Integer = 0 To cboSelectBoss.Items.Count - 1
                     If cboSelectBoss.Items(i).ToString() = boss.BossName Then
                         cboSelectBoss.SelectedIndex = i
+                        Application.DoEvents() ' Allow UI to process the event
                         Exit For
                     End If
                 Next
 
-                ' Step 3: Try to select the achievement in the Wago dropdown
+                ' Now set edit mode AFTER the boss has been selected and populated
+                ' This prevents the event handler from overwriting our edit mode
+                isEditMode = True
+                editingBossId = bossId
+                UpdateButtonText()
+
+                ' Step 3: Select the achievement if applicable
                 If boss.AchievementID > 0 Then
                     For Each kvp In wagoAchievementData
                         Dim achievementData = kvp.Value
-                        If achievementData("ID") = boss.AchievementID.ToString() AndAlso achievementData("InstanceID") = currentInstanceID.ToString() Then
+                        If achievementData("ID") = boss.AchievementID.ToString() AndAlso achievementData("InstanceID") = boss.Instance.InstanceId.ToString() Then
                             For i As Integer = 0 To cboSelectAchievement.Items.Count - 1
                                 If cboSelectAchievement.Items(i).ToString() = achievementData("Title") Then
                                     cboSelectAchievement.SelectedIndex = i
+                                    Application.DoEvents() ' Allow UI to process the event
                                     Exit For
                                 End If
                             Next
@@ -90,28 +103,16 @@ Public Class InsertBoss
                     Next
                 End If
 
-                ' Step 4: Manually populate ALL form fields from the database boss data
-                txtIndex.Text = "boss" & boss.Order
-                txtBossName.Text = boss.BossName
-                txtNameID.Text = boss.BossNameID.ToString()
-                txtBossIDs.Text = boss.BossIDs
-                txtPlayers.Text = "{}"
-                txtEnabled.Text = boss.Enabled.ToString().ToLower()
-                txtTrack.Text = boss.Track
-                txtTactics.Text = """"""
-                txtPartial.Text = If(boss.PartialTrack, "true", "")
-                txtEncounterID.Text = If(boss.EncounterID = 0, "", boss.EncounterID.ToString())
-                txtInfoFrame.Text = boss.DisplayInfoFrame.ToString().ToLower()
-                txtAchievement.Text = If(boss.AchievementID = 0, "", boss.AchievementID.ToString())
-                chkRestrictions.Checked = boss.NotTrackableDueToRestrictions
+                isLoadingBoss = False
 
-                LastBoss = boss.Order
+                ' Now set edit mode
+                isEditMode = True
+                editingBossId = bossId
+                UpdateButtonText()
+
                 txtStatus.Text = "Loaded boss for editing: " & boss.BossName
-
-                ' Re-enable event handlers
-                AddHandler cboSelectInstance.SelectedIndexChanged, AddressOf cboSelectInstance_SelectedIndexChanged
-                AddHandler cboSelectBoss.SelectedIndexChanged, AddressOf cboSelectBoss_SelectedIndexChanged
-                AddHandler cboSelectAchievement.SelectedIndexChanged, AddressOf cboSelectAchievement_SelectedIndexChanged
+            Else
+                isLoadingBoss = False
             End If
         End Using
     End Sub
@@ -293,10 +294,12 @@ Public Class InsertBoss
 
                     ' If boss exists, load existing data, otherwise use wago defaults
                     If existingBoss IsNot Nothing Then
-                        ' Load existing data
-                        isEditMode = True
-                        editingBossId = existingBoss.Id
-                        UpdateButtonText()
+                        ' Load existing data - but don't override if we're already loading
+                        If Not isLoadingBoss Then
+                            isEditMode = True
+                            editingBossId = existingBoss.Id
+                            UpdateButtonText()
+                        End If
 
                         txtIndex.Text = "boss" & existingBoss.Order
                         txtBossName.Text = If(String.IsNullOrWhiteSpace(existingBoss.BossName), bossData("Name"), existingBoss.BossName)
