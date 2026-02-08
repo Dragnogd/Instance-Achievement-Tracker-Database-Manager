@@ -593,8 +593,35 @@ Public Class InsertBoss
     End Sub
 
     Private Sub cboSelectInstance_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSelectInstance.SelectedIndexChanged
+        If isLoadingBoss Then
+            Return
+        End If
+
         LastBoss = 1
         txtIndex.Text = "boss" & LastBoss
+
+        ' Reset boss and achievement comboboxes
+        cboSelectBoss.SelectedIndex = -1
+        cboSelectAchievement.SelectedIndex = -1
+
+        ' Clear form fields since no boss is selected
+        txtBossName.Text = ""
+        txtNameID.Text = ""
+        txtBossIDs.Text = "{}"
+        txtPlayers.Text = "{}"
+        txtEnabled.Text = "false"
+        txtTrack.Text = "nil"
+        txtTactics.Text = ""
+        txtPartial.Text = ""
+        txtEncounterID.Text = ""
+        txtInfoFrame.Text = "false"
+        txtAchievement.Text = ""
+        chkRestrictions.Checked = False
+
+        ' Reset edit mode
+        isEditMode = False
+        editingBossId = 0
+        UpdateButtonText()
 
         Try
             Using db As New IATDbContext()
@@ -615,6 +642,64 @@ Public Class InsertBoss
             End Using
         Catch ex As Exception
             txtStatus.Text = "Error loading instance data: " & ex.Message
+        End Try
+    End Sub
+
+    Private Sub btnMarkAllRestrictions_Click(sender As Object, e As EventArgs) Handles btnMarkAllRestrictions.Click
+        Try
+            Dim selectedInstanceName As String = cboSelectInstance.SelectedItem?.ToString()
+
+            If String.IsNullOrEmpty(selectedInstanceName) Then
+                txtStatus.Text = "Error: Please select an instance"
+                Return
+            End If
+
+            Dim result = MessageBox.Show(
+                $"This will mark ALL bosses in '{selectedInstanceName}' as having 12.0.0 Restrictions.{vbCrLf}{vbCrLf}Do you want to continue?",
+                "Confirm Bulk Update",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question)
+
+            If result = DialogResult.Yes Then
+                Using db As New IATDbContext()
+                    Dim instance = db.Instances.FirstOrDefault(Function(i) i.Name = selectedInstanceName)
+
+                    If instance Is Nothing Then
+                        txtStatus.Text = "Error: Instance not found in database"
+                        Return
+                    End If
+
+                    ' Get all bosses for this instance
+                    Dim bosses = db.Bosses.Where(Function(b) b.InstanceId = instance.Id).ToList()
+
+                    If bosses.Count = 0 Then
+                        txtStatus.Text = "No bosses found for this instance"
+                        Return
+                    End If
+
+                    ' Mark all bosses with restrictions
+                    Dim updatedCount As Integer = 0
+                    For Each boss In bosses
+                        If Not boss.NotTrackableDueToRestrictions Then
+                            boss.NotTrackableDueToRestrictions = True
+                            updatedCount += 1
+                        End If
+                    Next
+
+                    db.SaveChanges()
+
+                    txtStatus.Text = $"Updated {updatedCount} of {bosses.Count} bosses in '{selectedInstanceName}' with 12.0.0 Restrictions"
+
+                    ' Refresh the current boss if one is selected
+                    If cboSelectBoss.SelectedItem IsNot Nothing Then
+                        cboSelectBoss_SelectedIndexChanged(sender, e)
+                    End If
+                End Using
+            Else
+                txtStatus.Text = "Bulk update cancelled"
+            End If
+        Catch ex As Exception
+            txtStatus.Text = "Error during bulk update: " & ex.Message
         End Try
     End Sub
 End Class

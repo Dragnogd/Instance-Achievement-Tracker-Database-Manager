@@ -60,6 +60,7 @@ Partial Class InsertBoss
         Label14 = New Label()
         cboSelectAchievement = New ComboBox()
         Label15 = New Label()
+        btnMarkAllRestrictions = New Button()
         GroupBox1.SuspendLayout()
         SuspendLayout()
         ' 
@@ -432,11 +433,20 @@ Partial Class InsertBoss
         Label15.TabIndex = 59
         Label15.Text = "Select Achievement (Wago)"
         ' 
+        ' btnMarkAllRestrictions
+        ' 
+        btnMarkAllRestrictions.Location = New Point(18, 255)
+        btnMarkAllRestrictions.Name = "btnMarkAllRestrictions"
+        btnMarkAllRestrictions.Size = New Size(153, 40)
+        btnMarkAllRestrictions.TabIndex = 0
+        btnMarkAllRestrictions.Text = "Mark all Restricted For Instance"
+        ' 
         ' InsertBoss
         ' 
         AutoScaleDimensions = New SizeF(7.0F, 15.0F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(694, 474)
+        Controls.Add(btnMarkAllRestrictions)
         Controls.Add(Label15)
         Controls.Add(cboSelectAchievement)
         Controls.Add(Label14)
@@ -495,4 +505,5 @@ Partial Class InsertBoss
     Friend WithEvents Label15 As Label
     Friend WithEvents Label17 As Label
     Friend WithEvents chkRestrictions As CheckBox
+    Friend WithEvents btnMarkAllRestrictions As Button
 End Class
